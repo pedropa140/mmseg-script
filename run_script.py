@@ -25,9 +25,8 @@ def change_directory(target_dir):
         exit()
 
 # TODO - Create a script to run batch file
-def run_batch_file():    
-    change_directory('tools/batch_files')
-    subprocess.run("sbatch not_started/deeplabv3plus_r50_orig.batch", shell = True, capture_output = True, text = True)
+def run_batch_file():
+    subprocess.run("sbatch tools/batch_files/not_started/deeplabv3plus_r50_orig.batch", shell = True, capture_output = True, text = True)
     print(GREEN + f"Completed Job" + RESET)
 
 # TODO - Need to check if training is done
