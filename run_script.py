@@ -26,7 +26,9 @@ def change_directory(target_dir):
 
 # TODO - Create a script to run batch file
 def run_batch_file():    
-    return NotImplementedError()
+    change_directory('tools/batch_files')
+    subprocess.run("sbatch not_started/deeplabv3plus_r50_orig.batch", shell = True, capture_output = True, text = True)
+    print(GREEN + f"Completed Job" + RESET)
 
 # TODO - Need to check if training is done
 def check_training_if_done():
