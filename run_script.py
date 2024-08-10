@@ -26,9 +26,11 @@ def change_directory(target_dir):
 
 # TODO - Create a script to run batch file
 def run_batch_file():
-    subprocess.run("./sbatch tools/batch_files/not_started/deeplabv3plus_r50_orig.batch", shell = True, capture_output = True, text = True)
-    print(GREEN + f"Completed Job" + RESET)
-
+    try:
+        subprocess.run("./sbatch tools/batch_files/not_started/deeplabv3plus_r50_orig.batch", shell = True, capture_output = True, text = True)
+        print(GREEN + f"Completed Job" + RESET)
+    except Exception as e:
+        print(RED + f"Error: {e}" + RESET)
 # TODO - Need to check if training is done
 def check_training_if_done():
     return NotImplementedError()
