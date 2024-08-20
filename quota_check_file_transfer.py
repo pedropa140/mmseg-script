@@ -101,16 +101,30 @@ def run_every_hour(ssh):
     else:
         logging.info("Storage usage is within limits.")
 
+def create_json(ssh):
+    stdin, stdout, stderr = ssh.exec_command(f'cd mmseg-personal/tools/batch_files/not_started/ ; ls -l')
+    for i in stdout:
+        print(i)
+    print("creating json")
+
 def main():
     ssh = connect_ssh()
+    create_json(ssh)
     try:
-        run_every_hour(ssh)
+        # run_every_hour(ssh)
         # schedule.every().hour.do(run_every_hour, ssh)
 
-        schedule.every().minute.do(run_every_hour, ssh)
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
+        # schedule.every().minute.do(run_every_hour, ssh)
+
+        # run 3 at a time
+        # create json of file names saying if completed or not
+        
+        stdin, stdout, stderr = ssh.exec_command(f'squeue -u bn155')
+        for i in range(1, len(stdout)):
+            print(stdout[i].strip())
+        # while True:
+        #     schedule.run_pending()
+        #     time.sleep(1)
     except Exception as e:
         logging.error(f"An error occurred: {str(e)}")
     finally:
