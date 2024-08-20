@@ -79,7 +79,6 @@ def move_directories(ssh, directories):
         os.system(command)
         print(f"Moved directory {directory} to local machine.")
         logging.info(f"Moved directory {directory} to local machine.")
-        # Optionally, remove the directory after moving
         ssh.exec_command(f'rm -rf {directory}')
         print(f"Removed directory {directory} from remote machine.")
         logging.info(f"Removed directory {directory} from remote machine.")
