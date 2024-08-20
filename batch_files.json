@@ -1,0 +1,12 @@
+[
+    {
+        "filename": "deeplabv3plus_r50_orig.batch",
+        "job_name": "DLv3plus_orig",
+        "status": "not started"
+    },
+    {
+        "filename": "hrnet18-fcn-automation_test.batch",
+        "job_name": "HRNET18_auto",
+        "status": "not started"
+    }
+]

@@ -7,6 +7,7 @@ import re
 import subprocess
 from dotenv import load_dotenv
 import schedule
+import json
 
 load_dotenv()
 
@@ -102,10 +103,52 @@ def run_every_hour(ssh):
         logging.info("Storage usage is within limits.")
 
 def create_json(ssh):
-    stdin, stdout, stderr = ssh.exec_command(f'cd mmseg-personal/tools/batch_files/not_started/ ; ls -l')
-    for i in stdout:
-        print(i)
-    print("creating json")
+    dictionary_list = []
+    json_file_path = 'batch_files.json'
+    
+    RED = '\033[91m'
+    GREEN = '\033[92m'
+    RESET = '\033[0m'
+    
+    if os.path.exists(json_file_path):
+        with open(json_file_path, 'r') as json_file:
+            dictionary_list = json.load(json_file)
+    
+    existing_filenames = {entry['filename'] for entry in dictionary_list}
+    
+    stdin, stdout, stderr = ssh.exec_command('cd mmseg-personal/tools/batch_files/not_started/ ; ls -l')
+    
+    for counter, line in enumerate(stdout):
+        filename = ""
+        job_name = ""
+        if counter == 0:
+            continue
+        filename = line.strip().split()[8]
+        
+        if filename in existing_filenames:
+            print(f"{RED}File {filename} is already in the JSON file.{RESET}")
+            continue
+        
+        stdin, stdout, stderr = ssh.exec_command(f'cat mmseg-personal/tools/batch_files/not_started/{filename}')
+        for line in stdout:
+            line = line.strip()
+            if "#SBATCH --job-name=" in line:
+                job_name = line.replace('#SBATCH --job-name=', '').replace(' ', '')
+                break
+        
+        file_dict = {
+            'filename': filename,
+            'job_name': job_name,
+            'status': 'not started'
+        }
+        
+        dictionary_list.append(file_dict)
+        existing_filenames.add(filename)
+        print(f"{GREEN}Added file {filename} to the JSON file.{RESET}")
+    
+    with open(json_file_path, 'w') as json_file:
+        json.dump(dictionary_list, json_file, indent=4)
+
 
 def main():
     ssh = connect_ssh()
@@ -120,8 +163,11 @@ def main():
         # create json of file names saying if completed or not
         
         stdin, stdout, stderr = ssh.exec_command(f'squeue -u bn155')
-        for i in range(1, len(stdout)):
-            print(stdout[i].strip())
+        for counter, line in enumerate(stdout):
+            # print(stdout[i].strip())
+            if counter == 0:
+                continue
+            print(line)
         # while True:
         #     schedule.run_pending()
         #     time.sleep(1)
