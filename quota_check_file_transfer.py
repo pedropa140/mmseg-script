@@ -10,10 +10,10 @@ import subprocess
 # Configuration
 REMOTE_HOST = 'ilab4.cs.rutgers.edu'
 USERNAME = 'bn155'
-THRESHOLD = 80  # Set your threshold percentage
-DIRECTORY_MARKER_FILE = 'move_me.txt'  # The file that indicates the directory should be moved
-LOCAL_PATH = '/path/to/local/destination'
-REMOTE_BASE_PATH = '/remote/path/to/check'
+THRESHOLD = 45  # Set your threshold percentage
+DIRECTORY_MARKER_FILE = 'complete.txt'  # The file that indicates the directory should be moved
+LOCAL_PATH = '~/home/diez-lab/Corrosion Detection/'
+REMOTE_BASE_PATH = '/common/home/bn155/mmseg-personal/work_dirs/'
 
 # Setup logging
 logging.basicConfig(filename='storage_monitor.log', level=logging.INFO,
@@ -65,6 +65,7 @@ def find_directories_to_move(ssh):
         if line:  # Make sure it's not an empty line
             directory = os.path.dirname(line)
             directories_to_move.append(directory)
+            print(f"Found directory to move: {directory}")
             logging.info(f"Found directory to move: {directory}")
     return directories_to_move
 
@@ -72,12 +73,15 @@ def move_directories(ssh, directories):
     for directory in directories:
         command = f"rsync -avz {USERNAME}@{REMOTE_HOST}:{directory} {LOCAL_PATH}"
         os.system(command)
+        print(f"Moved directory {directory} to local machine.")
         logging.info(f"Moved directory {directory} to local machine.")
         # Optionally, remove the directory after moving
-        ssh.exec_command(f'rm -rf {directory}')
-        logging.info(f"Removed directory {directory} from remote machine.")
+        #ssh.exec_command(f'rm -rf {directory}')
+        print(f"Can remove directory {directory} from remote machine.")
+        logging.info(f"Can remove directory {directory} from remote machine.")
 
 def main():
+    '''
     ssh = connect_ssh()
     usage = check_storage_usage(ssh)
     try:
@@ -89,9 +93,16 @@ def main():
     finally:
         ssh.close()
     '''
+    ssh = connect_ssh()
     try:
         while True:
             usage = check_storage_usage(ssh)
+            if usage_percentage:
+                print(f"Storage usage is at {usage_percentage:.2f}%.")
+                logging.info(f"Storage usage is at {usage_percentage:.2f}%.")
+            else:
+                print("Could not determine storage usage.")
+                logging.info("Could not determine storage usage.")
             if usage > THRESHOLD:
                 directories = find_directories_to_move(ssh)
                 if directories:
@@ -105,7 +116,7 @@ def main():
         logging.error(f"An error occurred: {str(e)}")
     finally:
         ssh.close()
-    '''
+    
 
 if __name__ == '__main__':
     main()
