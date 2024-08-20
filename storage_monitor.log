@@ -1,0 +1,13 @@
+2024-08-20 14:16:02,410 - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2024-08-20 14:16:04,029 - INFO - Auth banner: b'\n---IMPORTANT----------------------------------------------------------------\nThis machine is using CS password server.  If you have not done so, \n"Activate" and "Set your CS password" at  services.cs.rutgers.edu/accounts.\n----------------------------------------------------------------------------\n\n'
+2024-08-20 14:16:04,030 - INFO - Authentication (password) successful!
+2024-08-20 14:16:04,527 - INFO - Storage usage is at 48.43%.
+2024-08-20 14:16:04,647 - INFO - Found directory to move: /common/home/bn155/mmseg-personal/work_dirs/dnl_r50-d8_512x512_160k_coco_corrosion
+2024-08-20 14:16:04,650 - INFO - Found directory to move: /common/home/bn155/mmseg-personal/work_dirs/dmnet_r50-d8_512x512_160k_coco_corrosion
+2024-08-20 14:16:04,651 - INFO - Found directory to move: /common/home/bn155/mmseg-personal/work_dirs/r101_dnl_ocr_160k_corrosion
+2024-08-20 14:16:04,962 - INFO - Moved directory /common/home/bn155/mmseg-personal/work_dirs/dnl_r50-d8_512x512_160k_coco_corrosion to local machine.
+2024-08-20 14:16:04,962 - INFO - Can remove directory /common/home/bn155/mmseg-personal/work_dirs/dnl_r50-d8_512x512_160k_coco_corrosion from remote machine.
+2024-08-20 14:16:05,175 - INFO - Moved directory /common/home/bn155/mmseg-personal/work_dirs/dmnet_r50-d8_512x512_160k_coco_corrosion to local machine.
+2024-08-20 14:16:05,175 - INFO - Can remove directory /common/home/bn155/mmseg-personal/work_dirs/dmnet_r50-d8_512x512_160k_coco_corrosion from remote machine.
+2024-08-20 14:16:05,644 - INFO - Moved directory /common/home/bn155/mmseg-personal/work_dirs/r101_dnl_ocr_160k_corrosion to local machine.
+2024-08-20 14:16:05,644 - INFO - Can remove directory /common/home/bn155/mmseg-personal/work_dirs/r101_dnl_ocr_160k_corrosion from remote machine.

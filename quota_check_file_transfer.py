@@ -5,7 +5,9 @@ import os
 from getpass import getpass
 import re
 import subprocess
+from dotenv import load_dotenv
 
+load_dotenv()
 
 # Configuration
 REMOTE_HOST = 'ilab4.cs.rutgers.edu'
@@ -22,7 +24,8 @@ logging.basicConfig(filename='storage_monitor.log', level=logging.INFO,
 def connect_ssh():
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    PASSWORD = getpass("Enter your SSH password: ")
+    # PASSWORD = getpass("Enter your SSH password: ")
+    PASSWORD = os.getenv('password')
     ssh.connect(hostname=REMOTE_HOST, username=USERNAME, password=PASSWORD)
     return ssh
 
@@ -96,14 +99,14 @@ def main():
     ssh = connect_ssh()
     try:
         while True:
-            usage = check_storage_usage(ssh)
+            usage_percentage = check_storage_usage(ssh)
             if usage_percentage:
                 print(f"Storage usage is at {usage_percentage:.2f}%.")
                 logging.info(f"Storage usage is at {usage_percentage:.2f}%.")
             else:
                 print("Could not determine storage usage.")
                 logging.info("Could not determine storage usage.")
-            if usage > THRESHOLD:
+            if usage_percentage > THRESHOLD:
                 directories = find_directories_to_move(ssh)
                 if directories:
                     move_directories(ssh, directories)
