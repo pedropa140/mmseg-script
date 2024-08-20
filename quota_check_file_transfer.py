@@ -13,8 +13,8 @@ load_dotenv()
 REMOTE_HOST = 'ilab4.cs.rutgers.edu'
 USERNAME = 'bn155'
 THRESHOLD = 45  # Set your threshold percentage
-DIRECTORY_MARKER_FILE = 'complete.txt'  # The file that indicates the directory should be moved
-LOCAL_PATH = '~/home/diez-lab/Corrosion Detection/'
+DIRECTORY_MARKER_FILE = 'completed.txt'  # The file that indicates the directory should be moved
+LOCAL_PATH = '/home/diez-lab/Corrosion_Detection/'
 REMOTE_BASE_PATH = '/common/home/bn155/mmseg-personal/work_dirs/'
 
 # Setup logging
@@ -79,9 +79,9 @@ def move_directories(ssh, directories):
         print(f"Moved directory {directory} to local machine.")
         logging.info(f"Moved directory {directory} to local machine.")
         # Optionally, remove the directory after moving
-        #ssh.exec_command(f'rm -rf {directory}')
-        print(f"Can remove directory {directory} from remote machine.")
-        logging.info(f"Can remove directory {directory} from remote machine.")
+        ssh.exec_command(f'rm -rf {directory}')
+        print(f"Removed directory {directory} from remote machine.")
+        logging.info(f"Removed directory {directory} from remote machine.")
 
 def main():
     '''
@@ -111,10 +111,11 @@ def main():
                 if directories:
                     move_directories(ssh, directories)
                 else:
+                    print("No directories found to move")
                     logging.info("No directories found to move.")
             else:
                 logging.info("Storage usage is within limits.")
-            time.sleep(3600)  # Sleep for an hour
+            time.sleep(60)  # Sleep for an hour
     except Exception as e:
         logging.error(f"An error occurred: {str(e)}")
     finally:
