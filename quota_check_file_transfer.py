@@ -83,39 +83,34 @@ def move_directories(ssh, directories):
         print(f"Removed directory {directory} from remote machine.")
         logging.info(f"Removed directory {directory} from remote machine.")
 
-def main():
-    '''
-    ssh = connect_ssh()
-    usage = check_storage_usage(ssh)
-    try:
-        usage_percentage = check_storage_usage(ssh)
-        if usage_percentage:
-            print(f"Storage usage is at {usage_percentage:.2f}%.")
+def run_every_hour(ssh):
+    usage_percentage = check_storage_usage(ssh)
+    if usage_percentage:
+        print(f"Storage usage is at {usage_percentage:.2f}%.")
+        logging.info(f"Storage usage is at {usage_percentage:.2f}%.")
+    else:
+        print("Could not determine storage usage.")
+        logging.info("Could not determine storage usage.")
+    if usage_percentage > THRESHOLD:
+        directories = find_directories_to_move(ssh)
+        if directories:
+            move_directories(ssh, directories)
         else:
-            print("Could not determine storage usage.")
-    finally:
-        ssh.close()
-    '''
+            print("No directories found to move")
+            logging.info("No directories found to move.")
+    else:
+        logging.info("Storage usage is within limits.")
+
+def main():
     ssh = connect_ssh()
     try:
+        run_every_hour(ssh)
+        # schedule.every().hour.do(run_every_hour, ssh)
+
+        schedule.every().minute.do(run_every_hour, ssh)
         while True:
-            usage_percentage = check_storage_usage(ssh)
-            if usage_percentage:
-                print(f"Storage usage is at {usage_percentage:.2f}%.")
-                logging.info(f"Storage usage is at {usage_percentage:.2f}%.")
-            else:
-                print("Could not determine storage usage.")
-                logging.info("Could not determine storage usage.")
-            if usage_percentage > THRESHOLD:
-                directories = find_directories_to_move(ssh)
-                if directories:
-                    move_directories(ssh, directories)
-                else:
-                    print("No directories found to move")
-                    logging.info("No directories found to move.")
-            else:
-                logging.info("Storage usage is within limits.")
-            time.sleep(60)  # Sleep for an hour
+            schedule.run_pending()
+            time.sleep(1)
     except Exception as e:
         logging.error(f"An error occurred: {str(e)}")
     finally:
