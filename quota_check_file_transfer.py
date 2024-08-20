@@ -2,18 +2,30 @@ import paramiko
 import logging
 import time
 import os
-from getpass import getpass
+#from getpass import getpass
 import re
 import subprocess
 from dotenv import load_dotenv
 import schedule
 import json
 
+'''
+To make use of the dotenv() command, create a new file labelled ".env" and fill in the blanks as needed:
+netid=[insert_netid] # No spaces and no need for quotes around name
+password=password
+local_path=/local/path/to/save/files
+remote_path=/path/to/look/for/files
+remote_host=domain_to_connect_to
+marker_file=filename_to_look_for.txt
+'''
+
+
 load_dotenv()
 
 # Configuration
 REMOTE_HOST = 'ilab4.cs.rutgers.edu'
-USERNAME = 'bn155'
+USERNAME = os.getenv('netid')
+PASSWORD = os.getenv('password')
 THRESHOLD = 45  # Set your threshold percentage
 DIRECTORY_MARKER_FILE = 'completed.txt'  # The file that indicates the directory should be moved
 LOCAL_PATH = '/home/diez-lab/Corrosion_Detection/'
@@ -27,7 +39,6 @@ def connect_ssh():
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     # PASSWORD = getpass("Enter your SSH password: ")
-    PASSWORD = os.getenv('password')
     ssh.connect(hostname=REMOTE_HOST, username=USERNAME, password=PASSWORD)
     return ssh
 
@@ -76,10 +87,11 @@ def find_directories_to_move(ssh):
 
 def move_directories(ssh, directories):
     for directory in directories:
-        command = f"rsync -avz {USERNAME}@{REMOTE_HOST}:{directory} {LOCAL_PATH}"
+        command = f"sshpass -p {PASSWORD} rsync -avz {USERNAME}@{REMOTE_HOST}:{directory} {LOCAL_PATH}"
         os.system(command)
         print(f"Moved directory {directory} to local machine.")
         logging.info(f"Moved directory {directory} to local machine.")
+        # Optionally, remove the directory after moving
         ssh.exec_command(f'rm -rf {directory}')
         print(f"Removed directory {directory} from remote machine.")
         logging.info(f"Removed directory {directory} from remote machine.")
