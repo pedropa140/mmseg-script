@@ -157,7 +157,8 @@ def main():
         # run_every_hour(ssh)
         # schedule.every().hour.do(run_every_hour, ssh)
 
-        # schedule.every().minute.do(run_every_hour, ssh)
+        schedule.every().minute.do(run_every_hour, ssh)
+        schedule.every().minute.do(create_json, ssh)
 
         # run 3 at a time
         # create json of file names saying if completed or not
@@ -168,9 +169,9 @@ def main():
             if counter == 0:
                 continue
             print(line)
-        # while True:
-        #     schedule.run_pending()
-        #     time.sleep(1)
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
     except Exception as e:
         logging.error(f"An error occurred: {str(e)}")
     finally:
