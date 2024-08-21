@@ -126,14 +126,9 @@ def run_every_hour(ssh):
         print_green("Storage usage is within limits.")
         logging.info("Storage usage is within limits.")
 
-
 def create_json(ssh):
     dictionary_list = []
     json_file_path = 'batch_files.json'
-    
-    RED = '\033[91m'
-    GREEN = '\033[92m'
-    RESET = '\033[0m'
     
     if os.path.exists(json_file_path):
         with open(json_file_path, 'r') as json_file:
@@ -151,7 +146,7 @@ def create_json(ssh):
         filename = line.strip().split()[8]
         
         if filename in existing_filenames:
-            print(f"{RED}File {filename} is already in the JSON file.{RESET}")
+            print_red(f"File {filename} is already in the JSON file.")
             continue
         
         stdin, stdout, stderr = ssh.exec_command(f'cat mmseg-personal/tools/batch_files/not_started/{filename}')
@@ -169,7 +164,7 @@ def create_json(ssh):
         
         dictionary_list.append(file_dict)
         existing_filenames.add(filename)
-        print(f"{GREEN}Added file {filename} to the JSON file.{RESET}")
+        print_green(f"Added file {filename} to the JSON file.")
     
     with open(json_file_path, 'w') as json_file:
         json.dump(dictionary_list, json_file, indent=4)
