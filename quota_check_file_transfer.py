@@ -173,17 +173,23 @@ def send_sbatch(ssh, filename):
     return NotImplementedError
 
 def check_squeue(ssh):
-    stdin, stdout, stderr = ssh.exec_command('cd mmseg-personal ; sbatch /tools/batch_files/not_started/hrnet18-fcn-automation_test.batch')
+    stdin, stdout, stderr = ssh.exec_command('cd mmseg-personal ; sbatch tools/batch_files/not_started/hrnet18-fcn-automation_test.batch')
     for counter, line in enumerate(stdout):
         print(line)
-    stdin, stdout, stderr = ssh.exec_command(f'cd mmseg-personal ; squeue --format="%.18i %.9P %.30j %.8u %.8T %.10M %.9l %.6D %R" --me')
+    
+    # time.sleep(10)
+    stdin, stdout, stderr = ssh.exec_command(f'squeue --format="%.18i %.9P %.30j %.8u %.8T %.10M %.9l %.6D %R" --me')
     for counter, line in enumerate(stdout):
-        if counter == 0:
-            continue
+        # if counter == 0:
+        #     continue
         print(line)
     
-    stdin, stdout, stderr = ssh.exec_command(f'scancel -n 1_HRNET18_auto')
-    
+    # time.sleep(5)
+    # stdin, stdout, stderr = ssh.exec_command(f'scancel -n 1_HRNET18_auto')
+    # for counter, line in enumerate(stdout):
+    #     if counter == 0:
+    #         continue
+    #     print(line)
     
 def main():
     ssh = connect_ssh()
