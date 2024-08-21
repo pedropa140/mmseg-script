@@ -30,6 +30,7 @@ THRESHOLD = 45  # Set your threshold percentage
 DIRECTORY_MARKER_FILE = 'completed.txt'  # The file that indicates the directory should be moved
 LOCAL_PATH = '/home/diez-lab/Corrosion_Detection/'
 REMOTE_BASE_PATH = '/common/home/bn155/mmseg-personal/work_dirs/'
+REMOTE_BATCH_FILE_PATH = 'mmseg-personal/tools/batch_files/not_started'
 
 # Setup logging
 logging.basicConfig(filename='storage_monitor.log', level=logging.INFO,
@@ -169,13 +170,17 @@ def create_json(ssh):
     with open(json_file_path, 'w') as json_file:
         json.dump(dictionary_list, json_file, indent=4)
 
-def send_sbatch(ssh, filename):
-    return NotImplementedError
+def send_sbatch(ssh):
+    stdin, stdout, stderr = ssh.exec_command(f'find {REMOTE_BATCH_FILE_PATH} -name "*.batch"')
+    output = stdout.read().decode()
+    print(output)
+    pass
+    #return NotImplementedError
 
 def check_squeue(ssh):
-    stdin, stdout, stderr = ssh.exec_command('cd mmseg-personal ; sbatch tools/batch_files/not_started/hrnet18-fcn-automation_test.batch')
-    for counter, line in enumerate(stdout):
-        print(line)
+    #stdin, stdout, stderr = ssh.exec_command('cd mmseg-personal ; sbatch tools/batch_files/not_started/hrnet18-fcn-automation_test.batch')
+    #for counter, line in enumerate(stdout):
+    #    print(line)
     
     # time.sleep(10)
     stdin, stdout, stderr = ssh.exec_command(f'squeue --format="%.18i %.9P %.30j %.8u %.8T %.10M %.9l %.6D %R" --me')
@@ -203,6 +208,7 @@ def main():
 
         # run 3 at a time
         # create json of file names saying if completed or not
+        send_sbatch(ssh)
         check_squeue(ssh)
         
         # while True:
