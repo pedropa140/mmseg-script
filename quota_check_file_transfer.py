@@ -136,7 +136,7 @@ def create_json(ssh):
     
     existing_filenames = {entry['filename'] for entry in dictionary_list}
     
-    stdin, stdout, stderr = ssh.exec_command('cd mmseg-personal/tools/batch_files/not_started/ ; ls -l')
+    stdin, stdout, stderr = ssh.exec_command('cd /tools/batch_files/not_started/ ; ls -l')
     
     for counter, line in enumerate(stdout):
         filename = ""
@@ -149,7 +149,7 @@ def create_json(ssh):
             print_red(f"File {filename} is already in the JSON file.")
             continue
         
-        stdin, stdout, stderr = ssh.exec_command(f'cat mmseg-personal/tools/batch_files/not_started/{filename}')
+        stdin, stdout, stderr = ssh.exec_command(f'cat /tools/batch_files/not_started/{filename}')
         for line in stdout:
             line = line.strip()
             if "#SBATCH --job-name=" in line:
@@ -173,12 +173,18 @@ def send_sbatch(ssh, filename):
     return NotImplementedError
 
 def check_squeue(ssh):
-    stdin, stdout, stderr = ssh.exec_command(f'squeue -u bn155')
+    stdin, stdout, stderr = ssh.exec_command('cd mmseg-personal ; sbatch /tools/batch_files/not_started/hrnet18-fcn-automation_test.batch')
+    for counter, line in enumerate(stdout):
+        print(line)
+    stdin, stdout, stderr = ssh.exec_command(f'cd mmseg-personal ; squeue --format="%.18i %.9P %.30j %.8u %.8T %.10M %.9l %.6D %R" --me')
     for counter, line in enumerate(stdout):
         if counter == 0:
             continue
         print(line)
-
+    
+    stdin, stdout, stderr = ssh.exec_command(f'scancel -n 1_HRNET18_auto')
+    
+    
 def main():
     ssh = connect_ssh()
     # create_json(ssh)
@@ -193,9 +199,9 @@ def main():
         # create json of file names saying if completed or not
         check_squeue(ssh)
         
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
+        # while True:
+        #     schedule.run_pending()
+        #     time.sleep(1)
     except Exception as e:
         logging.error(f"An error occurred: {str(e)}")
     finally:

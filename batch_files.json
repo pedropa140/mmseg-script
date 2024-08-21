@@ -1,12 +1,87 @@
 [
     {
-        "filename": "deeplabv3plus_r50_orig.batch",
-        "job_name": "DLv3plus_orig",
+        "filename": "Desktop",
+        "job_name": "",
         "status": "not started"
     },
     {
-        "filename": "hrnet18-fcn-automation_test.batch",
-        "job_name": "HRNET18_auto",
+        "filename": "Documents",
+        "job_name": "",
+        "status": "not started"
+    },
+    {
+        "filename": "Downloads",
+        "job_name": "",
+        "status": "not started"
+    },
+    {
+        "filename": "MiDaS",
+        "job_name": "",
+        "status": "not started"
+    },
+    {
+        "filename": "miniconda3",
+        "job_name": "",
+        "status": "not started"
+    },
+    {
+        "filename": "mmseg-personal",
+        "job_name": "",
+        "status": "not started"
+    },
+    {
+        "filename": "mmseg-script",
+        "job_name": "",
+        "status": "not started"
+    },
+    {
+        "filename": "mmselfsup-personal",
+        "job_name": "",
+        "status": "not started"
+    },
+    {
+        "filename": "Music",
+        "job_name": "",
+        "status": "not started"
+    },
+    {
+        "filename": "Pictures",
+        "job_name": "",
+        "status": "not started"
+    },
+    {
+        "filename": "Public",
+        "job_name": "",
+        "status": "not started"
+    },
+    {
+        "filename": "run_node.sh",
+        "job_name": "",
+        "status": "not started"
+    },
+    {
+        "filename": "storage_monitor.log",
+        "job_name": "",
+        "status": "not started"
+    },
+    {
+        "filename": "Templates",
+        "job_name": "",
+        "status": "not started"
+    },
+    {
+        "filename": "undefined",
+        "job_name": "",
+        "status": "not started"
+    },
+    {
+        "filename": "Videos",
+        "job_name": "",
+        "status": "not started"
+    },
+    {
+        "filename": "vscode-cpptools",
+        "job_name": "",
         "status": "not started"
     }
 ]
