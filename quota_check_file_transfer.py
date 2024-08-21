@@ -137,35 +137,40 @@ def create_json(ssh):
     
     existing_filenames = {entry['filename'] for entry in dictionary_list}
     
-    stdin, stdout, stderr = ssh.exec_command('cd /tools/batch_files/not_started/ ; ls -l')
+    stdin, stdout, stderr = ssh.exec_command('cd mmseg-personal/tools/batch_files/not_started/ ; ls -l')
     
     for counter, line in enumerate(stdout):
-        filename = ""
-        job_name = ""
         if counter == 0:
             continue
-        filename = line.strip().split()[8]
         
-        if filename in existing_filenames:
-            print_red(f"File {filename} is already in the JSON file.")
-            continue
+        # Split the line by whitespace
+        parts = line.strip().split()
         
-        stdin, stdout, stderr = ssh.exec_command(f'cat /tools/batch_files/not_started/{filename}')
-        for line in stdout:
-            line = line.strip()
-            if "#SBATCH --job-name=" in line:
-                job_name = line.replace('#SBATCH --job-name=', '').replace(' ', '')
-                break
-        
-        file_dict = {
-            'filename': filename,
-            'job_name': job_name,
-            'status': 'not started'
-        }
-        
-        dictionary_list.append(file_dict)
-        existing_filenames.add(filename)
-        print_green(f"Added file {filename} to the JSON file.")
+        # Check if the entry is a file (not a directory)
+        if len(parts) >= 9 and parts[0].startswith('-'):  # Files have '-' at the start of the permission string
+            filename = parts[8]
+            
+            if filename in existing_filenames:
+                print_red(f"File {filename} is already in the JSON file.")
+                continue
+            
+            stdin, stdout, stderr = ssh.exec_command(f'cat mmseg-personal/tools/batch_files/not_started/{filename}')
+            job_name = ""
+            for line in stdout:
+                line = line.strip()
+                if "#SBATCH --job-name=" in line:
+                    job_name = line.replace('#SBATCH --job-name=', '').replace(' ', '')
+                    break
+            
+            file_dict = {
+                'filename': filename,
+                'job_name': job_name,
+                'status': 'not started'
+            }
+            
+            dictionary_list.append(file_dict)
+            existing_filenames.add(filename)
+            print_green(f"Added file {filename} to the JSON file.")
     
     with open(json_file_path, 'w') as json_file:
         json.dump(dictionary_list, json_file, indent=4)
@@ -178,27 +183,48 @@ def send_sbatch(ssh):
     #return NotImplementedError
 
 def check_squeue(ssh):
+<<<<<<< HEAD
     #stdin, stdout, stderr = ssh.exec_command('cd mmseg-personal ; sbatch tools/batch_files/not_started/hrnet18-fcn-automation_test.batch')
     #for counter, line in enumerate(stdout):
     #    print(line)
+=======
+    filtered_list = []
+    stdin, stdout, stderr = ssh.exec_command('cd mmseg-personal ; sbatch tools/batch_files/not_started/hrnet18-fcn-automation_test.batch')
+    for counter, line in enumerate(stdout):
+        print(line)
+>>>>>>> refs/remotes/origin/main
     
-    # time.sleep(10)
+    time.sleep(10)
+
+    dictionary_list = []
+    json_file_path = 'batch_files.json'
+    
+    if os.path.exists(json_file_path):
+        with open(json_file_path, 'r') as json_file:
+            dictionary_list = json.load(json_file)
+    
+    print(dictionary_list)
+            
     stdin, stdout, stderr = ssh.exec_command(f'squeue --format="%.18i %.9P %.30j %.8u %.8T %.10M %.9l %.6D %R" --me')
     for counter, line in enumerate(stdout):
-        # if counter == 0:
-        #     continue
-        print(line)
+        if counter == 0:
+            continue
+        lines = line.strip().split(" ")
+        filtered_list = [s for s in lines if s][2]
+
+    print(filtered_list)
+
     
-    # time.sleep(5)
-    # stdin, stdout, stderr = ssh.exec_command(f'scancel -n 1_HRNET18_auto')
-    # for counter, line in enumerate(stdout):
-    #     if counter == 0:
-    #         continue
-    #     print(line)
+    time.sleep(5)
+    stdin, stdout, stderr = ssh.exec_command(f'scancel -n {filtered_list[2]}')
+    for counter, line in enumerate(stdout):
+        if counter == 0:
+            continue
+        print(line)
     
 def main():
     ssh = connect_ssh()
-    # create_json(ssh)
+    create_json(ssh)
     try:
         # run_every_hour(ssh)
         # schedule.every().hour.do(run_every_hour, ssh)
