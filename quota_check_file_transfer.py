@@ -183,16 +183,10 @@ def send_sbatch(ssh):
     #return NotImplementedError
 
 def check_squeue(ssh):
-<<<<<<< HEAD
-    #stdin, stdout, stderr = ssh.exec_command('cd mmseg-personal ; sbatch tools/batch_files/not_started/hrnet18-fcn-automation_test.batch')
-    #for counter, line in enumerate(stdout):
-    #    print(line)
-=======
     filtered_list = []
     stdin, stdout, stderr = ssh.exec_command('cd mmseg-personal ; sbatch tools/batch_files/not_started/hrnet18-fcn-automation_test.batch')
     for counter, line in enumerate(stdout):
         print(line)
->>>>>>> refs/remotes/origin/main
     
     time.sleep(10)
 
