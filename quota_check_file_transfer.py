@@ -35,12 +35,23 @@ REMOTE_BASE_PATH = '/common/home/bn155/mmseg-personal/work_dirs/'
 logging.basicConfig(filename='storage_monitor.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
+def print_green(text):
+    print(f"\033[92m{text}\033[0m")
+
+def print_red(text):
+    print(f"\033[91m{text}\033[0m")
+
 def connect_ssh():
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     # PASSWORD = getpass("Enter your SSH password: ")
-    ssh.connect(hostname=REMOTE_HOST, username=USERNAME, password=PASSWORD)
-    return ssh
+    try:
+        ssh.connect(hostname=REMOTE_HOST, username=USERNAME, password=PASSWORD)
+        print_green("Successfully connected to SSH.")
+        return ssh
+    except Exception as e:
+        print_red(f"Failed to connect to SSH: {e}")
+        return None
 
 def check_storage_usage(ssh):
     stdin, stdout, stderr = ssh.exec_command('quota -vs')
@@ -67,11 +78,11 @@ def check_storage_usage(ssh):
                 # Calculate the usage percentage
                 usage_percentage = (used_space / total_quota) * 100
 
-                print(f"Usage Percentage: {usage_percentage:.2f}%")
+                print_green(f"Usage Percentage: {usage_percentage:.2f}%")
                 return usage_percentage
 
+    print_red("Could not determine storage usage.")
     return None  # If the line wasn't found
-
 
 def find_directories_to_move(ssh):
     directories_to_move = []
@@ -81,7 +92,7 @@ def find_directories_to_move(ssh):
         if line:  # Make sure it's not an empty line
             directory = os.path.dirname(line)
             directories_to_move.append(directory)
-            print(f"Found directory to move: {directory}")
+            print_green(f"Found directory to move: {directory}")
             logging.info(f"Found directory to move: {directory}")
     return directories_to_move
 
@@ -89,30 +100,32 @@ def move_directories(ssh, directories):
     for directory in directories:
         command = f"sshpass -p {PASSWORD} rsync -avz {USERNAME}@{REMOTE_HOST}:{directory} {LOCAL_PATH}"
         os.system(command)
-        print(f"Moved directory {directory} to local machine.")
+        print_green(f"Moved directory {directory} to local machine.")
         logging.info(f"Moved directory {directory} to local machine.")
         # Optionally, remove the directory after moving
         ssh.exec_command(f'rm -rf {directory}')
-        print(f"Removed directory {directory} from remote machine.")
+        print_green(f"Removed directory {directory} from remote machine.")
         logging.info(f"Removed directory {directory} from remote machine.")
 
 def run_every_hour(ssh):
     usage_percentage = check_storage_usage(ssh)
     if usage_percentage:
-        print(f"Storage usage is at {usage_percentage:.2f}%.")
+        print_green(f"Storage usage is at {usage_percentage:.2f}%.")
         logging.info(f"Storage usage is at {usage_percentage:.2f}%.")
     else:
-        print("Could not determine storage usage.")
+        print_red("Could not determine storage usage.")
         logging.info("Could not determine storage usage.")
     if usage_percentage > THRESHOLD:
         directories = find_directories_to_move(ssh)
         if directories:
             move_directories(ssh, directories)
         else:
-            print("No directories found to move")
+            print_red("No directories found to move")
             logging.info("No directories found to move.")
     else:
+        print_green("Storage usage is within limits.")
         logging.info("Storage usage is within limits.")
+
 
 def create_json(ssh):
     dictionary_list = []
@@ -161,26 +174,30 @@ def create_json(ssh):
     with open(json_file_path, 'w') as json_file:
         json.dump(dictionary_list, json_file, indent=4)
 
+def send_sbatch(ssh, filename):
+    return NotImplementedError
+
+def check_squeue(ssh):
+    stdin, stdout, stderr = ssh.exec_command(f'squeue -u bn155')
+    for counter, line in enumerate(stdout):
+        if counter == 0:
+            continue
+        print(line)
 
 def main():
     ssh = connect_ssh()
-    create_json(ssh)
+    # create_json(ssh)
     try:
         # run_every_hour(ssh)
         # schedule.every().hour.do(run_every_hour, ssh)
 
-        schedule.every().minute.do(run_every_hour, ssh)
-        schedule.every().minute.do(create_json, ssh)
+        # schedule.every().minute.do(run_every_hour, ssh)
+        # schedule.every().minute.do(create_json, ssh)
 
         # run 3 at a time
         # create json of file names saying if completed or not
+        check_squeue(ssh)
         
-        stdin, stdout, stderr = ssh.exec_command(f'squeue -u bn155')
-        for counter, line in enumerate(stdout):
-            # print(stdout[i].strip())
-            if counter == 0:
-                continue
-            print(line)
         while True:
             schedule.run_pending()
             time.sleep(1)
