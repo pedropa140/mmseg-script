@@ -148,8 +148,8 @@ def run_sbatch(ssh):
     batch_files_from_directory = find_sbatch_files_from_directory(ssh)
     batch_files_from_json = list(find_sbatch_files_from_json())
 
-    print(batch_files_from_directory)
-    print(batch_files_from_json)
+    # print(f'batch_files_from_directory:\t{batch_files_from_directory}')
+    # print(f"batch_files_from_json:\t{batch_files_from_json}")
     # Check json file
     # Find jobs to run by making sure we aren't rerunning already running jobs
         # compare squeue names with Json names and batch_file_directory names
@@ -196,15 +196,21 @@ def create_json(ssh):
             # Extract the job names from the batch files to add into the json file
             stdin, stdout, stderr = ssh.exec_command(f'cat {REMOTE_BATCH_FILE_PATH}/{filename}')
             job_name = ""
+            working_directory = ""
             for line in stdout:
                 line = line.strip()
                 if "#SBATCH --job-name=" in line:
                     job_name = line.replace('#SBATCH --job-name=', '').replace(' ', '')
-                    break
+
+                if "python3 ~/mmseg-personal/tools/train.py" in line:
+                    working_line = line.replace('python3 ~/mmseg-personal/tools/train.py ~', '').replace('.py', '').split("/")
+                    working_length = len(working_line)
+                    working_directory = working_line[working_length - 1]
             
             file_dict = {
                 'filename': filename,
                 'job_name': job_name,
+                'working_dirctory': working_directory,
                 'status': 'NOT STARTED'
             }
             
@@ -222,18 +228,31 @@ def update_json(ssh, processed_squeue_data):
         with open(json_file_path, 'r') as json_file:
             dictionary_list = json.load(json_file)
     
-    project_work_dir = os.path.join(REMOTE_BASE_PATH, REMOTE_WORKING_PROJECT, REMOTE_WORK_DIR)
+    # project_work_dir = os.path.join(REMOTE_BASE_PATH, REMOTE_WORKING_PROJECT, REMOTE_WORK_DIR)
+    # project_work_dir = 'mmseg-personal/work_dirs/'
 
+    project_work_dir = f'{REMOTE_WORKING_PROJECT}/{REMOTE_WORK_DIR}'
+
+<<<<<<< HEAD
     # Look for files to indicate that job is COMPLETED
     print(project_work_dir)
     stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name {DIRECTORY_MARKER_FILE}')
+=======
+    # Look for file to indicate that job is COMPLETED
+    print(f'Project_Work_DIR:\t{project_work_dir}')
+    stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name completed.txt')
+>>>>>>> refs/remotes/origin/main
     output_complete = stdout.read().decode().strip().split('\n')
 
     stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name error_occured.txt')
     output_error = stdout.read().decode().strip().split('\n')
 
-    print(output_complete)
-    print(output_error)
+    stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name in_progress.txt')
+    output_progress = stdout.read().decode().strip().split('\n')
+
+    print(f'Output_Complete:\t{output_complete}')
+    print(f'Output_Error:\t{output_error}')
+    print(f'Output_Progress:\t{output_progress}')
 
     # Look for file to indicate that a job is IN PROGRESS
     if processed_squeue_data != None:
@@ -247,6 +266,7 @@ def update_json(ssh, processed_squeue_data):
                 if entry["job_name"] == job_name:
                     # Update the status in the JSON entry
                     if entry["status"] != state:
+                        logging.info(f"Changing {job_name} status from {entry['status']} to {state}")
                         print(f"Changing {job_name} status from {entry['status']} to {state}")
                         entry["status"] = state
                     break  # Exit the loop since we found the matching entry
@@ -263,7 +283,7 @@ def check_squeue(ssh):
     # filtered_list = []
     # stdin, stdout, stderr = ssh.exec_command(f'cd {REMOTE_WORKING_PROJECT} ; sbatch {REMOTE_BATCH_FILE_LOCATION}/hrnet18-fcn-automation_test.batch')
     # for counter, line in enumerate(stdout):
-    #     print(line)
+    #     print(f'LINE 268:\t{line}')
     
     # time.sleep(10)
 
@@ -285,13 +305,13 @@ def check_squeue(ssh):
     output = stdout.read().decode()
     squeue_jobs = output.splitlines()
     if len(squeue_jobs) > 1:
-        print(squeue_jobs)
+        # print(f"SQUEUE JOBS: \t{squeue_jobs}")
         # Process output from squeue and display JOBID, NAME, STATE, and TIME
         header = squeue_jobs[0].split()
         for row in squeue_jobs[1:]:
-                values = row.split()
-                entry = dict(zip(header, values))
-                processed_data.append(entry)
+            values = row.split()
+            entry = dict(zip(header, values))
+            processed_data.append(entry)
         
         
         keys = processed_data[0].keys()
@@ -358,7 +378,16 @@ def run_every_hour(ssh):
         # Run sbatch on next available file
         # TODO IMPLEMENT FINDING EXCLUSIVE BATCH FILES TO RUN 
         pass
-        
+
+# def cancel_all_sbatch(ssh):
+#     stdin, stdout, stderr = ssh.exec_command(f'squeue --format="%.18i %.9P %.30j %.8u %.8T %.10M %.9l %.6D %R" --me')
+#     all_jobs = []
+#     for counter, line in enumerate(stdout):
+#         if counter == 0:
+#             continue
+#         print(f'CANCEL ALL SBATCH: {line.split()[2]} {line.split()[4]}')
+#         # 2 is job name
+#         # 4 is status
 
 def main():
     ssh = connect_ssh()
@@ -373,14 +402,16 @@ def main():
         # run 3 at a time
         # create json of file names saying if completed or not
 
-        # processed_squeue_data, running_jobs, pending_jobs = check_squeue(ssh)
-        # update_json(ssh, processed_squeue_data)
-        # if running_jobs < 4:
-        #     run_sbatch(ssh)
-        print("hello")
+        processed_squeue_data, running_jobs, pending_jobs = check_squeue(ssh)
+        update_json(ssh, processed_squeue_data)
+        if running_jobs < 4:
+            run_sbatch(ssh)
+
+        # cancel_all_sbatch(ssh)
         # while True:
         #     schedule.run_pending()
         #     time.sleep(1)
+        print_green("SUCCESS")
     except Exception as e:
         print(e)
         logging.error(f"An error occurred: {str(e)}")
