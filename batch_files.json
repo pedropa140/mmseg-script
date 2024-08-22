@@ -7,6 +7,6 @@
     {
         "filename": "hrnet18-fcn-automation_test.batch",
         "job_name": "1_HRNET18_auto",
-        "status": "not started"
+        "status": "RUNNING"
     }
 ]

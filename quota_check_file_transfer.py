@@ -8,7 +8,7 @@ import subprocess
 from dotenv import load_dotenv
 import schedule
 import json
-
+import traceback
 '''
 To make use of the dotenv() command, create a new file labelled ".env" and fill in the blanks as needed:
 netid=[insert_netid] # No spaces and no need for quotes around name
@@ -117,48 +117,46 @@ def move_directories(ssh, directories):
         print_green(f"Removed directory {directory} from remote machine.")
         logging.info(f"Removed directory {directory} from remote machine.")
 
-def run_sbatch(ssh, json_file):
-    files_to_run = find_sbatch_files(ssh)
+def find_sbatch_files_from_directory(ssh):
+    # Find all the batch files within the specified directory from home directory
+    stdin, stdout, stderr = ssh.exec_command(f'find {REMOTE_BATCH_FILE_PATH} -name "*.batch"')
+    output = stdout.read().decode()
+    sbatch_files = output.splitlines()
+
+    # Split and process all the batch files to add them to a list
+    for counter, file in enumerate(sbatch_files):
+        # Split the path by "/"
+        file_parts = file.split('/')
+        # Rejoin the parts without the first directory (Working project diredctory)
+        sbatch_files[counter]= '/'.join(file_parts[4:])
+    # List of string of all batch files to run from {WORKING_PROJECT} directory
+    return sbatch_files
+
+def find_sbatch_files_from_json():
+    # Find and return batch files shown in json_file 
+    if os.path.exists(json_file_path):
+        with open(json_file_path, 'r') as json_file:
+            dictionary_list = json.load(json_file)
+
+            # populate list of files that are found in the json file
+        existing_filenames = {entry['filename'] for entry in dictionary_list}
+        return existing_filenames
+    
+    return None
+
+def run_sbatch(ssh):
+    batch_files_from_directory = find_sbatch_files_from_directory(ssh)
+    batch_files_from_json = list(find_sbatch_files_from_json())
+
+    print(batch_files_from_directory)
+    print(batch_files_from_json)
     # Check json file
     # Find jobs to run by making sure we aren't rerunning already running jobs
         # compare squeue names with Json names and batch_file_directory names
         # find list of exclusive batchfiles, create a list, run the first one on list
         # move executed job into a new directory?
 
-    pass
-
-
-
-def run_every_hour(ssh):
-    # Check how much storage is being used
-    usage_percentage = check_storage_usage(ssh)
-    if usage_percentage:
-        print_green(f"Storage usage is at {usage_percentage:.2f}%.")
-        logging.info(f"Storage usage is at {usage_percentage:.2f}%.")
-    else:
-        print_red("Could not determine storage usage.")
-        logging.info("Could not determine storage usage.")
-    # If storage is above a level, move the completed trained models over to the local pc
-    if usage_percentage > THRESHOLD:
-        directories = find_directories_to_move(ssh)
-        if directories:
-            move_directories(ssh, directories)
-        else:
-            print_red("No directories found to move")
-            logging.info("No directories found to move.")
-    else:
-        print_green("Storage usage is within limits.")
-        logging.info("Storage usage is within limits.")
-
-    # Check how many jobs are running
-    job_info, num_of_running_jobs, num_of_pending_jobs = check_squeue(ssh)
-    
-    if (num_of_running_jobs + num_of_pending_jobs) < job_threshold:
-        # Run sbatch on next available file
-        # TODO IMPLEMENT FINDING EXCLUSIVE BATCH FILES TO RUN 
-        pass
-        
-        
+    pass    
     
 def create_json(ssh):
 
@@ -191,6 +189,7 @@ def create_json(ssh):
             # Determine which files already were found in the json file
             if filename in existing_filenames:
                 print_red(f"File {filename} is already in the JSON file.")
+                logging.info(f"File {filename} is already in the JSON file.")
                 continue
             
             # Extract the job names from the batch files to add into the json file
@@ -205,33 +204,59 @@ def create_json(ssh):
             file_dict = {
                 'filename': filename,
                 'job_name': job_name,
-                'status': 'not started'
+                'status': 'NOT STARTED'
             }
             
             # Add new files to the json file to keep track of which files are run/
             dictionary_list.append(file_dict)
             existing_filenames.add(filename)
             print_green(f"Added file {filename} to the JSON file.")
+            logging.info(f"Added file {filename} to the JSON file.")
     
     with open(json_file_path, 'w') as json_file:
         json.dump(dictionary_list, json_file, indent=4)
 
-def find_sbatch_files(ssh):
-    # Find all the batch files within the specified directory from home directory
-    stdin, stdout, stderr = ssh.exec_command(f'find {REMOTE_BATCH_FILE_PATH} -name "*.batch"')
-    output = stdout.read().decode()
-    sbatch_files = output.splitlines()
+def update_json(ssh, processed_squeue_data):
+    if os.path.exists(json_file_path):
+        with open(json_file_path, 'r') as json_file:
+            dictionary_list = json.load(json_file)
+    
+    project_work_dir = os.path.join(REMOTE_BASE_PATH, REMOTE_WORKING_PROJECT, REMOTE_WORK_DIR)
 
-    # Split and process all the batch files to add them to a list
-    for counter, file in enumerate(sbatch_files):
-        # Split the path by "/"
-        file_parts = file.split('/')
-        # Rejoin the parts without the first directory (Working project diredctory)
-        sbatch_files[counter]= '/'.join(file_parts[1:])
+    # Look for file to indicate that job is COMPLETED
+    print(project_work_dir)
+    stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name {DIRECTORY_MARKER_FILE}')
+    output_complete = stdout.read().decode().strip().split('\n')
 
-    # List of string of all batch files to run from {WORKING_PROJECT} directory
-    print(sbatch_files)
-    return sbatch_files
+    stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name error_occured.txt')
+    output_error = stdout.read().decode().strip().split('\n')
+
+    print(output_complete)
+    print(output_error)
+
+    # Look for file to indicate that a job is IN PROGRESS
+    if processed_squeue_data != None:
+        for squeue_data in processed_squeue_data:
+            job_name = squeue_data['NAME']
+            state = squeue_data['STATE']
+
+        
+            # Find the corresponding entry in the JSON data
+            for entry in dictionary_list:
+                if entry["job_name"] == job_name:
+                    # Update the status in the JSON entry
+                    if entry["status"] != state:
+                        print(f"Changing {job_name} status from {entry['status']} to {state}")
+                        entry["status"] = state
+                    
+
+                    break  # Exit the loop since we found the matching entry
+        
+        with open(json_file_path, 'w') as json_file:
+            json.dump(dictionary_list, json_file, indent=4)
+    else:
+        print("No jobs are currently running")
+        logging.info("No jobs are currently running")
 
 def check_squeue(ssh):
 
@@ -260,37 +285,34 @@ def check_squeue(ssh):
     stdin, stdout, stderr = ssh.exec_command(f'squeue --format="%.18i %.9P %.30j %.8u %.8T %.10M %.9l %.6D %R" --me')
     output = stdout.read().decode()
     squeue_jobs = output.splitlines()
-    # print(squeue_jobs)
-    # Process output from squeue and display JOBID, NAME, STATE, and TIME
-    header = squeue_jobs[0].split()
-    for row in squeue_jobs[1:]:
-            values = row.split()
-            entry = dict(zip(header, values))
-            processed_data.append(entry)
-    
-    
-    keys = processed_data[0].keys()
-    keys_list = list(keys)
-    for item in processed_data:
-        print((f"{keys_list[0]}: {item[keys_list[0]]}, "
-              f"{keys_list[2]}: {item[keys_list[2]]}, "
-              f"{keys_list[4]}: {item[keys_list[4]]}, "
-              f"{keys_list[5]}: {item[keys_list[5]]}"))
+    if len(squeue_jobs) > 1:
+        print(squeue_jobs)
+        # Process output from squeue and display JOBID, NAME, STATE, and TIME
+        header = squeue_jobs[0].split()
+        for row in squeue_jobs[1:]:
+                values = row.split()
+                entry = dict(zip(header, values))
+                processed_data.append(entry)
         
-    for item in processed_data:
-        state = item['STATE']
-        if state == 'RUNNING':
-            running_count += 1
-        elif state == 'PENDING':
-            pending_count += 1
+        
+        keys = processed_data[0].keys()
+        keys_list = list(keys)
+        for item in processed_data:
+            job_info_string = f"{keys_list[0]}: {item[keys_list[0]]}, {keys_list[2]}: {item[keys_list[2]]}, {keys_list[4]}: {item[keys_list[4]]}, {keys_list[5]}: {item[keys_list[5]]}"
+            print(job_info_string)
+            logging.info(job_info_string)
+        for item in processed_data:
+            state = item['STATE']
+            if state == 'RUNNING':
+                running_count += 1
+            elif state == 'PENDING':
+                pending_count += 1
 
-    # Print the results
-    print(f"Number of RUNNING files: {running_count}")
-    print(f"Number of PENDING files: {pending_count}")
-
-    print("Number of Running Jobs: " +str(len(processed_data)))
-
-
+        # Print the results
+        print(f"Number of RUNNING files: {running_count}")
+        print(f"Number of PENDING files: {pending_count}")
+    else:
+        return None, 0, 0
     # for counter, line in enumerate(stdout):
     #     if counter == 0:
     #         continue
@@ -308,7 +330,37 @@ def check_squeue(ssh):
     #         continue
     #     print(line)
     return processed_data, running_count, pending_count
+
+def run_every_hour(ssh):
+    # Check how much storage is being used
+    usage_percentage = check_storage_usage(ssh)
+    if usage_percentage:
+        print_green(f"Storage usage is at {usage_percentage:.2f}%.")
+        logging.info(f"Storage usage is at {usage_percentage:.2f}%.")
+    else:
+        print_red("Could not determine storage usage.")
+        logging.info("Could not determine storage usage.")
+    # If storage is above a level, move the completed trained models over to the local pc
+    if usage_percentage > THRESHOLD:
+        directories = find_directories_to_move(ssh)
+        if directories:
+            move_directories(ssh, directories)
+        else:
+            print_red("No directories found to move")
+            logging.info("No directories found to move.")
+    else:
+        print_green("Storage usage is within limits.")
+        logging.info("Storage usage is within limits.")
+
+    # Check how many jobs are running
+    job_info, num_of_running_jobs, num_of_pending_jobs = check_squeue(ssh)
     
+    if (num_of_running_jobs + num_of_pending_jobs) < job_threshold:
+        # Run sbatch on next available file
+        # TODO IMPLEMENT FINDING EXCLUSIVE BATCH FILES TO RUN 
+        pass
+        
+
 def main():
     ssh = connect_ssh()
     create_json(ssh)
@@ -321,14 +373,20 @@ def main():
 
         # run 3 at a time
         # create json of file names saying if completed or not
-        batch_files_to_run = find_sbatch_files(ssh)
-        check_squeue(ssh)
+
+        processed_squeue_data, running_jobs, pending_jobs = check_squeue(ssh)
+        update_json(ssh, processed_squeue_data)
+        if running_jobs < 4:
+            run_sbatch(ssh)
+
         
         # while True:
         #     schedule.run_pending()
         #     time.sleep(1)
     except Exception as e:
+        print(e)
         logging.error(f"An error occurred: {str(e)}")
+        traceback.print_exc()
     finally:
         ssh.close()
     
