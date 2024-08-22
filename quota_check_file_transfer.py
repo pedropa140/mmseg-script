@@ -29,9 +29,17 @@ PASSWORD = os.getenv('password')
 THRESHOLD = 45  # Set your threshold percentage
 DIRECTORY_MARKER_FILE = 'completed.txt'  # The file that indicates the directory should be moved
 LOCAL_PATH = '/home/diez-lab/Corrosion_Detection/'
-REMOTE_BASE_PATH = '/common/home/bn155/mmseg-personal/work_dirs/'
-REMOTE_BATCH_FILE_PATH = 'mmseg-personal/tools/batch_files/not_started'
 
+
+
+REMOTE_BASE_PATH = '/common/home/bn155'
+REMOTE_WORKING_PROJECT = 'mmseg-personal'
+REMOTE_WORK_DIR = 'work_dirs'
+REMOTE_BATCH_FILE_LOCATION = 'tools/batch_files/not_started'
+REMOTE_BATCH_FILE_PATH = os.path.join(REMOTE_WORKING_PROJECT,'tools/batch_files/not_started')
+
+json_file_path = 'batch_files.json'
+job_threshold = 3
 # Setup logging
 logging.basicConfig(filename='storage_monitor.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
@@ -87,7 +95,8 @@ def check_storage_usage(ssh):
 
 def find_directories_to_move(ssh):
     directories_to_move = []
-    stdin, stdout, stderr = ssh.exec_command(f'find {REMOTE_BASE_PATH} -name {DIRECTORY_MARKER_FILE}')
+    project_work_dir = os.path.join(REMOTE_BASE_PATH, REMOTE_WORKING_PROJECT, REMOTE_WORK_DIR)
+    stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name {DIRECTORY_MARKER_FILE}')
     output = stdout.read().decode().strip().split('\n')
     for line in output:
         if line:  # Make sure it's not an empty line
@@ -108,7 +117,20 @@ def move_directories(ssh, directories):
         print_green(f"Removed directory {directory} from remote machine.")
         logging.info(f"Removed directory {directory} from remote machine.")
 
+def run_sbatch(ssh, json_file):
+    files_to_run = find_sbatch_files(ssh)
+    # Check json file
+    # Find jobs to run by making sure we aren't rerunning already running jobs
+        # compare squeue names with Json names and batch_file_directory names
+        # find list of exclusive batchfiles, create a list, run the first one on list
+        # move executed job into a new directory?
+
+    pass
+
+
+
 def run_every_hour(ssh):
+    # Check how much storage is being used
     usage_percentage = check_storage_usage(ssh)
     if usage_percentage:
         print_green(f"Storage usage is at {usage_percentage:.2f}%.")
@@ -116,6 +138,7 @@ def run_every_hour(ssh):
     else:
         print_red("Could not determine storage usage.")
         logging.info("Could not determine storage usage.")
+    # If storage is above a level, move the completed trained models over to the local pc
     if usage_percentage > THRESHOLD:
         directories = find_directories_to_move(ssh)
         if directories:
@@ -127,7 +150,19 @@ def run_every_hour(ssh):
         print_green("Storage usage is within limits.")
         logging.info("Storage usage is within limits.")
 
+    # Check how many jobs are running
+    job_info, num_of_running_jobs, num_of_pending_jobs = check_squeue(ssh)
+    
+    if (num_of_running_jobs + num_of_pending_jobs) < job_threshold:
+        # Run sbatch on next available file
+        # TODO IMPLEMENT FINDING EXCLUSIVE BATCH FILES TO RUN 
+        pass
+        
+        
+    
 def create_json(ssh):
+
+    # Open json file to check which files are already accounted for. 
     dictionary_list = []
     json_file_path = 'batch_files.json'
     
@@ -135,9 +170,12 @@ def create_json(ssh):
         with open(json_file_path, 'r') as json_file:
             dictionary_list = json.load(json_file)
     
+    # populate list of files that are found in the json file
     existing_filenames = {entry['filename'] for entry in dictionary_list}
     
-    stdin, stdout, stderr = ssh.exec_command('cd mmseg-personal/tools/batch_files/not_started/ ; ls -l')
+
+    # Find the batch files stored in the remote batch file location
+    stdin, stdout, stderr = ssh.exec_command(f'cd {REMOTE_BATCH_FILE_PATH} ; ls -l')
     
     for counter, line in enumerate(stdout):
         if counter == 0:
@@ -150,11 +188,13 @@ def create_json(ssh):
         if len(parts) >= 9 and parts[0].startswith('-'):  # Files have '-' at the start of the permission string
             filename = parts[8]
             
+            # Determine which files already were found in the json file
             if filename in existing_filenames:
                 print_red(f"File {filename} is already in the JSON file.")
                 continue
             
-            stdin, stdout, stderr = ssh.exec_command(f'cat mmseg-personal/tools/batch_files/not_started/{filename}')
+            # Extract the job names from the batch files to add into the json file
+            stdin, stdout, stderr = ssh.exec_command(f'cat {REMOTE_BATCH_FILE_PATH}/{filename}')
             job_name = ""
             for line in stdout:
                 line = line.strip()
@@ -168,6 +208,7 @@ def create_json(ssh):
                 'status': 'not started'
             }
             
+            # Add new files to the json file to keep track of which files are run/
             dictionary_list.append(file_dict)
             existing_filenames.add(filename)
             print_green(f"Added file {filename} to the JSON file.")
@@ -175,46 +216,98 @@ def create_json(ssh):
     with open(json_file_path, 'w') as json_file:
         json.dump(dictionary_list, json_file, indent=4)
 
-def send_sbatch(ssh):
+def find_sbatch_files(ssh):
+    # Find all the batch files within the specified directory from home directory
     stdin, stdout, stderr = ssh.exec_command(f'find {REMOTE_BATCH_FILE_PATH} -name "*.batch"')
     output = stdout.read().decode()
-    print(output)
-    pass
-    #return NotImplementedError
+    sbatch_files = output.splitlines()
+
+    # Split and process all the batch files to add them to a list
+    for counter, file in enumerate(sbatch_files):
+        # Split the path by "/"
+        file_parts = file.split('/')
+        # Rejoin the parts without the first directory (Working project diredctory)
+        sbatch_files[counter]= '/'.join(file_parts[1:])
+
+    # List of string of all batch files to run from {WORKING_PROJECT} directory
+    print(sbatch_files)
+    return sbatch_files
 
 def check_squeue(ssh):
-    filtered_list = []
-    stdin, stdout, stderr = ssh.exec_command('cd mmseg-personal ; sbatch tools/batch_files/not_started/hrnet18-fcn-automation_test.batch')
-    for counter, line in enumerate(stdout):
-        print(line)
-    
-    time.sleep(10)
 
-    dictionary_list = []
-    json_file_path = 'batch_files.json'
+    # # TEST CODE FOR RUNNING AND CANCELING ONE BATCH FILE
+    # filtered_list = []
+    # stdin, stdout, stderr = ssh.exec_command(f'cd {REMOTE_WORKING_PROJECT} ; sbatch {REMOTE_BATCH_FILE_LOCATION}/hrnet18-fcn-automation_test.batch')
+    # for counter, line in enumerate(stdout):
+    #     print(line)
     
-    if os.path.exists(json_file_path):
-        with open(json_file_path, 'r') as json_file:
-            dictionary_list = json.load(json_file)
+    # time.sleep(10)
+
+    # dictionary_list = []
+    # json_file_path = 'batch_files.json'
     
-    print(dictionary_list)
-            
+    # if os.path.exists(json_file_path):
+    #     with open(json_file_path, 'r') as json_file:
+    #         dictionary_list = json.load(json_file)
+    
+    # print(dictionary_list)
+    
+    # Check with squeue to see which jobs are running by the user
+    processed_data = []
+    running_count = 0
+    pending_count = 0
+    
     stdin, stdout, stderr = ssh.exec_command(f'squeue --format="%.18i %.9P %.30j %.8u %.8T %.10M %.9l %.6D %R" --me')
-    for counter, line in enumerate(stdout):
-        if counter == 0:
-            continue
-        lines = line.strip().split(" ")
-        filtered_list = [s for s in lines if s][2]
+    output = stdout.read().decode()
+    squeue_jobs = output.splitlines()
+    # print(squeue_jobs)
+    # Process output from squeue and display JOBID, NAME, STATE, and TIME
+    header = squeue_jobs[0].split()
+    for row in squeue_jobs[1:]:
+            values = row.split()
+            entry = dict(zip(header, values))
+            processed_data.append(entry)
+    
+    
+    keys = processed_data[0].keys()
+    keys_list = list(keys)
+    for item in processed_data:
+        print((f"{keys_list[0]}: {item[keys_list[0]]}, "
+              f"{keys_list[2]}: {item[keys_list[2]]}, "
+              f"{keys_list[4]}: {item[keys_list[4]]}, "
+              f"{keys_list[5]}: {item[keys_list[5]]}"))
+        
+    for item in processed_data:
+        state = item['STATE']
+        if state == 'RUNNING':
+            running_count += 1
+        elif state == 'PENDING':
+            pending_count += 1
 
-    print(filtered_list)
+    # Print the results
+    print(f"Number of RUNNING files: {running_count}")
+    print(f"Number of PENDING files: {pending_count}")
+
+    print("Number of Running Jobs: " +str(len(processed_data)))
+
+
+    # for counter, line in enumerate(stdout):
+    #     if counter == 0:
+    #         continue
+    #     lines = line.strip().split(" ")
+    #     filtered_list = [s for s in lines if s][2]
+
+    # print(len(filtered_list))
 
     
-    time.sleep(5)
-    stdin, stdout, stderr = ssh.exec_command(f'scancel -n {filtered_list[2]}')
-    for counter, line in enumerate(stdout):
-        if counter == 0:
-            continue
-        print(line)
+    # # TEST CODE FOR RUNNING AND CANCELING ONE BATCH FILE 
+    # time.sleep(5)
+    # stdin, stdout, stderr = ssh.exec_command(f'scancel -n {filtered_list[2]}')
+    # for counter, line in enumerate(stdout):
+    #     if counter == 0:
+    #         continue
+    #     print(line)
+    return processed_data, running_count, pending_count
     
 def main():
     ssh = connect_ssh()
@@ -228,7 +321,7 @@ def main():
 
         # run 3 at a time
         # create json of file names saying if completed or not
-        send_sbatch(ssh)
+        batch_files_to_run = find_sbatch_files(ssh)
         check_squeue(ssh)
         
         # while True:
