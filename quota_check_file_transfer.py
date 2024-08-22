@@ -233,15 +233,9 @@ def update_json(ssh, processed_squeue_data):
 
     project_work_dir = f'{REMOTE_WORKING_PROJECT}/{REMOTE_WORK_DIR}'
 
-<<<<<<< HEAD
-    # Look for files to indicate that job is COMPLETED
-    print(project_work_dir)
-    stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name {DIRECTORY_MARKER_FILE}')
-=======
     # Look for file to indicate that job is COMPLETED
     print(f'Project_Work_DIR:\t{project_work_dir}')
     stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name completed.txt')
->>>>>>> refs/remotes/origin/main
     output_complete = stdout.read().decode().strip().split('\n')
 
     stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name error_occured.txt')
