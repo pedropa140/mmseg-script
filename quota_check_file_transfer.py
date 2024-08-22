@@ -36,7 +36,7 @@ REMOTE_BASE_PATH = '/common/home/bn155'
 REMOTE_WORKING_PROJECT = 'mmseg-personal'
 REMOTE_WORK_DIR = 'work_dirs'
 REMOTE_BATCH_FILE_LOCATION = 'tools/batch_files/not_started'
-REMOTE_BATCH_FILE_PATH = os.path.join(REMOTE_WORKING_PROJECT,'tools/batch_files/not_started')
+REMOTE_BATCH_FILE_PATH = 'mmseg-personal/tools/batch_files/not_started'
 
 json_file_path = 'batch_files.json'
 job_threshold = 3
@@ -173,7 +173,8 @@ def create_json(ssh):
     
 
     # Find the batch files stored in the remote batch file location
-    stdin, stdout, stderr = ssh.exec_command(f'cd {REMOTE_BATCH_FILE_PATH} ; ls -l')
+    print(REMOTE_BATCH_FILE_PATH)
+    stdin, stdout, stderr = ssh.exec_command(f'cd  {REMOTE_BATCH_FILE_PATH}; ls -l')
     
     for counter, line in enumerate(stdout):
         if counter == 0:
@@ -368,18 +369,17 @@ def main():
         # run_every_hour(ssh)
         # schedule.every().hour.do(run_every_hour, ssh)
 
-        # schedule.every().minute.do(run_every_hour, ssh)
+        # schedule.every().minute.do(run_every_hour, ssh)c
         # schedule.every().minute.do(create_json, ssh)
 
         # run 3 at a time
         # create json of file names saying if completed or not
 
-        processed_squeue_data, running_jobs, pending_jobs = check_squeue(ssh)
-        update_json(ssh, processed_squeue_data)
-        if running_jobs < 4:
-            run_sbatch(ssh)
-
-        
+        # processed_squeue_data, running_jobs, pending_jobs = check_squeue(ssh)
+        # update_json(ssh, processed_squeue_data)
+        # if running_jobs < 4:
+        #     run_sbatch(ssh)
+        print("hello")
         # while True:
         #     schedule.run_pending()
         #     time.sleep(1)
