@@ -19,7 +19,6 @@ remote_host=domain_to_connect_to
 marker_file=filename_to_look_for.txt
 '''
 
-
 load_dotenv()
 
 # Configuration
@@ -211,7 +210,7 @@ def create_json(ssh):
                 'filename': filename,
                 'job_name': job_name,
                 'working_dirctory': working_directory,
-                'status': 'NOT STARTED'
+                'status': 'QUEUED'
             }
             
             # Add new files to the json file to keep track of which files are run/
@@ -223,7 +222,8 @@ def create_json(ssh):
     with open(json_file_path, 'w') as json_file:
         json.dump(dictionary_list, json_file, indent=4)
 
-def update_json(ssh, processed_squeue_data):
+def update_json(ssh):
+    dictionary_list = []
     if os.path.exists(json_file_path):
         with open(json_file_path, 'r') as json_file:
             dictionary_list = json.load(json_file)
@@ -237,60 +237,82 @@ def update_json(ssh, processed_squeue_data):
     print(f'Project_Work_DIR:\t{project_work_dir}')
     stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name completed.txt')
     output_complete = stdout.read().decode().strip().split('\n')
+    output_complete_files = []
+    for completed in output_complete:
+        output_complete_files.append((completed.replace("mmseg-personal/work_dirs/", "").replace("/completed.txt", ""), "COMPLETED"))
 
     stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name error_occured.txt')
     output_error = stdout.read().decode().strip().split('\n')
+    output_error_files = []
+    for error in output_error:
+        output_error_files.append((error.replace("mmseg-personal/work_dirs/", "").replace("/error_occured.txt", ""), "ERROR"))
 
     stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name in_progress.txt')
     output_progress = stdout.read().decode().strip().split('\n')
+    output_progress_files = []
+    for progress in output_progress:
+        output_progress_files.append((progress.replace("mmseg-personal/work_dirs/", "").replace("/in_progress.txt", ""), "RUNNING"))
 
-    print(f'Output_Complete:\t{output_complete}')
-    print(f'Output_Error:\t{output_error}')
-    print(f'Output_Progress:\t{output_progress}')
+    print(f'Output_Complete:\t{output_complete_files}')
+    print(f'Output_Error:\t{output_error_files}')
+    print(f'Output_Progress:\t{output_progress_files}')
 
-    # Look for file to indicate that a job is IN PROGRESS
-    if processed_squeue_data != None:
-        for squeue_data in processed_squeue_data:
-            job_name = squeue_data['NAME']
-            state = squeue_data['STATE']
-
+    for completed in output_complete_files:
+        completed_working_directory, completed_status = completed
         
-            # Find the corresponding entry in the JSON data
-            for entry in dictionary_list:
-                if entry["job_name"] == job_name:
-                    # Update the status in the JSON entry
-                    if entry["status"] != state:
-                        logging.info(f"Changing {job_name} status from {entry['status']} to {state}")
-                        print(f"Changing {job_name} status from {entry['status']} to {state}")
-                        entry["status"] = state
-                    break  # Exit the loop since we found the matching entry
+        for entry in dictionary_list:
+            if entry["working_dirctory"] == completed_working_directory:
+                if entry["status"] != completed_status:
+                    logging.info(f"Changing {entry['job_name']} status from {entry['status']} to {completed_status}")
+                    print(f"Changing {entry['job_name']} status from {entry['status']} to {completed_status}")
+                    entry["status"] = completed_status
+                    
+                    with open(json_file_path, 'w') as json_file:
+                        json.dump(dictionary_list, json_file, indent=4)
+                break 
+
+    for error in output_error_files:
+        error_working_directory, error_status = error
         
-        with open(json_file_path, 'w') as json_file:
-            json.dump(dictionary_list, json_file, indent=4)
+        for entry in dictionary_list:
+            if entry["working_dirctory"] == error_working_directory:
+                if entry["status"] != error_status:
+                    logging.info(f"Changing {entry['job_name']} status from {entry['status']} to {error_status}")
+                    print(f"Changing {entry['job_name']} status from {entry['status']} to {error_status}")
+                    entry["status"] = error_status
+                    
+                    with open(json_file_path, 'w') as json_file:
+                        json.dump(dictionary_list, json_file, indent=4)
+                break 
+
+    for progress in output_progress_files:
+        progress_working_directory, progress_status = progress
+        
+        for entry in dictionary_list:
+            if entry["working_dirctory"] == progress_working_directory:
+                if entry["status"] != progress_status:
+                    logging.info(f"Changing {entry['job_name']} status from {entry['status']} to {progress_status}")
+                    print(f"Changing {entry['job_name']} status from {entry['status']} to {progress_status}")
+                    entry["status"] = progress_status
+                    
+                    with open(json_file_path, 'w') as json_file:
+                        json.dump(dictionary_list, json_file, indent=4)
+                break 
+    if len(output_complete_files) and len(output_error_files) and len(output_progress_files):
+        pass
     else:
         print("No jobs are currently running")
         logging.info("No jobs are currently running")
 
 def check_squeue(ssh):
 
-    # # TEST CODE FOR RUNNING AND CANCELING ONE BATCH FILE
-    # filtered_list = []
-    # stdin, stdout, stderr = ssh.exec_command(f'cd {REMOTE_WORKING_PROJECT} ; sbatch {REMOTE_BATCH_FILE_LOCATION}/hrnet18-fcn-automation_test.batch')
-    # for counter, line in enumerate(stdout):
-    #     print(f'LINE 268:\t{line}')
-    
-    # time.sleep(10)
-
-    # dictionary_list = []
-    # json_file_path = 'batch_files.json'
-    
-    # if os.path.exists(json_file_path):
-    #     with open(json_file_path, 'r') as json_file:
-    #         dictionary_list = json.load(json_file)
-    
-    # print(dictionary_list)
-    
-    # Check with squeue to see which jobs are running by the user
+    # # # TEST CODE FOR RUNNING AND CANCELING ONE BATCH FILE
+    # # filtered_list = []
+    # # stdin, stdout, stderr = ssh.exec_command(f'cd {REMOTE_WORKING_PROJECT} ; sbatch {REMOTE_BATCH_FILE_LOCATION}/hrnet18-fcn-automation_test.batch')
+    # # for counter, line in enumerate(stdout):
+    # #     print(f'LINE 268:\t{line}')
+         
+    # # Check with squeue to see which jobs are running by the user
     processed_data = []
     running_count = 0
     pending_count = 0
@@ -326,23 +348,13 @@ def check_squeue(ssh):
         print(f"Number of PENDING files: {pending_count}")
     else:
         return None, 0, 0
-    # for counter, line in enumerate(stdout):
-    #     if counter == 0:
-    #         continue
-    #     lines = line.strip().split(" ")
-    #     filtered_list = [s for s in lines if s][2]
-
-    # print(len(filtered_list))
-
-    
-    # # TEST CODE FOR RUNNING AND CANCELING ONE BATCH FILE 
-    # time.sleep(5)
-    # stdin, stdout, stderr = ssh.exec_command(f'scancel -n {filtered_list[2]}')
-    # for counter, line in enumerate(stdout):
-    #     if counter == 0:
-    #         continue
-    #     print(line)
+  
     return processed_data, running_count, pending_count
+
+def log_extraction(ssh):
+    # stdin, stdout, stderr = ssh.exec_command()
+    
+    pass
 
 def run_every_hour(ssh):
     # Check how much storage is being used
@@ -390,16 +402,16 @@ def main():
         # run_every_hour(ssh)
         # schedule.every().hour.do(run_every_hour, ssh)
 
-        # schedule.every().minute.do(run_every_hour, ssh)c
+        # schedule.every().minute.do(run_every_hour, ssh)
         # schedule.every().minute.do(create_json, ssh)
 
         # run 3 at a time
         # create json of file names saying if completed or not
 
-        processed_squeue_data, running_jobs, pending_jobs = check_squeue(ssh)
-        update_json(ssh, processed_squeue_data)
-        if running_jobs < 4:
-            run_sbatch(ssh)
+        # processed_squeue_data, running_jobs, pending_jobs = check_squeue(ssh)
+        update_json(ssh)
+        # if running_jobs < 4:
+        #     run_sbatch(ssh)
 
         # cancel_all_sbatch(ssh)
         # while True:
