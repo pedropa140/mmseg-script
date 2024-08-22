@@ -224,7 +224,7 @@ def update_json(ssh, processed_squeue_data):
     
     project_work_dir = os.path.join(REMOTE_BASE_PATH, REMOTE_WORKING_PROJECT, REMOTE_WORK_DIR)
 
-    # Look for file to indicate that job is COMPLETED
+    # Look for files to indicate that job is COMPLETED
     print(project_work_dir)
     stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name {DIRECTORY_MARKER_FILE}')
     output_complete = stdout.read().decode().strip().split('\n')
@@ -249,8 +249,6 @@ def update_json(ssh, processed_squeue_data):
                     if entry["status"] != state:
                         print(f"Changing {job_name} status from {entry['status']} to {state}")
                         entry["status"] = state
-                    
-
                     break  # Exit the loop since we found the matching entry
         
         with open(json_file_path, 'w') as json_file:
