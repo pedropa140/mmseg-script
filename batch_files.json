@@ -3,25 +3,19 @@
         "filename": "deeplabv3plus_r50_orig.batch",
         "job_name": "DLv3plus_orig",
         "working_dirctory": "",
-        "status": "COMPLETED"
-    },
-    {
-        "filename": "hrnet18-fcn-auto_mosaic_10.batch",
-        "job_name": "1_HRNET18_mos10",
-        "working_dirctory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_10",
         "status": "FINISHED"
     },
     {
         "filename": "hrnet18-fcn-auto_mosaic_30.batch",
         "job_name": "1_HRNET18_mos30",
         "working_dirctory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_30",
-        "status": "ERROR"
+        "status": "QUEUED"
     },
     {
         "filename": "hrnet18-fcn-auto_mosaic_50.batch",
         "job_name": "1_HRNET18_mos50",
         "working_dirctory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_50",
-        "status": "ERROR"
+        "status": "QUEUED"
     },
     {
         "filename": "hrnet18-fcn-auto_mosaic_70.batch",
@@ -34,5 +28,11 @@
         "job_name": "1_HRNET18_mos90",
         "working_dirctory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_90",
         "status": "RUNNING"
+    },
+    {
+        "filename": "hrnet18-fcn-auto_mosaic_10.batch",
+        "job_name": "1_HRNET18_mos10",
+        "working_dirctory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_10",
+        "status": "FINISHED"
     }
 ]
