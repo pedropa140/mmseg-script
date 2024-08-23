@@ -37,8 +37,11 @@ REMOTE_WORK_DIR = 'work_dirs'
 REMOTE_BATCH_FILE_LOCATION = 'tools/batch_files/not_started'
 REMOTE_BATCH_FILE_PATH = 'mmseg-personal/tools/batch_files/not_started'
 
+
+last_status_counts = None
 json_file_path = 'batch_files.json'
 job_threshold = 3
+queued_jobs = []
 # Setup logging
 logging.basicConfig(filename='storage_monitor.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
@@ -146,16 +149,42 @@ def find_sbatch_files_from_json():
 def run_sbatch(ssh):
     batch_files_from_directory = find_sbatch_files_from_directory(ssh)
     batch_files_from_json = list(find_sbatch_files_from_json())
-
-    # print(f'batch_files_from_directory:\t{batch_files_from_directory}')
-    # print(f"batch_files_from_json:\t{batch_files_from_json}")
+    
+    print(f'batch_files_from_directory:\t{batch_files_from_directory}')
+    print(f"batch_files_from_json:\t{batch_files_from_json}")
     # Check json file
     # Find jobs to run by making sure we aren't rerunning already running jobs
         # compare squeue names with Json names and batch_file_directory names
         # find list of exclusive batchfiles, create a list, run the first one on list
         # move executed job into a new directory?
 
-    pass    
+    global queued_jobs
+    dictionary_list = []
+    json_file_path = 'batch_files.json'
+
+    if os.path.exists(json_file_path):
+        with open(json_file_path, 'r') as json_file:
+            dictionary_list = json.load(json_file)
+    running_item = ""
+    for item in dictionary_list:
+        if item['status'] == 'QUEUED':
+            filename = item['filename']
+            job_name = item['job_name']
+            
+            job_tuple = (filename, job_name)
+            
+            running_item = queued_jobs.append(job_tuple)
+    if len(queued_jobs) > 0:
+        print(f'QUEUED LIST: {queued_jobs}')
+        print(f'QUEUED JOBS: {queued_jobs[0][0]}')
+        stdin, stdout, stderr = ssh.exec_command(f'cd {REMOTE_WORKING_PROJECT} ; sbatch {REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}')
+        for counter, line in enumerate(stdout):
+            print_green(f"{line.strip()}")
+
+        queued_jobs.remove(running_item)
+        update_json_wrapper(ssh)
+    else:
+        print_red("No jobs with status QUEUED")
     
 def create_json(ssh):
 
@@ -222,40 +251,33 @@ def create_json(ssh):
     with open(json_file_path, 'w') as json_file:
         json.dump(dictionary_list, json_file, indent=4)
 
+def update_json_wrapper(ssh):
+    global last_status_counts
+    last_status_counts = update_json(ssh)
+
 def update_json(ssh):
     dictionary_list = []
     if os.path.exists(json_file_path):
         with open(json_file_path, 'r') as json_file:
             dictionary_list = json.load(json_file)
     
-    # project_work_dir = os.path.join(REMOTE_BASE_PATH, REMOTE_WORKING_PROJECT, REMOTE_WORK_DIR)
-    # project_work_dir = 'mmseg-personal/work_dirs/'
-
     project_work_dir = f'{REMOTE_WORKING_PROJECT}/{REMOTE_WORK_DIR}'
 
-    # Look for file to indicate that job is COMPLETED
-    print(f'Project_Work_DIR:\t{project_work_dir}')
     stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name completed.txt')
     output_complete = stdout.read().decode().strip().split('\n')
-    output_complete_files = []
-    for completed in output_complete:
-        output_complete_files.append((completed.replace("mmseg-personal/work_dirs/", "").replace("/completed.txt", ""), "COMPLETED"))
+    output_complete_files = [(completed.replace("mmseg-personal/work_dirs/", "").replace("/completed.txt", ""), "COMPLETED") for completed in output_complete]
 
     stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name error_occured.txt')
     output_error = stdout.read().decode().strip().split('\n')
-    output_error_files = []
-    for error in output_error:
-        output_error_files.append((error.replace("mmseg-personal/work_dirs/", "").replace("/error_occured.txt", ""), "ERROR"))
+    output_error_files = [(error.replace("mmseg-personal/work_dirs/", "").replace("/error_occured.txt", ""), "ERROR") for error in output_error]
 
     stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name in_progress.txt')
     output_progress = stdout.read().decode().strip().split('\n')
-    output_progress_files = []
-    for progress in output_progress:
-        output_progress_files.append((progress.replace("mmseg-personal/work_dirs/", "").replace("/in_progress.txt", ""), "RUNNING"))
+    output_progress_files = [(progress.replace("mmseg-personal/work_dirs/", "").replace("/in_progress.txt", ""), "RUNNING") for progress in output_progress]
 
-    print(f'Output_Complete:\t{output_complete_files}')
-    print(f'Output_Error:\t{output_error_files}')
-    print(f'Output_Progress:\t{output_progress_files}')
+    stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name extracted.txt')
+    output_extracted = stdout.read().decode().strip().split('\n')
+    output_extracted_files = [(extracted.replace("mmseg-personal/work_dirs/", "").replace("/extracted.txt", ""), "FINISHED") for extracted in output_extracted]
 
     for completed in output_complete_files:
         completed_working_directory, completed_status = completed
@@ -266,7 +288,6 @@ def update_json(ssh):
                     logging.info(f"Changing {entry['job_name']} status from {entry['status']} to {completed_status}")
                     print(f"Changing {entry['job_name']} status from {entry['status']} to {completed_status}")
                     entry["status"] = completed_status
-                    
                     with open(json_file_path, 'w') as json_file:
                         json.dump(dictionary_list, json_file, indent=4)
                 break 
@@ -280,7 +301,6 @@ def update_json(ssh):
                     logging.info(f"Changing {entry['job_name']} status from {entry['status']} to {error_status}")
                     print(f"Changing {entry['job_name']} status from {entry['status']} to {error_status}")
                     entry["status"] = error_status
-                    
                     with open(json_file_path, 'w') as json_file:
                         json.dump(dictionary_list, json_file, indent=4)
                 break 
@@ -294,65 +314,85 @@ def update_json(ssh):
                     logging.info(f"Changing {entry['job_name']} status from {entry['status']} to {progress_status}")
                     print(f"Changing {entry['job_name']} status from {entry['status']} to {progress_status}")
                     entry["status"] = progress_status
-                    
+                    with open(json_file_path, 'w') as json_file:
+                        json.dump(dictionary_list, json_file, indent=4)
+                break
+
+    for extracted in output_extracted_files:
+        extracted_working_directory, extracted_status = extracted
+        
+        for entry in dictionary_list:
+            if entry["working_dirctory"] == extracted_working_directory:
+                if entry["status"] != extracted_status:
+                    logging.info(f"Changing {entry['job_name']} status from {entry['status']} to {extracted_status}")
+                    print(f"Changing {entry['job_name']} status from {entry['status']} to {extracted_status}")
+                    entry["status"] = extracted_status
                     with open(json_file_path, 'w') as json_file:
                         json.dump(dictionary_list, json_file, indent=4)
                 break 
-    if len(output_complete_files) and len(output_error_files) and len(output_progress_files):
-        pass
-    else:
+
+    if len(output_complete_files) == 0 and len(output_error_files) == 0 and len(output_progress_files) == 0:
         print("No jobs are currently running")
         logging.info("No jobs are currently running")
 
-def check_squeue(ssh):
-
-    # # # TEST CODE FOR RUNNING AND CANCELING ONE BATCH FILE
-    # # filtered_list = []
-    # # stdin, stdout, stderr = ssh.exec_command(f'cd {REMOTE_WORKING_PROJECT} ; sbatch {REMOTE_BATCH_FILE_LOCATION}/hrnet18-fcn-automation_test.batch')
-    # # for counter, line in enumerate(stdout):
-    # #     print(f'LINE 268:\t{line}')
-         
-    # # Check with squeue to see which jobs are running by the user
-    processed_data = []
-    running_count = 0
-    pending_count = 0
+    status_counter = {}
+    for item in dictionary_list:
+        status = item["status"]
+        if status in status_counter:
+            status_counter[status] += 1
+        else:
+            status_counter[status] = 1
     
-    stdin, stdout, stderr = ssh.exec_command(f'squeue --format="%.18i %.9P %.30j %.8u %.8T %.10M %.9l %.6D %R" --me')
-    output = stdout.read().decode()
-    squeue_jobs = output.splitlines()
-    if len(squeue_jobs) > 1:
-        # print(f"SQUEUE JOBS: \t{squeue_jobs}")
-        # Process output from squeue and display JOBID, NAME, STATE, and TIME
-        header = squeue_jobs[0].split()
-        for row in squeue_jobs[1:]:
-            values = row.split()
-            entry = dict(zip(header, values))
-            processed_data.append(entry)
-        
-        
-        keys = processed_data[0].keys()
-        keys_list = list(keys)
-        for item in processed_data:
-            job_info_string = f"{keys_list[0]}: {item[keys_list[0]]}, {keys_list[2]}: {item[keys_list[2]]}, {keys_list[4]}: {item[keys_list[4]]}, {keys_list[5]}: {item[keys_list[5]]}"
-            print(job_info_string)
-            logging.info(job_info_string)
-        for item in processed_data:
-            state = item['STATE']
-            if state == 'RUNNING':
-                running_count += 1
-            elif state == 'PENDING':
-                pending_count += 1
-
-        # Print the results
-        print(f"Number of RUNNING files: {running_count}")
-        print(f"Number of PENDING files: {pending_count}")
-    else:
-        return None, 0, 0
-  
-    return processed_data, running_count, pending_count
+    return status_counter.get('FINISHED', 0), status_counter.get('COMPLETED', 0), status_counter.get('ERROR', 0), status_counter.get('RUNNING', 0), status_counter.get('QUEUED', 0)
 
 def log_extraction(ssh):
-    # stdin, stdout, stderr = ssh.exec_command()
+    try:
+        project_work_dir = f'{REMOTE_WORKING_PROJECT}/{REMOTE_WORK_DIR}'
+        print(f'Project_Work_DIR:\t{project_work_dir}')
+        stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name {DIRECTORY_MARKER_FILE}')
+        output_complete = stdout.read().decode().strip().split('\n')
+        print(output_complete)
+
+        #largest_json_files = []
+        if output_complete != ['']:
+            for completed_job in output_complete:
+                # Remove the last entry in the path (i.e. DIRECTORY_MARKER_FILE)
+                directory = '/'.join(completed_job.split('/')[:-1])
+                find_largest_json_file = f'find {directory} -type f -name "*.json" -exec ls -s {{}} + | sort -n | tail -n 1 | awk \'{{print $2}}\''
+                stdin, stdout, stderr = ssh.exec_command(find_largest_json_file)
+                largest_json = stdout.read().decode().strip()
+                
+                if largest_json:
+                    #largest_json_files.append(largest_json)
+                    largest_json_trunc = '/'.join(largest_json.split('/')[1:])
+                    print(f'The largest JSON file located in this directory is: {largest_json_trunc}')
+                    
+                    log_extraction_python = f'cd {REMOTE_WORKING_PROJECT} ; python3 research/log_extraction.py --input {largest_json_trunc}'
+                    stdin, stdout, stderr = ssh.exec_command(log_extraction_python)
+                    # Output the result of the command
+                    print(f"Executed command in directory {directory}:")
+                    print(stdout.read().decode())
+                    print(stderr.read().decode())
+                    extracted_job = completed_job.replace("completed.txt", "extracted.txt")
+                            # Command to rename the file
+                    rename_command = f'mv {completed_job} {extracted_job}'
+                    
+                    # Execute the rename command on the remote server
+                    stdin, stdout, stderr = ssh.exec_command(rename_command)
+                    
+                    # Check for errors
+                    error = stderr.read().decode().strip()
+                    if error:
+                        print_red(f"Error renaming {completed_job}: {error}")
+                    else:
+                        print_green(f"Successfully renamed {completed_job} to {extracted_job}")
+
+                else:
+                    print_red(f'No JSON files were found in this directory: {directory}')
+        else:
+            print_red(f"{DIRECTORY_MARKER_FILE} not found in directory {project_work_dir}")   
+    except Exception as e:
+        print(f"An error occured: {str(e)}")
     
     pass
 
@@ -398,21 +438,28 @@ def run_every_hour(ssh):
 def main():
     ssh = connect_ssh()
     create_json(ssh)
+    # COMPLETED, ERROR, RUNNING, QUEUED = update_json(ssh)
     try:
         # run_every_hour(ssh)
         # schedule.every().hour.do(run_every_hour, ssh)
 
         # schedule.every().minute.do(run_every_hour, ssh)
         # schedule.every().minute.do(create_json, ssh)
+        # schedule.every().hour.do(update_json, ssh)
 
         # run 3 at a time
         # create json of file names saying if completed or not
+        # schedule.every().minute.do(update_json_wrapper, ssh)
 
-        # processed_squeue_data, running_jobs, pending_jobs = check_squeue(ssh)
-        update_json(ssh)
-        # if running_jobs < 4:
-        #     run_sbatch(ssh)
+        global last_status_counts
+        update_json_wrapper(ssh)
+        
+        # TODO IF ERROR, MOVE BATCH FILE TO ERROR DIRECTORY, CREATE AND UPDATE JSON
 
+        log_extraction(ssh)
+        if last_status_counts[3] < 4:
+            run_sbatch(ssh)
+        print(f'STATUS DICTIONARY: {last_status_counts}')
         # cancel_all_sbatch(ssh)
         # while True:
         #     schedule.run_pending()
