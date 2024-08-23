@@ -178,23 +178,31 @@ def run_sbatch(ssh):
             job_name = item['job_name']
             
             job_tuple = (filename, job_name)
-            
-            running_item = queued_jobs.append(job_tuple)
+            queued_jobs.append(job_tuple)
     if len(queued_jobs) > 0:
         print(f'QUEUED LIST: {queued_jobs}')
         print(f'QUEUED JOBS: {queued_jobs[0][0]}')
-        stdin, stdout, stderr = ssh.exec_command(f'cd {REMOTE_WORKING_PROJECT} ; sbatch {REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}')
+        stdin, stdout, stderr = ssh.exec_command(f'cd {REMOTE_WORKING_PROJECT} ; cd {REMOTE_BATCH_FILE_LOCATION}/ ; ls -l')
         for counter, line in enumerate(stdout):
-            print_green(f"{line.strip()}")
-
-# PROBLEM OCCURING HERE 
-        queued_jobs.remove(running_item)
+            print_green(f"Line 187: {line.strip()}")
+        
+        print(f'sbatch {REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}')
+        # stdin, stdout, stderr = ssh.exec_command(f'cd {REMOTE_WORKING_PROJECT} ; sbatch {REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}')
+        # for counter, line in enumerate(stdout):
+        #     print_green(f"Line 189: {line.strip()}")
+        running_item = queued_jobs[0][0]
+        print(f"LINE 192: {running_item}")
+        # PROBLEM OCCURING HERE 
+        if running_item in queued_jobs:
+            queued_jobs.remove(running_item)
+        else:
+            print_red("ERROR")
         update_json_wrapper(ssh)
     else:
         print_red("No jobs with status QUEUED")
     
 def create_json(ssh):
-    base_dir = '/'.join(os.path.join(REMOTE_WORKING_PROJECT, REMOTE_BATCH_FILE_LOCATION).split('/')[:-1])
+    base_dir = '/'.join(os.path.join(REMOTE_WORKING_PROJECT, REMOTE_BATCH_FILE_LOCATION).replace("\\", "/").split('/')[:-1])
     print(f"Base Dir: {base_dir}")
     status_directories = {
         '_QUEUED': 'QUEUED',
