@@ -124,98 +124,35 @@ def move_directories(ssh, directories):
     print_red("--- Entering move_directories(ssh, directories) ---")
     # This method is used to sync file contents from remote to local pc. It then removes after files have been synced
     for directory in directories:
-        command = f"sshpass -p {PASSWORD} rsync -avz {USERNAME}@{REMOTE_HOST}:{directory} {LOCAL_PATH}"
-        os.system(command)
-        print_green(f"Moved directory {directory} to local machine.")
-        logging.info(f"Moved directory {directory} to local machine.")
-        # Optionally, remove the directory after moving
-        ssh.exec_command(f'rm -rf {directory}')
-        print_green(f"Removed directory {directory} from remote machine.")
-        logging.info(f"Removed directory {directory} from remote machine.")
+        try:
+            # Use subprocess to run rsync and capture output
+            command = [
+                'sshpass', '-p', PASSWORD,
+                'rsync', '-avz',
+                f'{USERNAME}@{REMOTE_HOST}:{directory}', LOCAL_PATH
+            ]
+            result = subprocess.run(command, capture_output=True, text=True)
 
-def find_sbatch_files_from_directory(ssh):
-    # COMPLETED
-    print()
-    print_red("--- Entering find_sbatch_files_from_directory(ssh) ---")
-    # Find all the batch files within the specified directory from home directory
-    stdin, stdout, stderr = ssh.exec_command(f'find {REMOTE_BATCH_FILE_PATH} -name "*.batch"')
-    output = stdout.read().decode()
-    sbatch_files = output.splitlines()
+            # Check if rsync was successful
+            if result.returncode != 0:
+                raise Exception(f"rsync failed with error: {result.stderr}")
 
-    # Split and process all the batch files to add them to a list
-    for counter, file in enumerate(sbatch_files):
-        # Split the path by "/"
-        file_parts = file.split('/')
-        # Rejoin the parts without the first directory (Working project diredctory)
-        sbatch_files[counter]= '/'.join(file_parts[4:])
-    # List of string of all batch files to run from {WORKING_PROJECT} directory
-    logging.info(f"Batch files that have not been started: {sbatch_files}")
-    return sbatch_files
-
-def find_sbatch_files_from_json():
-    # COMPLETED
-    print()
-    print_red("--- Entering find_sbatch_files_from_json() --- ")
-    # Find and return batch files shown in json_file 
-    if os.path.exists(json_file_path):
-        with open(json_file_path, 'r') as json_file:
-            dictionary_list = json.load(json_file)
-
-            # populate list of files that are found in the json file
-        existing_filenames = {entry['filename'] for entry in dictionary_list}
-        logging.info(f"Files that are found and added to the JSON file: {existing_filenames}")
-        return existing_filenames
-    logging.info("JSON file is not found")
-    return None
-
-def run_sbatch(ssh):
-    print()
-    print_red("--- Entering run_sbatch() --- ")
-    
-    batch_files_from_directory = find_sbatch_files_from_directory(ssh)
-    batch_files_from_json = list(find_sbatch_files_from_json())
-    
-    print(f'batch_files_from_directory:\t{batch_files_from_directory}')
-    print(f"batch_files_from_json:\t{batch_files_from_json}")
-    # Check json file
-    # Find jobs to run by making sure we aren't rerunning already running jobs
-        # compare squeue names with Json names and batch_file_directory names
-        # find list of exclusive batchfiles, create a list, run the first one on list
-        # move executed job into a new directory?
-
-    global queued_jobs
-    dictionary_list = []
-    json_file_path = 'batch_files.json'
-
-    if os.path.exists(json_file_path):
-        with open(json_file_path, 'r') as json_file:
-            dictionary_list = json.load(json_file)
-    running_item = ""
-    for item in dictionary_list:
-        if item['status'] == 'QUEUED':
-            filename = item['filename']
-            job_name = item['job_name']
+            print_green(f"Moved directory {directory} to local machine.")
+            logging.info(f"Moved directory {directory} to local machine.")
             
-            job_tuple = (filename, job_name)
-            queued_jobs.append(job_tuple)
-    if len(queued_jobs) > 0:
-        running_item = queued_jobs[0][0]
-        print(f'QUEUED LIST: {queued_jobs}')
-        print(f'QUEUED JOBS: {running_item}')
+            # Remove the directory on the remote machine after successful transfer
+            stdin, stdout, stderr = ssh.exec_command(f'rm -rf {directory}')
+            error = stderr.read().decode().strip()
+            if error:
+                raise Exception(f"Failed to remove directory {directory} on remote machine: {error}")
+
+            print_green(f"Removed directory {directory} from remote machine.")
+            logging.info(f"Removed directory {directory} from remote machine.")
         
-        # print(f"Executing command: cd {REMOTE_WORKING_PROJECT} ; sbatch {REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}")
-        # stdin, stdout, stderr = ssh.exec_command(f'cd {REMOTE_WORKING_PROJECT} ; sbatch {REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}')
-        # for counter, line in enumerate(stderr):
-        #     print_red(f"Line 193: {line.strip()}")
-        # for counter, line in enumerate(stdout):
-        #     print_green(f"Line 193: {line.strip()}")
-        # PROBLEM OCCURING HERE 
-        # if (running_item, queued_jobs[0][1]) in queued_jobs:
-        #     queued_jobs.remove((running_item, queued_jobs[0][1]))
-        update_json_wrapper(ssh)
-    else:
-        print_red("No jobs with status QUEUED")
-    
+        except Exception as e:
+            print_red(f"Error processing directory {directory}: {e}")
+            logging.error(f"Error processing directory {directory}: {e}")
+
 def create_json(ssh):
     print()
     print_red(" --- Entering create_json(ssh) --- ")
@@ -266,12 +203,13 @@ def create_json(ssh):
                     logging.info(f"File {filename} is already in the JSON file.")
                     continue
                 
-                # Extract the job names from the batch files to add into the json file
+                # Extract the job names from the batch files to add into the json file if the fileis not already found in the JSON file
+                print(f'Running Command: cat {remote_dir}/{filename}')
                 stdin, stdout, stderr = ssh.exec_command(f'cat {remote_dir}/{filename}')
                 job_name = ""
                 working_directory = ""
                 if stderr:
-                    print("Error in creating JSON:" + str(stderr.read().decode().strip()))
+                    print_red("Error in creating JSON:" + str(stderr.read().decode().strip()))
                 for line in stdout:
                     line = line.strip()
                     if "#SBATCH --job-name=" in line:
@@ -298,64 +236,11 @@ def create_json(ssh):
     with open(json_file_path, 'w') as json_file:
         json.dump(dictionary_list, json_file, indent=4)
 
-def move_batch_files_based_on_status(ssh):
-    print()
-    print_red("--- Entering move_batch_files_based_on_status(ssh) --- ")
-    # Load JSON data
-    with open(json_file_path, 'r') as f:
-        batch_files_data = json.load(f)
-
-    for batch_file in batch_files_data:
-        filename = batch_file['filename']
-        status = batch_file['status']
-        base_dir = os.path.join(REMOTE_WORKING_PROJECT, REMOTE_BATCH_FILE_LOCATION).replace("\\", "/")
-        base_dir = '/'.join(base_dir.split('/')[:-1])
-        print(base_dir)
-        # Define source and destination directories
-        source_dir = f"{base_dir}/_QUEUED/{filename}"
-        if status == "RUNNING":
-            dest_dir = f"{base_dir}/_RUNNING/{filename}"
-            need_to_move = True
-        elif status == "ERROR":
-            dest_dir = f"{base_dir}/_ERROR/{filename}"
-            need_to_move = True
-        elif status == "COMPLETED":
-            dest_dir = f"{base_dir}/_COMPLETED/{filename}"
-            need_to_move = True
-        elif status == "FINISHED":
-            dest_dir = f"{base_dir}/_FINISHED/{filename}"
-            need_to_move = True
-        elif status == "QUEUED":
-            need_to_move = False
-        else:
-            print(f"Unknown status '{status}' for file {filename}. Skipping.")
-            logging.info(f"Unknown status '{status}' for file {filename}. Skipping.")
-            continue
-        
-        if need_to_move:
-            # Move the file using SSH
-            move_command = f"mv {source_dir} {dest_dir}"
-            stdin, stdout, stderr = ssh.exec_command(move_command)
-
-            # Check for errors
-            error = stderr.read().decode().strip()
-            if error:
-                print(f"Error moving {filename}: {error}")
-                logging.info(f"Error moving {filename}: {error}")
-            else:
-                print(f"Successfully moved {filename} to {dest_dir}")
-                logging.info(f"Successfully moved {filename} to {dest_dir}")
-
-def update_json_wrapper(ssh):
-    print_green("--- Entering update_json_wrapper(ssh) --- ")
-    global last_status_counts
-    last_status_counts = update_json(ssh)
-
 def update_json(ssh):
     print()
     print_red("--- Entering update_json(ssh) ---")
     # TODO REMOVE FILES FORM JSON FILE IF BATCH FILES ARE MOVED/NOT PRESENT
-    # TODO IF ERROR, MOVE BATCH FILE TO ERROR DIRECTORY, CREATE AND UPDATE JSON
+    # TODO IF ERROR, MOVE BATCH FILE TO ERROR DIRECTORY, AND UPDATE JSON
     dictionary_list = []
     if os.path.exists(json_file_path):
         with open(json_file_path, 'r') as json_file:
@@ -466,6 +351,292 @@ def update_json(ssh):
     
     return status_counter.get('FINISHED', 0), status_counter.get('COMPLETED', 0), status_counter.get('ERROR', 0), status_counter.get('RUNNING', 0), status_counter.get('QUEUED', 0)
 
+def update_json_wrapper(ssh):
+    print_green("--- Entering update_json_wrapper(ssh) --- ")
+    global last_status_counts
+    last_status_counts = update_json(ssh)
+
+def get_squeue_jobs(ssh):
+    print()
+    print_red("--- Entered get_squeue_jobs ---")
+    command = 'squeue --format="%.18i %.9P %.30j %.8u %.8T %.10M %.9l %.6D %R" --me'
+    stdin, stdout, stderr = ssh.exec_command(command)
+    squeue_output = stdout.read().decode().strip().splitlines()
+    jobs = []
+    for line in squeue_output[1:]:  # Skip header line
+        parts = line.split()
+        job_id, name, state = parts[0], parts[2], parts[4]
+        jobs.append({"job_id": job_id, "name": name, "state": state})
+    return jobs
+    
+    
+def check_batch_files(ssh, jobs):
+    print()
+    print_red(f"--- Entered check_batch_files(ssh, {jobs}) ---")
+    base_dir = os.path.join(REMOTE_WORKING_PROJECT, REMOTE_BATCH_FILE_LOCATION).replace("\\", "/")
+    base_dir = '/'.join(base_dir.split('/')[:-1])  # Remove the last part (_QUEUED) to get the main directory
+
+    dirs_to_check = [d for d in list_remote_directories(ssh, base_dir) if d.startswith('_')]
+
+    for dir_name in dirs_to_check:
+        full_dir_path = os.path.join(base_dir, dir_name).replace("\\", "/")
+        for filename in list_remote_files(ssh, full_dir_path):
+            batch_file_path = os.path.join(full_dir_path, filename).replace("\\", "/")
+            job_name = get_job_name_from_batch_file(ssh, batch_file_path)
+
+            matching_job = next((job for job in jobs if job["name"] == job_name), None)
+            if matching_job:
+                if dir_name != "_RUNNING":
+                    move_batch_file(ssh, batch_file_path, os.path.join(base_dir, "_RUNNING").replace("\\", "/"))
+            else:
+                check_and_handle_non_running_job(ssh, job_name, batch_file_path, base_dir)
+
+    # Additional step: Handle jobs that are no longer in squeue
+    handle_cancelled_jobs(ssh, jobs, base_dir)
+
+
+def get_job_name_from_batch_file(ssh, batch_file_path):
+    print()
+    print_red(f"--- get_job_name_from_batch_file(ssh, {batch_file_path}) ---")
+    stdin, stdout, stderr = ssh.exec_command(f'cat {batch_file_path}')
+    for line in stdout:
+        if line.startswith("#SBATCH --job-name="):
+            return line.split("=")[-1].strip()
+    return None
+
+def move_batch_file(ssh, src, dest_dir):
+    print()
+    print_red(f"--- move_batch_file(ssh, {src}, {dest_dir}) ---")
+    command = f"mv {src} {dest_dir}/"
+    stdin, stdout, stderr = ssh.exec_command(command)
+    error = stderr.read().decode().strip()
+    if error:
+        print(f"Error moving {src}: {error}")
+    else:
+        print(f"Moved {src} to {dest_dir}")
+
+def check_and_handle_non_running_job(ssh, job_name, batch_file_path, base_dir):
+    print()
+    print_red(f"--- check_and_handle_non_running_job(ssh, {job_name}, {batch_file_path}, {base_dir}) ---")
+    python_file_name = get_python_file_name_from_batch_file(ssh, batch_file_path)
+    work_dir_path = os.path.join(REMOTE_WORKING_PROJECT, REMOTE_WORK_DIR, python_file_name).replace("\\", "/")
+    in_progress_file = os.path.join(work_dir_path, "in_progress.txt").replace("\\", "/")
+    error_file = os.path.join(work_dir_path, "error_occurred.txt").replace("\\", "/")
+
+    if check_remote_file_exists(ssh, in_progress_file):
+        rename_remote_file(ssh, in_progress_file, error_file)
+        move_batch_file(ssh, batch_file_path, os.path.join(base_dir, "_ERROR").replace("\\", "/"))
+
+def handle_cancelled_jobs(ssh, jobs, base_dir):
+    print()
+    print_red(f"--- handle_cancelled_jobs(ssh, {jobs}, {base_dir}) ---")
+    # Check all work_dirs for in_progress.txt files and handle those that are no longer running
+    work_dirs = list_remote_directories(ssh, os.path.join(REMOTE_WORKING_PROJECT, REMOTE_WORK_DIR).replace("\\", "/"))
+    for work_dir in work_dirs:
+        work_dir_path = os.path.join(REMOTE_WORKING_PROJECT, REMOTE_WORK_DIR, work_dir).replace("\\", "/")
+        in_progress_file = os.path.join(work_dir_path, "in_progress.txt").replace("\\", "/")
+        error_file = os.path.join(work_dir_path, "error_occurred.txt").replace("\\", "/")
+
+        if check_remote_file_exists(ssh, in_progress_file):
+            # Extract the job name from the batch file associated with this work_dir
+            batch_file_name = find_associated_batch_file(ssh, base_dir, work_dir)
+            if batch_file_name:
+                job_name = get_job_name_from_batch_file(ssh, batch_file_name)
+                matching_job = next((job for job in jobs if job["name"] == job_name), None)
+                if not matching_job:
+                    # Job is no longer running, so mark as error and move batch file to _ERROR
+                    rename_remote_file(ssh, in_progress_file, error_file)
+                    move_batch_file(ssh, batch_file_name, os.path.join(base_dir, "_ERROR").replace("\\", "/"))
+
+def find_associated_batch_file(ssh, base_dir, work_dir):
+    print()
+    print_red(f"--- find_associated_batch_file(ssh, {base_dir}, {work_dir}) ---")
+    # Find the batch file associated with the work_dir
+    for dir_name in list_remote_directories(ssh, base_dir):
+        full_dir_path = os.path.join(base_dir, dir_name).replace("\\", "/")
+        for filename in list_remote_files(ssh, full_dir_path):
+            batch_file_path = os.path.join(full_dir_path, filename).replace("\\", "/")
+            python_file_name = get_python_file_name_from_batch_file(ssh, batch_file_path)
+            if python_file_name == work_dir:
+                return batch_file_path
+    return None
+
+def get_python_file_name_from_batch_file(ssh, batch_file_path):
+    print()
+    print_red(f"--- get_python_file_name_from_batch_file(ssh, {batch_file_path}) ---")
+    stdin, stdout, stderr = ssh.exec_command(f'cat {batch_file_path}')
+    for line in stdout:
+        if "python3 ~/mmseg-personal/tools/train.py" in line:
+            working_line = line.replace('python3 ~/mmseg-personal/tools/train.py ~', '').replace('.py', '').split("/")
+            working_length = len(working_line)
+            working_directory = working_line[working_length - 1]
+            return working_directory
+    return None
+
+def list_remote_directories(ssh, path):
+    print()
+    print_red(f"--- list_remote_directories(ssh, {path}) ---")
+    stdin, stdout, stderr = ssh.exec_command(f'ls -d {path}/*/')
+    dirs = stdout.read().decode().strip().splitlines()
+    return [os.path.basename(d.rstrip('/')) for d in dirs]
+
+def list_remote_files(ssh, path):
+    print()
+    print_red(f"--- list_remote_files(ssh, {path}) ---")
+    stdin, stdout, stderr = ssh.exec_command(f'ls {path}')
+    files = stdout.read().decode().strip().splitlines()
+    return files
+
+def check_remote_file_exists(ssh, path):
+    print()
+    print_red(f"--- check_remote_file_exists(ssh, {path}) ---")
+    stdin, stdout, stderr = ssh.exec_command(f'if [ -f {path} ]; then echo "exists"; fi')
+    result = stdout.read().decode().strip()
+    print(result)
+    return result == "exists"
+
+def rename_remote_file(ssh, src, dest):
+    print()
+    print_red(f"--- rename_remote_file(ssh, {src}, {dest}) ---")
+    command = f"mv {src} {dest}"
+    stdin, stdout, stderr = ssh.exec_command(command)
+    error = stderr.read().decode().strip()
+    if error:
+        print(f"Error renaming {src}: {error}")
+    else:
+        print(f"Renamed {src} to {dest}")
+
+def find_sbatch_files_from_directory(ssh):
+    # COMPLETED
+    print()
+    print_red("--- Entering find_sbatch_files_from_directory(ssh) ---")
+    # Find all the batch files within the specified directory from home directory
+    stdin, stdout, stderr = ssh.exec_command(f'find {REMOTE_BATCH_FILE_PATH} -name "*.batch"')
+    output = stdout.read().decode()
+    sbatch_files = output.splitlines()
+
+    # Split and process all the batch files to add them to a list
+    for counter, file in enumerate(sbatch_files):
+        # Split the path by "/"
+        file_parts = file.split('/')
+        # Rejoin the parts without the first directory (Working project diredctory)
+        sbatch_files[counter]= '/'.join(file_parts[4:])
+    # List of string of all batch files to run from {WORKING_PROJECT} directory
+    logging.info(f"Batch files that have not been started: {sbatch_files}")
+    return sbatch_files
+
+def find_sbatch_files_from_json():
+    # COMPLETED
+    print()
+    print_red("--- Entering find_sbatch_files_from_json() --- ")
+    # Find and return batch files shown in json_file 
+    if os.path.exists(json_file_path):
+        with open(json_file_path, 'r') as json_file:
+            dictionary_list = json.load(json_file)
+
+            # populate list of files that are found in the json file
+        existing_filenames = {entry['filename'] for entry in dictionary_list}
+        logging.info(f"Files that are found and added to the JSON file: {existing_filenames}")
+        return existing_filenames
+    logging.info("JSON file is not found")
+    return None
+
+def run_sbatch(ssh):
+    print()
+    print_red("--- Entering run_sbatch() --- ")
+    
+    batch_files_from_directory = find_sbatch_files_from_directory(ssh)
+    batch_files_from_json = list(find_sbatch_files_from_json())
+    
+    print(f'batch_files_from_directory:\t{batch_files_from_directory}')
+    print(f"batch_files_from_json:\t{batch_files_from_json}")
+    # Check json file
+    # Find jobs to run by making sure we aren't rerunning already running jobs
+        # compare squeue names with Json names and batch_file_directory names
+        # find list of exclusive batchfiles, create a list, run the first one on list
+        # move executed job into a new directory?
+
+    global queued_jobs
+    dictionary_list = []
+    json_file_path = 'batch_files.json'
+
+    if os.path.exists(json_file_path):
+        with open(json_file_path, 'r') as json_file:
+            dictionary_list = json.load(json_file)
+    running_item = ""
+    for item in dictionary_list:
+        if item['status'] == 'QUEUED':
+            filename = item['filename']
+            job_name = item['job_name']
+            
+            job_tuple = (filename, job_name)
+            queued_jobs.append(job_tuple)
+    if len(queued_jobs) > 0:
+        running_item = queued_jobs[0][0]
+        print(f'QUEUED LIST: {queued_jobs}')
+        print(f'QUEUED JOBS: {running_item}')
+        
+        # print(f"Executing command: cd {REMOTE_WORKING_PROJECT} ; sbatch {REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}")
+        # stdin, stdout, stderr = ssh.exec_command(f'cd {REMOTE_WORKING_PROJECT} ; sbatch {REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}')
+        # for counter, line in enumerate(stderr):
+        #     print_red(f"Line 193: {line.strip()}")
+        # for counter, line in enumerate(stdout):
+        #     print_green(f"Line 193: {line.strip()}")
+        # PROBLEM OCCURING HERE 
+        # if (running_item, queued_jobs[0][1]) in queued_jobs:
+        #     queued_jobs.remove((running_item, queued_jobs[0][1]))
+        update_json_wrapper(ssh)
+    else:
+        print_red("No jobs with status QUEUED")
+
+def move_batch_files_based_on_status(ssh):
+    print()
+    print_red("--- Entering move_batch_files_based_on_status(ssh) --- ")
+    # Load JSON data
+    with open(json_file_path, 'r') as f:
+        batch_files_data = json.load(f)
+
+    for batch_file in batch_files_data:
+        filename = batch_file['filename']
+        status = batch_file['status']
+        base_dir = os.path.join(REMOTE_WORKING_PROJECT, REMOTE_BATCH_FILE_LOCATION).replace("\\", "/")
+        base_dir = '/'.join(base_dir.split('/')[:-1])
+        print(base_dir)
+        # Define source and destination directories
+        source_dir = f"{base_dir}/_QUEUED/{filename}"
+        if status == "RUNNING":
+            dest_dir = f"{base_dir}/_RUNNING/{filename}"
+            need_to_move = True
+        elif status == "ERROR":
+            dest_dir = f"{base_dir}/_ERROR/{filename}"
+            need_to_move = True
+        elif status == "COMPLETED":
+            dest_dir = f"{base_dir}/_COMPLETED/{filename}"
+            need_to_move = True
+        elif status == "FINISHED":
+            dest_dir = f"{base_dir}/_FINISHED/{filename}"
+            need_to_move = True
+        elif status == "QUEUED":
+            need_to_move = False
+        else:
+            print(f"Unknown status '{status}' for file {filename}. Skipping.")
+            logging.info(f"Unknown status '{status}' for file {filename}. Skipping.")
+            continue
+        
+        if need_to_move:
+            # Move the file using SSH
+            move_command = f"mv {source_dir} {dest_dir}"
+            stdin, stdout, stderr = ssh.exec_command(move_command)
+
+            # Check for errors
+            error = stderr.read().decode().strip()
+            if error:
+                print(f"Error moving {filename}: {error}")
+                logging.info(f"Error moving {filename}: {error}")
+            else:
+                print(f"Successfully moved {filename} to {dest_dir}")
+                logging.info(f"Successfully moved {filename} to {dest_dir}")
+
 def log_extraction(ssh):
     # COMPLETED
     print()
@@ -567,10 +738,14 @@ def main():
             # directories_to_move = find_directories_to_move(ssh)
             # move_directories(ssh, directories_to_move)
 
+        jobs = get_squeue_jobs(ssh)
+        check_batch_files(ssh, jobs)
+
         global last_status_counts
         update_json_wrapper(ssh)
         print(f'STATUS DICTIONARY:\nFinished = {last_status_counts[0]} \nCompleted = {last_status_counts[1]} \nError = {last_status_counts[2]} \nRunning = {last_status_counts[3]} \nQueued = {last_status_counts[4]}')
         
+
         #if last_status_counts[3] < job_threshold:
             # ERROR OCCURING HERE in queue_jobs.remove(running_item)
             #run_sbatch(ssh)
