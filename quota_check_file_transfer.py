@@ -188,40 +188,51 @@ def move_directories(ssh, directories):
             # COMMAND FOR LINUX PC
             if linux:
                 logging.info(f"Executing: rsync -avz '{USERNAME}@{REMOTE_HOST}:{directory}', {LOCAL_PATH}")
+# UNCOMMENT SSHPASS LINE IF RUNNING ON LAB PC                
                 command = [
                 #    'sshpass', '-p', PASSWORD,
                     'rsync', '-avz',
                     f'{USERNAME}@{REMOTE_HOST}:{directory}', LOCAL_PATH
                 ]
-                result = subprocess.run(command, capture_output=True, text=True)
+                result_rsync = subprocess.run(command, capture_output=True, text=True)
 
+                # Check if rsync was successful                
+                if result_rsync.returncode != 0:
+                    logging.error(f"rsync failed with error: {result_rsync.stderr}")
+                    raise Exception(f"rsync failed with error: {result_rsync.stderr}")
+                
             if windows:
-                # Construct the plink command to move the directory on the remote machine (e.g., using mv or scp)
-                # If you're moving the directory remotely, you might want to use mv command.
-                remote_command = f"mv {directory} {LOCAL_PATH}"
+                # # Construct the plink command to move the directory on the remote machine (e.g., using mv or scp)
+                # # If you're moving the directory remotely, you might want to use mv command.
+                # remote_command = f"mv {directory} {LOCAL_PATH}"
 
-                # Run the plink command to execute the move on the remote server
-                plink_cmd = [PLINK_PATH, "-pw", PASSWORD, f"{USERNAME}@{REMOTE_HOST}", remote_command]
-                subprocess.run(plink_cmd)
+                # # Run the plink command to execute the move on the remote server
+                # plink_cmd = [PLINK_PATH, "-pw", PASSWORD, f"{USERNAME}@{REMOTE_HOST}", remote_command]
+                # result_move = subprocess.run(plink_cmd, capture_output=True, text=True)
+
+                # if result_move.returncode != 0:
+                #     logging.error(f"mv command failed with error: {result_move.stderr}")
+                #     raise Exception(f"mv {directory} {LOCAL_PATH}  failed with error: {result_move.stderr}")
 
                 # Use pscp to copy the remote directory to the local machine
                 pscp_cmd = [PSCP_PATH, "-r", "-pw", PASSWORD, f"{USERNAME}@{REMOTE_HOST}:{directory}", LOCAL_PATH]
-                subprocess.run(pscp_cmd)
+                result_scp = subprocess.run(pscp_cmd, capture_output=True, text=True)
 
-                # Optionally, remove the remote directory after copying to ensure it was successfully moved
-                remove_command = f"rm -rf {directory}"
-                plink_cmd_remove = [PLINK_PATH, "-pw", PASSWORD, f"{USERNAME}@{REMOTE_HOST}", remove_command]
-                subprocess.run(plink_cmd_remove)    
+                if result_scp.returncode != 0:
+                    logging.error(f"scp command failed with error: {result_scp.stderr}")
+                    raise Exception(f"scp failed with error: {result_scp.stderr}")
 
-                print(f"Directory {directory} has been moved to {LOCAL_PATH} and removed from the remote server.")
+                # # Optionally, remove the remote directory after copying to ensure it was successfully moved
+                # remove_command = f"rm -rf {directory}"
+                # plink_cmd_remove = [PLINK_PATH, "-pw", PASSWORD, f"{USERNAME}@{REMOTE_HOST}", remove_command]
+                # result_remove = subprocess.run(plink_cmd_remove, capture_output=True, text=True)  
 
-            # Check if rsync was successful                
-            if result.returncode != 0:
-                logging.error(f"rsync failed with error: {result.stderr}")
-                raise Exception(f"rsync failed with error: {result.stderr}")
+                # if result_remove.returncode != 0:
+                #     logging.error(f"mv command failed with error: {result_remove.stderr}")
+                #     raise Exception(f"rsync failed with error: {result_remove.stderr}")
 
-            print_green(f"Moved directory {directory} to local machine.")
-            logging.info(f"Moved directory {directory} to local machine.")
+            print_green(f"Moved directory {directory} to local machine: {LOCAL_PATH}")
+            logging.info(f"Moved directory {directory} to local machine: {LOCAL_PATH}")
             
             # Remove the directory on the remote machine after successful transfer
             logging.info(f"Executing: rm -rf {directory}")
