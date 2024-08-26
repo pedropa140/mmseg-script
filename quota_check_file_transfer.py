@@ -40,6 +40,7 @@ if USERNAME is None:
     logging.error("Username not found. Did you create a .env file?")
 
 LOCAL_PATH = os.getenv('local_path')
+print(LOCAL_PATH)
 if LOCAL_PATH is None:
     print("Local path not found. Did you create a .env file?")
 if os.path.exists(LOCAL_PATH):
@@ -163,7 +164,7 @@ def move_directories(ssh, directories):
             # Use subprocess to run rsync and capture output
             logging.info(f"Executing: rsync -avz '{USERNAME}@{REMOTE_HOST}:{directory}', {LOCAL_PATH}")
             command = [
-                'sshpass', '-p', PASSWORD,
+                #'sshpass', '-p', PASSWORD,
                 'rsync', '-avz',
                 f'{USERNAME}@{REMOTE_HOST}:{directory}', LOCAL_PATH
             ]
@@ -845,6 +846,9 @@ def main():
         jobs = get_squeue_jobs(ssh)
         check_batch_files(ssh, jobs)
         move_batch_files_based_on_status(ssh)
+
+        directories = find_directories_to_move(ssh)
+        move_directories(ssh, directories)
         #if last_status_counts[3] < job_threshold:
             # ERROR OCCURING HERE in queue_jobs.remove(running_item)
             #run_sbatch(ssh)
