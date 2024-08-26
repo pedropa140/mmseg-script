@@ -13,12 +13,18 @@ from collections import defaultdict
 
 '''
 To make use of the dotenv() command, create a new file labelled ".env" and fill in the blanks as needed:
-netid=[insert_netid] # No spaces and no need for quotes around name
-password=password
-local_path=/local/path/to/save/files
-remote_path=/path/to/look/for/files
-remote_host=domain_to_connect_to
-marker_file=filename_to_look_for.txt
+netid=[username]
+remote_host=ilab4.cs.rutgers.edu
+password=[password_to_remote_host]
+local_path=[/path/to/place/folders/on_local_pc]
+completed_marker_file=completed.txt
+finished_marker_file=finished.txt
+remote_base_path=/common/home/bn155
+remote_working_project=mmseg-personal
+remote_work_dir=work_dirs
+remote_batch_file_location=tools/batch_files/_QUEUED
+plink_path=[None]
+pscp_path=[None]
 '''
 
 load_dotenv()
@@ -27,8 +33,25 @@ load_dotenv()
 logging.basicConfig(filename='storage_monitor.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Configuration
+PLINK_PATH=os.getenv('plink_path')
+PSCP_PATH=os.getenv('pscp_path')
 
+print(f'Plink path: {PLINK_PATH} and pscp path {PSCP_PATH}')
+if PLINK_PATH != '' and PSCP_PATH != '':
+    print(f"Found path to plink.exe: {PLINK_PATH}")
+    print(f"Found path to pscp.exe: {PSCP_PATH}")
+    print("Assuming Operating system to be windows!")
+    windows=True
+    linux=False
+
+else:
+    print(f"Did not find plink.exe or pscp.exe paths")
+    print("Assuming Operating System to be Linux")
+    windows=False
+    linux=True
+
+
+# Configuration
 REMOTE_HOST = 'ilab4.cs.rutgers.edu'
 if REMOTE_HOST is None:
     print("Remote Host not found. Did you create a .env file?")
@@ -162,15 +185,37 @@ def move_directories(ssh, directories):
     for directory in directories:
         try:
             # Use subprocess to run rsync and capture output
-            logging.info(f"Executing: rsync -avz '{USERNAME}@{REMOTE_HOST}:{directory}', {LOCAL_PATH}")
-            command = [
-                #'sshpass', '-p', PASSWORD,
-                'rsync', '-avz',
-                f'{USERNAME}@{REMOTE_HOST}:{directory}', LOCAL_PATH
-            ]
-            result = subprocess.run(command, capture_output=True, text=True)
+            # COMMAND FOR LINUX PC
+            if linux:
+                logging.info(f"Executing: rsync -avz '{USERNAME}@{REMOTE_HOST}:{directory}', {LOCAL_PATH}")
+                command = [
+                #    'sshpass', '-p', PASSWORD,
+                    'rsync', '-avz',
+                    f'{USERNAME}@{REMOTE_HOST}:{directory}', LOCAL_PATH
+                ]
+                result = subprocess.run(command, capture_output=True, text=True)
 
-            # Check if rsync was successful
+            if windows:
+                # Construct the plink command to move the directory on the remote machine (e.g., using mv or scp)
+                # If you're moving the directory remotely, you might want to use mv command.
+                remote_command = f"mv {directory} {LOCAL_PATH}"
+
+                # Run the plink command to execute the move on the remote server
+                plink_cmd = [PLINK_PATH, "-pw", PASSWORD, f"{USERNAME}@{REMOTE_HOST}", remote_command]
+                subprocess.run(plink_cmd)
+
+                # Use pscp to copy the remote directory to the local machine
+                pscp_cmd = [PSCP_PATH, "-r", "-pw", PASSWORD, f"{USERNAME}@{REMOTE_HOST}:{directory}", LOCAL_PATH]
+                subprocess.run(pscp_cmd)
+
+                # Optionally, remove the remote directory after copying to ensure it was successfully moved
+                remove_command = f"rm -rf {directory}"
+                plink_cmd_remove = [PLINK_PATH, "-pw", PASSWORD, f"{USERNAME}@{REMOTE_HOST}", remove_command]
+                subprocess.run(plink_cmd_remove)    
+
+                print(f"Directory {directory} has been moved to {LOCAL_PATH} and removed from the remote server.")
+
+            # Check if rsync was successful                
             if result.returncode != 0:
                 logging.error(f"rsync failed with error: {result.stderr}")
                 raise Exception(f"rsync failed with error: {result.stderr}")
@@ -793,7 +838,7 @@ def log_extraction(ssh):
 def run_every_hour(ssh):
 
     print()
-    print_red("--- Entering run_every_hour(ssh) ---")
+    print_blue("--- Entering run_every_hour(ssh) ---")
     # Check how much storage is being used
     # login to remote pc, run quote -vs, and extract the used storage and storage limit    
     # Move files using rsync to local pc
@@ -829,6 +874,7 @@ def run_every_hour(ssh):
 def main():
     ssh = connect_ssh()
     create_json(ssh)
+    # run_every_hour(ssh)
     # COMPLETED, ERROR, RUNNING, QUEUED = update_json(ssh)
     
     try:
@@ -865,7 +911,6 @@ def main():
 
         # schedule.every().minute.do(run_every_hour, ssh)
         # schedule.every().minute.do(create_json, ssh)
-        # schedule.every().hour.do(update_json, ssh)
         # schedule.every().minute.do(update_json_wrapper, ssh)
 
         # run 3 at a time
