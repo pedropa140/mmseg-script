@@ -65,6 +65,7 @@ def connect_ssh():
         return ssh
     except Exception as e:
         print_red(f"Failed to connect to SSH: {e}")
+        logging.error(f"Failed to connect to SSH: {e}")
         return None
 
 def check_storage_usage(ssh):
