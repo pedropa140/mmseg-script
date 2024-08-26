@@ -61,6 +61,7 @@ def connect_ssh():
     try:
         ssh.connect(hostname=REMOTE_HOST, username=USERNAME, password=PASSWORD)
         print_green("Successfully connected to SSH.")
+        logging.info("Successfully connected to SSH.")
         return ssh
     except Exception as e:
         print_red(f"Failed to connect to SSH: {e}")
@@ -368,8 +369,7 @@ def get_squeue_jobs(ssh):
         job_id, name, state = parts[0], parts[2], parts[4]
         jobs.append({"job_id": job_id, "name": name, "state": state})
     return jobs
-    
-    
+     
 def check_batch_files(ssh, jobs):
     print()
     print_red(f"--- Entered check_batch_files(ssh, {jobs}) ---")
@@ -377,8 +377,9 @@ def check_batch_files(ssh, jobs):
     base_dir = '/'.join(base_dir.split('/')[:-1])  # Remove the last part (_QUEUED) to get the main directory
 
     dirs_to_check = [d for d in list_remote_directories(ssh, base_dir) if d.startswith('_')]
-
+    print(f"check_batch_files: {dirs_to_check}")
     for dir_name in dirs_to_check:
+        print(f"{dir_name}")
         full_dir_path = os.path.join(base_dir, dir_name).replace("\\", "/")
         for filename in list_remote_files(ssh, full_dir_path):
             batch_file_path = os.path.join(full_dir_path, filename).replace("\\", "/")
@@ -393,7 +394,6 @@ def check_batch_files(ssh, jobs):
 
     # Additional step: Handle jobs that are no longer in squeue
     handle_cancelled_jobs(ssh, jobs, base_dir)
-
 
 def get_job_name_from_batch_file(ssh, batch_file_path):
     print()
@@ -440,6 +440,7 @@ def handle_cancelled_jobs(ssh, jobs, base_dir):
         if check_remote_file_exists(ssh, in_progress_file):
             # Extract the job name from the batch file associated with this work_dir
             batch_file_name = find_associated_batch_file(ssh, base_dir, work_dir)
+            print(f"Handling cancelled job: {batch_file_name}")
             if batch_file_name:
                 job_name = get_job_name_from_batch_file(ssh, batch_file_name)
                 matching_job = next((job for job in jobs if job["name"] == job_name), None)
@@ -465,11 +466,14 @@ def get_python_file_name_from_batch_file(ssh, batch_file_path):
     print()
     print_red(f"--- get_python_file_name_from_batch_file(ssh, {batch_file_path}) ---")
     stdin, stdout, stderr = ssh.exec_command(f'cat {batch_file_path}')
+    
     for line in stdout:
+        line = line.strip()
         if "python3 ~/mmseg-personal/tools/train.py" in line:
             working_line = line.replace('python3 ~/mmseg-personal/tools/train.py ~', '').replace('.py', '').split("/")
             working_length = len(working_line)
             working_directory = working_line[working_length - 1]
+            print(working_directory)
             return working_directory
     return None
 
