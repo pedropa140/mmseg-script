@@ -98,7 +98,7 @@ def print_red(text):
     print(f"\033[91m{text}\033[0m")
 
 def print_blue(text):
-    print(f"\033[94m{text}\033[0m")
+    print(f"\033[38;2;50;128;128m{text}\033[0m")
 
 def connect_ssh():
     # COMPLETED
@@ -190,7 +190,7 @@ def move_directories(ssh, directories):
                 logging.info(f"Executing: rsync -avz '{USERNAME}@{REMOTE_HOST}:{directory}', {LOCAL_PATH}")
 # UNCOMMENT SSHPASS LINE IF RUNNING ON LAB PC                
                 command = [
-                #    'sshpass', '-p', PASSWORD,
+                    'sshpass', '-p', PASSWORD,
                     'rsync', '-avz',
                     f'{USERNAME}@{REMOTE_HOST}:{directory}', LOCAL_PATH
                 ]
