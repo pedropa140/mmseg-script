@@ -199,9 +199,10 @@ def move_directories(ssh, directories):
             # COMMAND FOR LINUX PC
             if linux:
                 logging.info(f"Executing: rsync -avz '{USERNAME}@{REMOTE_HOST}:{directory}', {LOCAL_PATH}")
+                print_red(f"Executing: rsync -avz '{USERNAME}@{REMOTE_HOST}:{directory}', {LOCAL_PATH}")
                 # UNCOMMENT SSHPASS LINE IF RUNNING ON LAB PC                
                 command = [
-                    'sshpass', '-p', PASSWORD,
+                #    'sshpass', '-p', PASSWORD,
                     'rsync', '-avz',
                     f'{USERNAME}@{REMOTE_HOST}:{directory}', LOCAL_PATH
                 ]
@@ -247,10 +248,11 @@ def move_directories(ssh, directories):
             
             # Remove the directory on the remote machine after successful transfer
             logging.info(f"Executing: rm -rf {directory}")
-            stdin, stdout, stderr = ssh.exec_command(f'rm -rf {directory}')
-            error = stderr.read().decode().strip()
-            if error:
-                raise Exception(f"Failed to remove directory {directory} on remote machine: {error}")
+            print_red(f"Executing (but not really): rm -rf {directory}")
+            # stdin, stdout, stderr = ssh.exec_command(f'rm -rf {directory}')
+            # error = stderr.read().decode().strip()
+            # if error:
+            #     raise Exception(f"Failed to remove directory {directory} on remote machine: {error}")
 
             print_green(f"Removed directory {directory} from remote machine.")
             logging.info(f"Removed directory {directory} from remote machine.")
@@ -269,11 +271,11 @@ def create_json(ssh):
         '_COMPLETED': 'COMPLETED',
         '_FINISHED': 'FINISHED'
     }
-    logging.info(f"create_json(): Comparing batch files found in {base_dir} and {json_file_path}")
+    
     # Open json file to check which files are already accounted for. 
     dictionary_list = []
     json_file_path = 'batch_files.json'
-    
+    logging.info(f"create_json(): Comparing batch files found in {base_dir} and {json_file_path}")
     if os.path.exists(json_file_path):
         logging.info(f"Found a premade JSON file for batch_files at {json_file_path}")
         with open(json_file_path, 'r') as json_file:
@@ -558,7 +560,7 @@ def get_job_name_from_batch_file(ssh, batch_file_path):
     stdin, stdout, stderr = ssh.exec_command(f'cat {batch_file_path}')
     for line in stdout:
         if line.startswith("#SBATCH --job-name="):
-            logging.info(f"Found job-name: ({line.split("=")[-1].strip()}) from {batch_file_path}")
+            logging.info(f"Found job-name: ({line.split('=')[-1].strip()}) from {batch_file_path}")
             return line.split("=")[-1].strip()
     return None
 # COMPLETED
@@ -887,6 +889,10 @@ def run_every_hour(ssh):
         print_green("Storage usage is within limits.")
         logging.info("Storage usage is within limits.")
 
+def test_model(ssh):
+    # TODO Implement python tools/test.py custom_config.py work_dirs/[job-name]/best_*.pth --eval mIoU --show-dir work_dir/[job-name]/best_*_iter_output function call on completed models
+    return NotImplementedError
+
 # def nuke_all_sbatch(ssh):
 #     stdin, stdout, stderr = ssh.exec_command(f'squeue --format="%.18i %.9P %.30j %.8u %.8T %.10M %.9l %.6D %R" --me')
 #     all_jobs = []
@@ -903,31 +909,33 @@ def main():
     # run_every_hour(ssh)
     # COMPLETED, ERROR, RUNNING, QUEUED = update_json(ssh)
     run_counter = 0
+    global last_status_counts
     try:
         while True:
-
-            global last_status_counts
+            # ERROR OCCURRING WHERE ERROR_OCCURRED.TXT OVERRIDES THE _QUEUED DIRECTORY AND DOESN'T RUN SBATCH
+            # ERROR OCCURRING WITH RUNNING FILES NOT BEING MOVED TO COMPLETED/FINISHED
             update_json_wrapper(ssh)
             print(f'STATUS DICTIONARY:\nFinished = {last_status_counts[0]} \nCompleted = {last_status_counts[1]} \nError = {last_status_counts[2]} \nRunning = {last_status_counts[3]} \nQueued = {last_status_counts[4]}')
-            
-            jobs = get_squeue_jobs(ssh)
-            check_batch_files(ssh, jobs)
-            move_batch_files_based_on_status(ssh)
-            # Check storage usage and move directories to local pc if they are finished and storage is above a certain memory threshold
-            run_every_hour(ssh)
             
             # Run sbatch jobs if there are fewer than a certain amount.
             if last_status_counts[3] < job_threshold:
                 run_sbatch(ssh)
                 move_batch_files_based_on_status(ssh)
+
+            jobs = get_squeue_jobs(ssh)
+            check_batch_files(ssh, jobs)
+            move_batch_files_based_on_status(ssh)
+
+            # Check storage usage and move directories to local pc if they are finished and storage is above a certain memory threshold
+            run_every_hour(ssh)
+
             # Look and extract logs for jobs that are completed. 
             log_extraction(ssh)
-            
-            run_counter=+1
+
+            run_counter+=1
             print_green(f"Program Complete counter: {run_counter}")
             time.sleep(60)
 
-        # TODO REMOVE FILES FORM JSON FILE IF BATCH FILES ARE MOVED/NOT PRESENT
         # TODO COME UP WITH LOGICAL FLOW OF OPERATIONS TO FIND, RUN, EXTRACT DATA AND RELOCATE FILES LOCALLY
 
         # run_every_hour(ssh)
