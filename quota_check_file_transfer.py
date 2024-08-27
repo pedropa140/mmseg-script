@@ -902,33 +902,34 @@ def main():
     create_json(ssh)
     # run_every_hour(ssh)
     # COMPLETED, ERROR, RUNNING, QUEUED = update_json(ssh)
-    
+    run_counter = 0
     try:
-        # while True:
-        #     run_every_hour(ssh)
-            # directories_to_move = find_directories_to_move(ssh)
-            # move_directories(ssh, directories_to_move)
-        global last_status_counts
-        update_json_wrapper(ssh)
-        print(f'STATUS DICTIONARY:\nFinished = {last_status_counts[0]} \nCompleted = {last_status_counts[1]} \nError = {last_status_counts[2]} \nRunning = {last_status_counts[3]} \nQueued = {last_status_counts[4]}')
-        
-        jobs = get_squeue_jobs(ssh)
-        check_batch_files(ssh, jobs)
-        move_batch_files_based_on_status(ssh)
+        while True:
 
-        directories = find_directories_to_move(ssh)
-        move_directories(ssh, directories)
-        #if last_status_counts[3] < job_threshold:
-            # ERROR OCCURING HERE in queue_jobs.remove(running_item)
-            #run_sbatch(ssh)
-            # move_batch_files_based_on_status(ssh)
+            global last_status_counts
+            update_json_wrapper(ssh)
+            print(f'STATUS DICTIONARY:\nFinished = {last_status_counts[0]} \nCompleted = {last_status_counts[1]} \nError = {last_status_counts[2]} \nRunning = {last_status_counts[3]} \nQueued = {last_status_counts[4]}')
             
-        # log_extraction(ssh)
-            # time.sleep(60)
+            jobs = get_squeue_jobs(ssh)
+            check_batch_files(ssh, jobs)
+            move_batch_files_based_on_status(ssh)
+            # Check storage usage and move directories to local pc if they are finished and storage is above a certain memory threshold
+            run_every_hour(ssh)
+            
+            # Run sbatch jobs if there are fewer than a certain amount.
+            if last_status_counts[3] < job_threshold:
+                run_sbatch(ssh)
+                move_batch_files_based_on_status(ssh)
+            # Look and extract logs for jobs that are completed. 
+            log_extraction(ssh)
+            
+            run_counter=+1
+            print_green(f"Program Complete counter: {run_counter}")
+            time.sleep(60)
 
         # TODO REMOVE FILES FORM JSON FILE IF BATCH FILES ARE MOVED/NOT PRESENT
         # TODO COME UP WITH LOGICAL FLOW OF OPERATIONS TO FIND, RUN, EXTRACT DATA AND RELOCATE FILES LOCALLY
-        
+
         # run_every_hour(ssh)
         # schedule.every().hour.do(run_every_hour, ssh)
 
@@ -948,14 +949,12 @@ def main():
         #     run_sbatch(ssh)
         # print(f'STATUS DICTIONARY: {last_status_counts}')
         # # ----------
-
-        # TODO FIX MOVE_BATCH_FILES METHOD TO IGNORE FILES THAT DONT NEED TO BE MOVED
         # move_batch_files_based_on_status(ssh)
         # cancel_all_sbatch(ssh)
         # while True:
         #     schedule.run_pending()
         #     time.sleep(1)
-        print_green("Program Completed.")
+        
     except Exception as e:
         print(e)
         logging.error(f"An error occurred: {str(e)}")
