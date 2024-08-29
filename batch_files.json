@@ -3,7 +3,7 @@
         "filename": "hrnet18-fcn-auto_mosaic_50.batch",
         "job_name": "1_HRNET18_mos50_fail_error2",
         "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_50",
-        "status": "RUNNING"
+        "status": "ERROR"
     },
     {
         "filename": "hrnet18-fcn-auto_mosaic_90.batch",
@@ -15,13 +15,13 @@
         "filename": "deeplabv3plus_r50_orig.batch",
         "job_name": "DLv3plus_orig_fail_kill",
         "working_directory": "deeplabv3plus_r50-d8_512x512_160k_coco_corrosion_original",
-        "status": "RUNNING"
+        "status": "ERROR"
     },
     {
         "filename": "hrnet18-fcn-auto_mosaic_30.batch",
         "job_name": "1_HRNET18_mos30_fail_error",
         "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_30",
-        "status": "QUEUED"
+        "status": "ERROR"
     },
     {
         "filename": "hrnet18-fcn-auto_mosaic_70.batch",
