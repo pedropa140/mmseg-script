@@ -205,8 +205,9 @@ def check_batch_files(ssh, jobs):
         for filename in rops.list_remote_files(ssh, full_dir_path):
             batch_file_path = os.path.join(full_dir_path, filename).replace("\\", "/")
             job_name = rops.get_job_name_from_batch_file(ssh, batch_file_path)
-
+            print(job_name)
             matching_job = next((job for job in jobs if job["name"] == job_name), None)
+            # Determine if any running job from the batch file directory that isn't already in _RUNNING is moved to _RUNNING 
             if matching_job:
                 if dir_name != "_RUNNING":
                     rops.move_batch_file(ssh, batch_file_path, os.path.join(base_dir, "_RUNNING").replace("\\", "/"))
@@ -223,9 +224,14 @@ def check_and_handle_non_running_job(ssh, job_name, batch_file_path, base_dir):
     in_progress_file = os.path.join(work_dir_path, "in_progress.txt").replace("\\", "/")
     error_file = os.path.join(work_dir_path, "error_occurred.txt").replace("\\", "/")
 
+    # If there is an in_progress.txt file, but there is no running job, then move the batch file over. 
     if rops.check_remote_file_exists(ssh, in_progress_file):
         rops.rename_remote_file(ssh, in_progress_file, error_file)
-        rops.move_batch_file(ssh, batch_file_path, os.path.join(base_dir, "_ERROR").replace("\\", "/"))
+        # If the batch file is not ALREADY in error directory, move it over to error directory. 
+        if batch_file_path.split('/')[3] != '_ERROR':
+            print(f"Batch File {os.path.basename(batch_file_path)} is not in _ERROR directory. Moving to _ERROR/")
+            logging.info(f"Batch File {os.path.basename(batch_file_path)} is not in _ERROR directory. Moving to _ERROR/")
+            rops.move_batch_file(ssh, batch_file_path, os.path.join(base_dir, "_ERROR").replace("\\", "/"))
 # COMPLETED
 def handle_cancelled_jobs(ssh, jobs, base_dir):
     logging.info(f"Handle cancelled jobs: Jobs: {jobs}, in directory: {base_dir}) ---")
@@ -410,6 +416,7 @@ def log_extraction(ssh):
         print(f"An error occured: {str(e)}")
 
 def run_every_hour(ssh):
+    print("Testing scheduling!")
     logging.info("Running storage check and moving files if they're finished")
     # Check how much storage is being used
     # login to remote pc, run quote -vs, and extract the used storage and storage limit    
@@ -433,44 +440,56 @@ def run_every_hour(ssh):
     else:
         print_green("Storage usage is within limits.")
         logging.info("Storage usage is within limits.")
+    last_status_counts = json_utils.update_json_new(ssh)
+    print(f'STATUS DICTIONARY:\nFinished = {last_status_counts[0]} \nCompleted = {last_status_counts[1]} \nError = {last_status_counts[2]} \nRunning = {last_status_counts[3]} \nQueued = {last_status_counts[4]}')
+    jobs = rops.get_squeue_jobs(ssh)
+    print(jobs)
+    check_batch_files(ssh, jobs)
+    if last_status_counts[3] < cfg.THRESHOLD:
+        run_sbatch(ssh)
+        move_batch_files_based_on_status(ssh)
+    # Look and extract logs for jobs that are completed. 
+    log_extraction(ssh)
+    last_status_counts = json_utils.update_json_new(ssh)
+    print(f'STATUS DICTIONARY:\nFinished = {last_status_counts[0]} \nCompleted = {last_status_counts[1]} \nError = {last_status_counts[2]} \nRunning = {last_status_counts[3]} \nQueued = {last_status_counts[4]}')
+
 
 def test_model(ssh):
     # TODO Implement python tools/test.py custom_config.py work_dirs/[job-name]/best_*.pth --eval mIoU --show-dir work_dir/[job-name]/best_*_iter_output function call on completed models
     return NotImplementedError
 
 def main():
-    print("Running this now")
-    print(f"Linux: {cfg.linux}")
+    # TODO FIX STATUS UPDATES FOR RUNNING MODELS... We might not be clearing lists to queue and sbatch models properly
     run_counter = 0
     ssh = rops.connect_ssh(remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=cfg.PASSWORD)
     json_utils.create_json(ssh)
+    schedule.every().minute.do(run_every_hour, ssh)
     try:
-        last_status_counts = json_utils.update_json_new(ssh)
-        print(f'STATUS DICTIONARY:\nFinished = {last_status_counts[0]} \nCompleted = {last_status_counts[1]} \nError = {last_status_counts[2]} \nRunning = {last_status_counts[3]} \nQueued = {last_status_counts[4]}')
-        if last_status_counts[3] < cfg.THRESHOLD:
-                run_sbatch(ssh)
-                move_batch_files_based_on_status(ssh)
+        while True:
+            # Run all pending scheduled tasks
+            schedule.run_pending()
+            time.sleep(21)
+            print("21 Seconds passed...")
+        # if last_status_counts[3] < cfg.THRESHOLD:
+        #         run_sbatch(ssh)
+        #         move_batch_files_based_on_status(ssh)
 
-        jobs = rops.get_squeue_jobs(ssh)
-        check_batch_files(ssh, jobs)
-        move_batch_files_based_on_status(ssh)
+        # jobs = rops.get_squeue_jobs(ssh)
+        # print(jobs)
+        # check_batch_files(ssh, jobs)
+
+        #move_batch_files_based_on_status(ssh)
 
         # Check storage usage and move directories to local pc if they are finished and storage is above a certain memory threshold
-        run_every_hour(ssh)
+        #run_every_hour(ssh)
 
         # Look and extract logs for jobs that are completed. 
-        log_extraction(ssh)
+        #log_extraction(ssh)
+        # last_status_counts = json_utils.update_json_new(ssh)
+        # print(f'STATUS DICTIONARY:\nFinished = {last_status_counts[0]} \nCompleted = {last_status_counts[1]} \nError = {last_status_counts[2]} \nRunning = {last_status_counts[3]} \nQueued = {last_status_counts[4]}')
+        # run_counter+=1
+        # print_green(f"Program Complete counter: {run_counter}")
 
-        run_counter+=1
-        print_green(f"Program Complete counter: {run_counter}")
-        time.sleep(60)
-
-        # run_every_hour(ssh)
-        # schedule.every().hour.do(run_every_hour, ssh)
-
-        # schedule.every().minute.do(run_every_hour, ssh)
-        # schedule.every().minute.do(create_json, ssh)
-        # schedule.every().minute.do(update_json_wrapper, ssh)
 
     except Exception as e:
         print(e)

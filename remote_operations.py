@@ -19,7 +19,6 @@ def print_blue(text):
 def connect_ssh(remote_host, username, password):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    # PASSWORD = getpass("Enter your SSH password: ")
     try:
         ssh.connect(hostname=remote_host, username=username, password=password)
         print_green("Successfully connected to SSH.")
@@ -37,17 +36,17 @@ def check_remote_file_exists(ssh, path):
     result = stdout.read().decode().strip()
     # print(f"{path}: {result}")
     logging.info(f"{path}: {result}")
-    return result == "exists"
+    return result == "exists" # Returns Boolean of True or False if file exists
 
 def check_and_update_status(ssh, job, status_file, new_status, source_directory, target_directory):
-    work_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, job['working_directory'])
+    work_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, job['working_directory']).replace('\\', '/')
     command = f"find {work_dir} -maxdepth 1 -name {status_file}"
     stdin, stdout, stderr = ssh.exec_command(command)
     if stdout.read().strip():  # If the status file exists
         logging.info(f"Changing {job['job_name']} status to {new_status}")
         job['status'] = new_status
-        source_location = {os.path.join(source_directory, job['filename']).replace('\\', '/')}
-        dest_location = {os.path.join(target_directory, job['filename']).replace('\\', '/')}
+        source_location = os.path.join(source_directory, job['filename']).replace('\\', '/')
+        dest_location = os.path.join(target_directory, job['filename']).replace('\\', '/')
         move_command = f'mv {source_location} {dest_location}'
         logging.info(f"Executing move command: {move_command}")
         stdin, stdout, stderr = ssh.exec_command(move_command)
@@ -93,14 +92,18 @@ def list_remote_files(ssh, path):
     stdin, stdout, stderr = ssh.exec_command(f'ls {path}')
     files = stdout.read().decode().strip().splitlines()
     logging.info(f"Files found: {files}")
-    return files
+
+    return files # 
 
 def list_remote_directories(ssh, path):
     logging.info(f"list remote directories in: {path})")
     logging.info(f"Executing: 'ls -d {path}/*/'")
-    stdin, stdout, stderr = ssh.exec_command(f'ls -d {path}/*/')
+    stdin, stdout, stderr = ssh.exec_command(f'ls -d {path}/*/')  # returns /path/[All_directories]
     dirs = stdout.read().decode().strip().splitlines()
-    return [os.path.basename(d.rstrip('/')) for d in dirs]
+    print(f"Listing Remote Directories: {dirs}")
+    print(os.path.basename(d.rstrip('/')) for d in dirs)
+    return [os.path.basename(d.rstrip('/')) for d in dirs] # returns object of directories to check 
+    # [d for d in rops.list_remote_directories(ssh, base_dir) if d.startswith('_')] returns directories names only starting with '_'
 
 def get_job_name_from_batch_file(ssh, batch_file_path):
     logging.info(f"Executing: cat {batch_file_path}")
@@ -108,7 +111,7 @@ def get_job_name_from_batch_file(ssh, batch_file_path):
     for line in stdout:
         if line.startswith("#SBATCH --job-name="):
             logging.info(f"Found job-name: ({line.split('=')[-1].strip()}) from {batch_file_path}")
-            return line.split("=")[-1].strip()
+            return line.split("=")[-1].strip() # Return the job name that will be found when running get_squeue_job
     return None
 
 def get_python_file_name_from_batch_file(ssh, batch_file_path, working_project=cfg.REMOTE_WORKING_PROJECT):
@@ -122,10 +125,12 @@ def get_python_file_name_from_batch_file(ssh, batch_file_path, working_project=c
             working_length = len(working_line)
             working_directory = working_line[working_length - 1]
             logging.info(f"Found name of folder in batch file: {working_directory}")
-            return working_directory
+            return working_directory # Returns string of the name of the python file of the job
+
     return None
 
 def get_squeue_jobs(ssh):
+    # Takes in ssh object from paramiko
     logging.info("Running Squeue to see which jobs are running")
     command = 'squeue --format="%.18i %.9P %.30j %.8u %.8T %.10M %.9l %.6D %R" --me'
     stdin, stdout, stderr = ssh.exec_command(command)
@@ -136,9 +141,16 @@ def get_squeue_jobs(ssh):
         job_id, name, state = parts[0], parts[2], parts[4]
         jobs.append({"job_id": job_id, "name": name, "state": state})
     logging.info(f"Jobs found to be running: {jobs}")
-    return jobs
+    if __name__ == "__main__":
+        if jobs != []:
+            for job in jobs:
+                print(f"JobID: {job['job_id']}, job: {job['name']}, state: {job['state']}")
+        else: 
+            print("No jobs are running!")
+    return jobs # Returns a list of dict items of jobs with {['job_id'], ['name'], ['status']} else []
 
 def move_batch_file(ssh, src, dest_dir):
+    
     logging.info(f"Executing: mv {src}, {dest_dir})")
     command = f"mv {src} {dest_dir}/"
     stdin, stdout, stderr = ssh.exec_command(command)
@@ -149,6 +161,7 @@ def move_batch_file(ssh, src, dest_dir):
     else:
         logging.info(f"Moved {src} to {dest_dir}")
         print(f"Moved {src} to {dest_dir}")
+
 
 def rename_remote_file(ssh, src, dest):
     logging.info(f"Rename remote file from:{src} to:{dest})")
@@ -164,3 +177,11 @@ def rename_remote_file(ssh, src, dest):
         logging.info(f"Renamed {src} to {dest}")
         print_green(f"Renamed {src} to {dest}")
 
+if __name__ == "__main__":
+    try:
+        ssh = connect_ssh(remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=cfg.PASSWORD)
+        get_squeue_jobs(ssh)
+    except Exception as e:
+        print(e)
+    finally:
+        ssh.close()

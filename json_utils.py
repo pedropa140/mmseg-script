@@ -324,26 +324,30 @@ def update_json_new(ssh):
     # Handle _RUNNING directory
     running_directrory = os.path.join(folder_directory, '_RUNNING').replace("\\", "/")
     running_files = rops.list_remote_files(ssh, running_directrory)
-    print(running_files)
     for batch_file in running_files:
-        job_name = rops.get_python_file_name_from_batch_file(ssh, os.path.join(running_directrory, batch_file).replace("\\", "/"))
-        print(job_name)
+        # job_name = rops.get_python_file_name_from_batch_file(ssh, os.path.join(running_directrory, batch_file).replace("\\", "/"))
+        job_name = rops.get_job_name_from_batch_file(ssh, os.path.join(running_directrory, batch_file).replace("\\", "/"))
         jobs = rops.get_squeue_jobs(ssh)
 
-        if job_name in jobs:
+        if job_name in jobs[0]:
+            print(f"This second bit ran, and here are the jobs: {job_name}")
             for job in dictionary_list:
                 if job['filename'] == batch_file:
                     job['status'] = 'RUNNING'
+                    print("This third bit ran")
                     break
         else:
             for job in dictionary_list:
                 if job['filename'] == batch_file:
+                    # Check for inprogress.txt 
                     job = rops.check_and_update_status(ssh, job, 'in_progress.txt', 'ERROR',
                                                   os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
                                                   os.path.join(folder_directory, '_ERROR').replace("\\", "/"))
+                    # Check for completed.txt 
                     job = rops.check_and_update_status(ssh, job, 'completed.txt', 'COMPLETED',
                                                   os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
                                                   os.path.join(folder_directory, '_COMPLETED').replace("\\", "/"))
+                    # Check for extracted.txt 
                     job = rops.check_and_update_status(ssh, job, 'extracted.txt', 'FINISHED',
                                                   os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
                                                   os.path.join(folder_directory, '_FINISHED').replace("\\", "/"))
@@ -365,15 +369,18 @@ def update_json_new(ssh):
                 if job['filename'] == batch_file and job['status'] != 'QUEUED':
                     job['status'] = 'ERROR'
                     break
+        if stderr.read().strip():
+            print_red(f"Error finding error_occurred.txt in {work_dir}")
+            logging.error(f"Error finding error_occurred.txt in {work_dir}")
 
     # Handle _COMPLETED directory
     completed_directory = os.path.join(folder_directory, '_COMPLETED').replace("\\", "/")
     completed_files = rops.list_remote_files(ssh, completed_directory)
-    print(completed_files)
+    print(f"Completed Files: {completed_files}")
     for batch_file in completed_files:
-        print(batch_file)
+        print(f"Batch files found in _COMPLETED directory: {batch_file}")
         job_name = rops.get_python_file_name_from_batch_file(ssh, os.path.join(completed_directory, batch_file).replace("\\", "/"))
-        print(job_name)
+        print(f"Job name of selected file: {job_name}")
         work_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, job_name)
         command = f"find {work_dir} -maxdepth 1 -name completed.txt"
         stdin, stdout, stderr = ssh.exec_command(command)
@@ -382,6 +389,16 @@ def update_json_new(ssh):
                 if job['filename'] == batch_file:
                     job['status'] = 'COMPLETED'
                     break
+        command = f"find {work_dir} -maxdepth 1 -name extracted.txt"
+        stdin, stdout, stderr = ssh.exec_command(command)
+        if stdout.read().strip():
+            for job in dictionary_list:
+                if job['filename'] == batch_file:
+                    job['status'] = 'FINISHED'
+                    break
+        if stderr.read().strip():
+            print_red(f"Error finding completed.txt in {work_dir}")
+            logging.error(f"Error finding completed.txt in {work_dir}")
 
     # Handle _FINISHED directory
     finished_directory = os.path.join(folder_directory, '_FINISHED').replace("\\", "/")
