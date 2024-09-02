@@ -31,7 +31,7 @@ def create_json(ssh):
     
     # Open json file to check which files are already accounted for. 
     dictionary_list = []
-    cfg.json_file_path = 'batch_files.json'
+    #cfg.json_file_path = 'batch_files.json'
     logging.info(f"create_json(): Comparing batch files found in {base_dir} and {cfg.json_file_path}")
     if os.path.exists(cfg.json_file_path):
         logging.info(f"Found a premade JSON file for batch_files at {cfg.json_file_path}")
@@ -328,31 +328,31 @@ def update_json_new(ssh):
         # job_name = rops.get_python_file_name_from_batch_file(ssh, os.path.join(running_directrory, batch_file).replace("\\", "/"))
         job_name = rops.get_job_name_from_batch_file(ssh, os.path.join(running_directrory, batch_file).replace("\\", "/"))
         jobs = rops.get_squeue_jobs(ssh)
-
-        if job_name in jobs[0]:
-            print(f"This second bit ran, and here are the jobs: {job_name}")
-            for job in dictionary_list:
-                if job['filename'] == batch_file:
-                    job['status'] = 'RUNNING'
-                    print("This third bit ran")
-                    break
-        else:
-            for job in dictionary_list:
-                if job['filename'] == batch_file:
-                    # Check for inprogress.txt 
-                    job = rops.check_and_update_status(ssh, job, 'in_progress.txt', 'ERROR',
-                                                  os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
-                                                  os.path.join(folder_directory, '_ERROR').replace("\\", "/"))
-                    # Check for completed.txt 
-                    job = rops.check_and_update_status(ssh, job, 'completed.txt', 'COMPLETED',
-                                                  os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
-                                                  os.path.join(folder_directory, '_COMPLETED').replace("\\", "/"))
-                    # Check for extracted.txt 
-                    job = rops.check_and_update_status(ssh, job, 'extracted.txt', 'FINISHED',
-                                                  os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
-                                                  os.path.join(folder_directory, '_FINISHED').replace("\\", "/"))
-                    
-                    break
+        if jobs: 
+            if job_name in jobs[0]:
+                print(f"This second bit ran, and here are the jobs: {job_name}")
+                for job in dictionary_list:
+                    if job['filename'] == batch_file:
+                        job['status'] = 'RUNNING'
+                        print("This third bit ran")
+                        break
+            else:
+                for job in dictionary_list:
+                    if job['filename'] == batch_file:
+                        # Check for inprogress.txt 
+                        job = rops.check_and_update_status(ssh, job, 'in_progress.txt', 'ERROR',
+                                                    os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
+                                                    os.path.join(folder_directory, '_ERROR').replace("\\", "/"))
+                        # Check for completed.txt 
+                        job = rops.check_and_update_status(ssh, job, 'completed.txt', 'COMPLETED',
+                                                    os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
+                                                    os.path.join(folder_directory, '_COMPLETED').replace("\\", "/"))
+                        # Check for extracted.txt 
+                        job = rops.check_and_update_status(ssh, job, 'extracted.txt', 'FINISHED',
+                                                    os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
+                                                    os.path.join(folder_directory, '_FINISHED').replace("\\", "/"))
+                        
+                        break
 
     # Handle _ERROR directory
     error_directory = os.path.join(folder_directory, '_ERROR').replace("\\", "/")
@@ -372,6 +372,25 @@ def update_json_new(ssh):
         if stderr.read().strip():
             print_red(f"Error finding error_occurred.txt in {work_dir}")
             logging.error(f"Error finding error_occurred.txt in {work_dir}")
+
+        command = f"find {work_dir} -maxdepth 1 -name completed.txt"
+        stdin, stdout, stderr = ssh.exec_command(command)
+        if stdout.read().strip():
+            for job in dictionary_list:
+                if job['filename'] == batch_file:
+                    job['status'] = 'COMPLETED'
+                    break
+
+        command = f"find {work_dir} -maxdepth 1 -name extracted.txt"
+        stdin, stdout, stderr = ssh.exec_command(command)
+        if stdout.read().strip():
+            for job in dictionary_list:
+                if job['filename'] == batch_file:
+                    job['status'] = 'FINISHED'
+                    break
+        if stderr.read().strip():
+            print_red(f"Error finding completed.txt in {work_dir}")
+            logging.error(f"Error finding completed.txt in {work_dir}")
 
     # Handle _COMPLETED directory
     completed_directory = os.path.join(folder_directory, '_COMPLETED').replace("\\", "/")
@@ -427,10 +446,55 @@ def update_json_new(ssh):
             status_counter[status] += 1
         else:
             status_counter[status] = 1
-
+    print(status_counter)
     return status_counter.get('FINISHED', 0), status_counter.get('COMPLETED', 0), status_counter.get('ERROR', 0), status_counter.get('RUNNING', 0), status_counter.get('QUEUED', 0)
 
+
+def set_status_of_batch_file(status, batch_file='', job_name='', working_directory=''):
+    """
+    Sets the status of a job based on the provided batch_file, job_name, or working_directory.
+
+    :param status: New status to set.
+    :param batch_file: (optional) The filename of the batch file to identify the job.
+    :param job_name: (optional) The job name to identify the job.
+    :param working_directory: (optional) The working directory to identify the job.
+    """
+    # Read the JSON file if it exists
+    if os.path.exists(cfg.json_file_path):
+        with open(cfg.json_file_path, 'r') as json_file:
+            dictionary_list = json.load(json_file)
+    else:
+        raise FileNotFoundError(f"JSON file not found at path: {cfg.json_file_path}")
+
+    # Update the status for the first match found based on the provided identifiers
+    job_found = False
+    for job in dictionary_list:
+        if batch_file and job["filename"] == batch_file:
+            job["status"] = status
+            job_found = True
+            break
+        elif job_name and job["job_name"] == job_name:
+            job["status"] = status
+            job_found = True
+            break
+        elif working_directory and job["working_directory"] == working_directory:
+            job["status"] = status
+            job_found = True
+            break
+
+    # Write back to the JSON file if a job was found and updated
+    if job_found:
+        logging.info(f"Updated {job['filename']} to status {job['status']}")
+        with open(cfg.json_file_path, 'w') as json_file:
+            json.dump(dictionary_list, json_file, indent=4)
+    else:
+        print_red(f"No job found with the given identifiers: batch_file='{batch_file}', job_name='{job_name}', working_directory='{working_directory}'.")
+        logging.error(f"No job found with the given identifiers: batch_file='{batch_file}', job_name='{job_name}', working_directory='{working_directory}'. "\
+                      f"\nFile name is not found in {cfg.json_file_path} ")
+
+
 def find_sbatch_files_from_json():
+    # NOT USED
     logging.info("Entering find_sbatch_files_from_json()")
     # Find and return batch files shown in json_file 
     if os.path.exists(cfg.json_file_path):

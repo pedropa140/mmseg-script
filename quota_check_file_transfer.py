@@ -254,21 +254,8 @@ def handle_cancelled_jobs(ssh, jobs, base_dir):
                     # Job is no longer running, so mark as error and move batch file to _ERROR
                     rops.rename_remote_file(ssh, in_progress_file, error_file)
                     rops.move_batch_file(ssh, batch_file_name, os.path.join(base_dir, "_ERROR").replace("\\", "/"))
-
 # COMPLETED
 def run_sbatch(ssh):
-    batch_files_from_directory = rops.find_sbatch_files_from_directory(ssh)
-    batch_files_from_json = list(json_utils.find_sbatch_files_from_json())
-    logging.info(f'batch_files_from_directory:\t{batch_files_from_directory}')
-    print(f'batch_files_from_directory:\t{batch_files_from_directory}')
-    logging.info(f"batch_files_from_json:\t{batch_files_from_json}")
-    print(f"batch_files_from_json:\t{batch_files_from_json}")
-    # Check json file
-    # Find jobs to run by making sure we aren't rerunning already running jobs
-        # compare squeue names with Json names and batch_file_directory names
-        # find list of exclusive batchfiles, create a list, run the first one on list
-        # move executed job into a new directory?
-
     global queued_jobs
     dictionary_list = []
     json_file_path = 'batch_files.json'
@@ -294,11 +281,40 @@ def run_sbatch(ssh):
         stdin, stdout, stderr = ssh.exec_command(f'cd {cfg.REMOTE_WORKING_PROJECT} ; sbatch {cfg.REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}')
         for counter, line in enumerate(stderr):
             print_red(f"Line 193: {line.strip()}")
+        if stderr == '':
+            print_red("You may have to manually run kinit again. Please do this ASAP!")
+            logging.error("You may have to manually run 'kinit' again. Please do this ASAP!")
         for counter, line in enumerate(stdout):
             print_green(f"Line 193: {line.strip()}")
-        # PROBLEM OCCURING HERE 
-        if (running_item, queued_jobs[0][1]) in queued_jobs:
+            logging.info(f"SBATCH successful: {line.strip()}")
+        time.sleep(1)
+        jobs = rops.get_squeue_jobs(ssh)
+        matching_job = next((job for job in jobs if job['name']==queued_jobs[0][1]), None)
+        if matching_job:
+            json_utils.set_status_of_batch_file("RUNNING", batch_file=queued_jobs[0][0])
+            logging.info(f"{queued_jobs[0][0]} is running!")
             queued_jobs.remove((running_item, queued_jobs[0][1]))
+        else: 
+            logging.info(f"Rerunning command: cd {cfg.REMOTE_WORKING_PROJECT} ; sbatch {cfg.REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}")
+            stdin, stdout, stderr = ssh.exec_command(f'cd {cfg.REMOTE_WORKING_PROJECT} ; sbatch {cfg.REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}')
+            for counter, line in enumerate(stderr):
+                print_red(f"Line 193: {line.strip()}")
+            if stderr == '':
+                print_red("You may have to manually run kinit again. Please do this ASAP!")
+                logging.error("You may have to manually run 'kinit' again. Please do this ASAP!")
+            for counter, line in enumerate(stdout):
+                print_green(f"Line 193: {line.strip()}")
+            time.sleep(5)
+            jobs = rops.get_squeue_jobs(ssh)
+            matching_job = next((job for job in jobs if job['name']==queued_jobs[0][1]), None)
+            if matching_job:
+                json_utils.set_status_of_batch_file("RUNNING", batch_file=queued_jobs[0][0])
+                queued_jobs.remove((running_item, queued_jobs[0][1]))
+                logging.info(f"{queued_jobs[0][0]} is running!")
+            else:
+                json_utils.set_status_of_batch_file("ERROR", batch_file=queued_jobs[0][0])
+                queued_jobs.remove((running_item, queued_jobs[0][1]))
+                logging.error(f"{queued_jobs[0][0]} is not running. Double check issue with model.")
         json_utils.update_json_new(ssh)
     else:
         print("No jobs with status QUEUED")
@@ -441,9 +457,9 @@ def run_every_hour(ssh):
         print_green("Storage usage is within limits.")
         logging.info("Storage usage is within limits.")
     last_status_counts = json_utils.update_json_new(ssh)
-    print(f'STATUS DICTIONARY:\nFinished = {last_status_counts[0]} \nCompleted = {last_status_counts[1]} \nError = {last_status_counts[2]} \nRunning = {last_status_counts[3]} \nQueued = {last_status_counts[4]}')
-    jobs = rops.get_squeue_jobs(ssh)
-    print(jobs)
+    print(f'STATUS DICTIONARY:\nFinished = {last_status_counts[0]} \nCompleted = {last_status_counts[1]} '\
+          f'\nError = {last_status_counts[2]} \nRunning = {last_status_counts[3]} \nQueued = {last_status_counts[4]}')
+    jobs=rops.get_squeue_jobs(ssh)
     check_batch_files(ssh, jobs)
     if last_status_counts[3] < cfg.THRESHOLD:
         run_sbatch(ssh)
@@ -451,7 +467,8 @@ def run_every_hour(ssh):
     # Look and extract logs for jobs that are completed. 
     log_extraction(ssh)
     last_status_counts = json_utils.update_json_new(ssh)
-    print(f'STATUS DICTIONARY:\nFinished = {last_status_counts[0]} \nCompleted = {last_status_counts[1]} \nError = {last_status_counts[2]} \nRunning = {last_status_counts[3]} \nQueued = {last_status_counts[4]}')
+    print(f'STATUS DICTIONARY:\nFinished = {last_status_counts[0]} \nCompleted = {last_status_counts[1]} '\
+          f'\nError = {last_status_counts[2]} \nRunning = {last_status_counts[3]} \nQueued = {last_status_counts[4]}')
 
 
 def test_model(ssh):
