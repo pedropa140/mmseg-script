@@ -357,10 +357,9 @@ def update_json_new(ssh):
     # Handle _ERROR directory
     error_directory = os.path.join(folder_directory, '_ERROR').replace("\\", "/")
     error_files = rops.list_remote_files(ssh, error_directory)
-    print(error_files)
+    print(f"Error files: {error_files}")
     for batch_file in error_files:
         job_name = rops.get_python_file_name_from_batch_file(ssh, os.path.join(error_directory, batch_file).replace("\\", "/"))
-        print(job_name)
         work_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, job_name).replace("\\", "/")
         command = f"find {work_dir} -maxdepth 1 -name error_occurred.txt"
         stdin, stdout, stderr = ssh.exec_command(command)
@@ -397,9 +396,7 @@ def update_json_new(ssh):
     completed_files = rops.list_remote_files(ssh, completed_directory)
     print(f"Completed Files: {completed_files}")
     for batch_file in completed_files:
-        print(f"Batch files found in _COMPLETED directory: {batch_file}")
         job_name = rops.get_python_file_name_from_batch_file(ssh, os.path.join(completed_directory, batch_file).replace("\\", "/"))
-        print(f"Job name of selected file: {job_name}")
         work_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, job_name)
         command = f"find {work_dir} -maxdepth 1 -name completed.txt"
         stdin, stdout, stderr = ssh.exec_command(command)

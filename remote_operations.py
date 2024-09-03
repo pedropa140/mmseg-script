@@ -2,6 +2,7 @@ import paramiko
 import logging
 import os
 import config as cfg
+import time
 
 # Setup logging
 logging.basicConfig(filename='storage_monitor.log', level=logging.INFO,
@@ -15,6 +16,60 @@ def print_red(text):
 
 def print_blue(text):
     print(f"\033[38;2;50;128;128m{text}\033[0m")
+
+def ssh_kinit(gpu, remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=cfg.PASSWORD):
+    try:
+        # Create an SSH client instance
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+        # Connect to the remote host
+        ssh.connect(remote_host, username=username, password=password)
+
+        # Open an SSH session
+        session = ssh.invoke_shell()
+        time.sleep(5)
+
+        session.send(f'srun -G 1 -C {gpu} --pty bash\n')
+        time.sleep(3)
+        output = session.recv(4096).decode('utf-8')
+        print(output)
+
+        # Check for any errors in the output
+        if 'Permission denied' in output or 'error' in output.lower():
+            print("Error running srun command. Running kinit")
+            
+            # Run the kinit command
+            session.send('kinit\n')
+            output = session.recv(4096).decode('utf-8')
+            print(output)
+            # Wait for the prompt to enter the password
+            time.sleep(2)
+            # Provide the kinit password
+            
+            session.send(password + '\n')
+            # Read the output
+            output = session.recv(4096).decode('utf-8')
+            print(output)
+
+            time.sleep(2)  # Wait for the command to execute
+
+            session.send('cd')
+            output = session.recv(4096).decode('utf-8')
+            print(output)
+            time.sleep(1)
+            if 'Permission denied' in output or 'error' in output.lower():
+                session.close()
+                ssh.close()
+                return False
+
+        # Close the session and SSH connection
+        session.close()
+        ssh.close()
+        return True
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 def connect_ssh(remote_host, username, password):
     ssh = paramiko.SSHClient()
@@ -99,9 +154,7 @@ def list_remote_directories(ssh, path):
     logging.info(f"list remote directories in: {path})")
     logging.info(f"Executing: 'ls -d {path}/*/'")
     stdin, stdout, stderr = ssh.exec_command(f'ls -d {path}/*/')  # returns /path/[All_directories]
-    dirs = stdout.read().decode().strip().splitlines()
-    print(f"Listing Remote Directories: {dirs}")
-    print(os.path.basename(d.rstrip('/')) for d in dirs)
+    dirs = stdout.read().decode().strip().splitlines() # becomes a list of directories  
     return [os.path.basename(d.rstrip('/')) for d in dirs] # returns object of directories to check 
     # [d for d in rops.list_remote_directories(ssh, base_dir) if d.startswith('_')] returns directories names only starting with '_'
 
