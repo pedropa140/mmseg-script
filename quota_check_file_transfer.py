@@ -215,6 +215,7 @@ def check_batch_files(ssh, jobs):
             if matching_job:
                 if dir_name != "_RUNNING":
                     rops.move_batch_file(ssh, batch_file_path, os.path.join(base_dir, "_RUNNING").replace("\\", "/"))
+                    json_utils.set_status_of_batch_file("RUNNING", os.path.basename(batch_file_path))
             else:
                 check_and_handle_non_running_job(ssh, job_name, batch_file_path, base_dir)
 
@@ -267,7 +268,9 @@ def remove_job(filename):
     queued_jobs = [job for job in queued_jobs if job[0][0] != filename]
     
     # Remove from the set if it exists
+    logging.info(f"Removing ({queued_jobs[0][0]}, {queued_jobs[0][1]} from queued_jobs list. ")
     seen_batch_files.discard(filename)  # Use remove(filename) if you want an error to be raised if not found
+    queued_jobs.remove((queued_jobs[0][0], queued_jobs[0][1]))
 
 # COMPLETED
 def run_sbatch(ssh):
@@ -547,6 +550,7 @@ def run_every_hour(ssh):
           f'\nError = {last_status_counts[2]} \nRunning = {last_status_counts[3]} \nQueued = {last_status_counts[4]}')
     jobs=rops.get_squeue_jobs(ssh)
     check_batch_files(ssh, jobs)
+    last_status_counts = json_utils.update_json_new(ssh)
     if last_status_counts[3] < cfg.THRESHOLD:
         run_sbatch(ssh)
         move_batch_files_based_on_status(ssh)
@@ -580,26 +584,8 @@ def main():
             schedule.run_pending()
             time.sleep(21)
             print("21 Seconds passed...")
-        # if last_status_counts[3] < cfg.THRESHOLD:
-        #         run_sbatch(ssh)
-        #         move_batch_files_based_on_status(ssh)
-
-        jobs = rops.get_squeue_jobs(ssh)
-        # print(jobs)
-        # check_batch_files(ssh, jobs)
-
-        #move_batch_files_based_on_status(ssh)
-
-        # Check storage usage and move directories to local pc if they are finished and storage is above a certain memory threshold
-        #run_every_hour(ssh)
-
-        # Look and extract logs for jobs that are completed. 
-        #log_extraction(ssh)
-        # last_status_counts = json_utils.update_json_new(ssh)
-        # print(f'STATUS DICTIONARY:\nFinished = {last_status_counts[0]} \nCompleted = {last_status_counts[1]} \nError = {last_status_counts[2]} \nRunning = {last_status_counts[3]} \nQueued = {last_status_counts[4]}')
-        # run_counter+=1
-        # print_green(f"Program Complete counter: {run_counter}")
-
+        
+        # jobs = rops.get_squeue_jobs(ssh)
 
     except Exception as e:
         print(e)

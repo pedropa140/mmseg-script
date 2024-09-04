@@ -214,9 +214,11 @@ def get_squeue_jobs(ssh):
     if __name__ == "__main__":
         if jobs != []:
             for job in jobs:
-                print(f"JobID: {job['job_id']}, job: {job['name']}, state: {job['state']}")
+                print(f"JobID: {job['job_id']}, job: {job['name']}, state: {job['state']}\n")
+                logging.info(f"JobID: {job['job_id']}, job: {job['name']}, state: {job['state']}\n")
         else: 
             print("No jobs are running!")
+            logging.info("No jobs are running currently!")
     return jobs # Returns a list of dict items of jobs with {['job_id'], ['name'], ['status']} else []
 
 def move_batch_file(ssh, src, dest_dir):

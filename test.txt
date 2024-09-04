@@ -1,0 +1,307 @@
+Did not find plink.exe or pscp.exe paths, assuming Operating System to be: Linux
+Local path found!: /common/home/bn155/moved_files
+Successfully connected to SSH.
+Base Directory: mmseg-personal/tools/batch_files
+Checking Directory: mmseg-personal/tools/batch_files/_QUEUED
+Running Command: cat mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip10.batch
+Error in creating JSON:
+Added file hrnet18-fcn-auto_flip10.batch to the JSON file.
+Running Command: cat mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip30.batch
+Error in creating JSON:
+Added file hrnet18-fcn-auto_flip30.batch to the JSON file.
+Running Command: cat mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip70.batch
+Error in creating JSON:
+Added file hrnet18-fcn-auto_flip70.batch to the JSON file.
+Running Command: cat mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip90.batch
+Error in creating JSON:
+Added file hrnet18-fcn-auto_flip90.batch to the JSON file.
+Checking Directory: mmseg-personal/tools/batch_files/_RUNNING
+Checking Directory: mmseg-personal/tools/batch_files/_ERROR
+File hrnet18-fcn-auto_mosaic_10.batch is already in the JSON file.
+File hrnet18-fcn-auto_mosaic_30.batch is already in the JSON file.
+File hrnet18-fcn-auto_mosaic_90.batch is already in the JSON file.
+Running Command: cat mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_1024.batch
+Error in creating JSON:
+Added file hrnet18-fcn-auto_resize_1024.batch to the JSON file.
+Running Command: cat mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_256.batch
+Error in creating JSON:
+Added file hrnet18-fcn-auto_resize_256.batch to the JSON file.
+Running Command: cat mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_512.batch
+Error in creating JSON:
+Added file hrnet18-fcn-auto_resize_512.batch to the JSON file.
+Running Command: cat mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_768.batch
+Error in creating JSON:
+Added file hrnet18-fcn-auto_resize_768.batch to the JSON file.
+Checking Directory: mmseg-personal/tools/batch_files/_COMPLETED
+Checking Directory: mmseg-personal/tools/batch_files/_FINISHED
+File deeplabv3plus_r50_orig.batch is already in the JSON file.
+File hrnet18-fcn-auto_mosaic_50.batch is already in the JSON file.
+File hrnet18-fcn-auto_mosaic_70.batch is already in the JSON file.
+Testing scheduling!
+Usage Percentage: 54.74%
+Storage usage is at 54.74%.
+No directories found to move
+- Updating JSON file: batch_files.json -
+Queued Files: ['hrnet18-fcn-auto_flip10.batch', 'hrnet18-fcn-auto_flip30.batch', 'hrnet18-fcn-auto_flip70.batch', 'hrnet18-fcn-auto_flip90.batch']
+Error files: ['hrnet18-fcn-auto_mosaic_10.batch', 'hrnet18-fcn-auto_mosaic_30.batch', 'hrnet18-fcn-auto_mosaic_90.batch', 'hrnet18-fcn-auto_resize_1024.batch', 'hrnet18-fcn-auto_resize_256.batch', 'hrnet18-fcn-auto_resize_512.batch', 'hrnet18-fcn-auto_resize_768.batch']
+Completed Files: []
+{'FINISHED': 3, 'COMPLETED': 3, 'QUEUED': 4, 'ERROR': 4}
+STATUS DICTIONARY:
+Finished = 3 
+Completed = 3 
+Error = 4 
+Running = 0 
+Queued = 4
+- Updating JSON file: batch_files.json -
+Queued Files: ['hrnet18-fcn-auto_flip10.batch', 'hrnet18-fcn-auto_flip30.batch', 'hrnet18-fcn-auto_flip70.batch', 'hrnet18-fcn-auto_flip90.batch']
+Error files: ['hrnet18-fcn-auto_mosaic_10.batch', 'hrnet18-fcn-auto_mosaic_30.batch', 'hrnet18-fcn-auto_mosaic_90.batch', 'hrnet18-fcn-auto_resize_1024.batch', 'hrnet18-fcn-auto_resize_256.batch', 'hrnet18-fcn-auto_resize_512.batch', 'hrnet18-fcn-auto_resize_768.batch']
+Completed Files: []
+{'FINISHED': 3, 'COMPLETED': 3, 'QUEUED': 4, 'ERROR': 4}
+TODO: ADD MOVING BATCH FILES FROM OTHER DIRECTORIES TO FINISHED
+TODO: Figure out why jobs are queued up again after they are found to be running
+TODO: figure out why jobs are moved from running directory to error even if theyre running
+TODO: queued list isn't being updated properly, figure out the issue
+Kinit loop iteration number: 1
+Running kinit for ampere GPU servers
+ampere GPU initialized: True
+Running kinit for pascal GPU servers
+Error running srun command. Running kinit
+pascal GPU initialized: True
+Running kinit for ada GPU servers
+Error running srun command. Running kinit
+ada GPU initialized: True
+QUEUED LIST: [('hrnet18-fcn-auto_flip10.batch', 'HRNET18_flip10'), ('hrnet18-fcn-auto_flip30.batch', 'HRNET18_flip30'), ('hrnet18-fcn-auto_flip70.batch', 'HRNET18_flip70'), ('hrnet18-fcn-auto_flip90.batch', 'HRNET18_flip90')]
+SELECTED JOB: hrnet18-fcn-auto_flip10.batch
+
+You may have to manually run kinit again. Please do this ASAP!
+Submitted batch job 56075
+- Updating JSON file: batch_files.json -
+Queued Files: ['hrnet18-fcn-auto_flip10.batch', 'hrnet18-fcn-auto_flip30.batch', 'hrnet18-fcn-auto_flip70.batch', 'hrnet18-fcn-auto_flip90.batch']
+Error files: ['hrnet18-fcn-auto_mosaic_10.batch', 'hrnet18-fcn-auto_mosaic_30.batch', 'hrnet18-fcn-auto_mosaic_90.batch', 'hrnet18-fcn-auto_resize_1024.batch', 'hrnet18-fcn-auto_resize_256.batch', 'hrnet18-fcn-auto_resize_512.batch', 'hrnet18-fcn-auto_resize_768.batch']
+Completed Files: []
+{'FINISHED': 3, 'COMPLETED': 3, 'QUEUED': 4, 'ERROR': 4}
+Moved mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_mosaic_10.batch to mmseg-personal/tools/batch_files/_COMPLETED
+Moved mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_mosaic_30.batch to mmseg-personal/tools/batch_files/_COMPLETED
+Moved mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_mosaic_90.batch to mmseg-personal/tools/batch_files/_COMPLETED
+Error moving batch file mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_1024.batch: mv: 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_1024.batch' and 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_1024.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_256.batch: mv: 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_256.batch' and 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_256.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_512.batch: mv: 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_512.batch' and 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_512.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_768.batch: mv: 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_768.batch' and 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_768.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_FINISHED/deeplabv3plus_r50_orig.batch: mv: 'mmseg-personal/tools/batch_files/_FINISHED/deeplabv3plus_r50_orig.batch' and 'mmseg-personal/tools/batch_files/_FINISHED/deeplabv3plus_r50_orig.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_50.batch: mv: 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_50.batch' and 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_50.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_70.batch: mv: 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_70.batch' and 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_70.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip10.batch: mv: 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip10.batch' and 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip10.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip30.batch: mv: 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip30.batch' and 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip30.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip70.batch: mv: 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip70.batch' and 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip70.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip90.batch: mv: 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip90.batch' and 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip90.batch' are the same file
+Executed command in directory mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_10:
+
+
+Successfully renamed mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_10/completed.txt to mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_10/extracted.txt
+Executed command in directory mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_90:
+
+
+Successfully renamed mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_90/completed.txt to mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_90/extracted.txt
+Executed command in directory mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_30:
+
+
+Successfully renamed mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_30/completed.txt to mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_30/extracted.txt
+- Updating JSON file: batch_files.json -
+Queued Files: ['hrnet18-fcn-auto_flip10.batch', 'hrnet18-fcn-auto_flip30.batch', 'hrnet18-fcn-auto_flip70.batch', 'hrnet18-fcn-auto_flip90.batch']
+Error files: ['hrnet18-fcn-auto_resize_1024.batch', 'hrnet18-fcn-auto_resize_256.batch', 'hrnet18-fcn-auto_resize_512.batch', 'hrnet18-fcn-auto_resize_768.batch']
+Completed Files: ['hrnet18-fcn-auto_mosaic_10.batch', 'hrnet18-fcn-auto_mosaic_30.batch', 'hrnet18-fcn-auto_mosaic_90.batch']
+{'FINISHED': 6, 'QUEUED': 4, 'ERROR': 4}
+STATUS DICTIONARY:
+Finished = 6 
+Completed = 0 
+Error = 4 
+Running = 0 
+Queued = 4
+Kinit loop iteration number: 1
+Kinit loop iteration number: 2
+Kinit loop iteration number: 3
+Running kinit for ampere GPU servers
+ampere GPU initialized: True
+Running kinit for pascal GPU servers
+pascal GPU initialized: True
+Running kinit for ada GPU servers
+ada GPU initialized: True
+Testing scheduling!
+Usage Percentage: 54.74%
+Storage usage is at 54.74%.
+Found directory to move: /common/home/bn155/mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_10
+Found directory to move: /common/home/bn155/mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_90
+Found directory to move: /common/home/bn155/mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_30
+Executing: rsync -avz 'bn155@ilab4.cs.rutgers.edu:/common/home/bn155/mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_10', /common/home/bn155/moved_files
+Moved directory /common/home/bn155/mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_10 to local machine: /common/home/bn155/moved_files
+Executing (but not really): rm -rf /common/home/bn155/mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_10
+Removed directory /common/home/bn155/mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_10 from remote machine.
+Executing: rsync -avz 'bn155@ilab4.cs.rutgers.edu:/common/home/bn155/mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_90', /common/home/bn155/moved_files
+Moved directory /common/home/bn155/mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_90 to local machine: /common/home/bn155/moved_files
+Executing (but not really): rm -rf /common/home/bn155/mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_90
+Removed directory /common/home/bn155/mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_90 from remote machine.
+Executing: rsync -avz 'bn155@ilab4.cs.rutgers.edu:/common/home/bn155/mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_30', /common/home/bn155/moved_files
+Moved directory /common/home/bn155/mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_30 to local machine: /common/home/bn155/moved_files
+Executing (but not really): rm -rf /common/home/bn155/mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_30
+Removed directory /common/home/bn155/mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_30 from remote machine.
+Would move these directories ['/common/home/bn155/mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_10', '/common/home/bn155/mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_90', '/common/home/bn155/mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_30']
+- Updating JSON file: batch_files.json -
+Queued Files: ['hrnet18-fcn-auto_flip10.batch', 'hrnet18-fcn-auto_flip30.batch', 'hrnet18-fcn-auto_flip70.batch', 'hrnet18-fcn-auto_flip90.batch']
+Error files: ['hrnet18-fcn-auto_resize_1024.batch', 'hrnet18-fcn-auto_resize_256.batch', 'hrnet18-fcn-auto_resize_512.batch', 'hrnet18-fcn-auto_resize_768.batch']
+Completed Files: ['hrnet18-fcn-auto_mosaic_10.batch', 'hrnet18-fcn-auto_mosaic_30.batch', 'hrnet18-fcn-auto_mosaic_90.batch']
+Error finding completed.txt in mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_10
+Error finding completed.txt in mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_30
+Error finding completed.txt in mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_90
+{'FINISHED': 6, 'QUEUED': 4, 'ERROR': 4}
+STATUS DICTIONARY:
+Finished = 6 
+Completed = 0 
+Error = 4 
+Running = 0 
+Queued = 4
+Moved mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip10.batch to mmseg-personal/tools/batch_files/_RUNNING
+Handling cancelled job: mmseg-personal/tools/batch_files/_RUNNING/hrnet18-fcn-auto_flip10.batch
+- Updating JSON file: batch_files.json -
+Queued Files: ['hrnet18-fcn-auto_flip30.batch', 'hrnet18-fcn-auto_flip70.batch', 'hrnet18-fcn-auto_flip90.batch']
+Error files: ['hrnet18-fcn-auto_flip10.batch', 'hrnet18-fcn-auto_resize_1024.batch', 'hrnet18-fcn-auto_resize_256.batch', 'hrnet18-fcn-auto_resize_512.batch', 'hrnet18-fcn-auto_resize_768.batch']
+Completed Files: ['hrnet18-fcn-auto_mosaic_10.batch', 'hrnet18-fcn-auto_mosaic_30.batch', 'hrnet18-fcn-auto_mosaic_90.batch']
+Error finding completed.txt in mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_10
+Error finding completed.txt in mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_30
+Error finding completed.txt in mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_90
+{'FINISHED': 6, 'RUNNING': 1, 'QUEUED': 3, 'ERROR': 4}
+TODO: ADD MOVING BATCH FILES FROM OTHER DIRECTORIES TO FINISHED
+TODO: Figure out why jobs are queued up again after they are found to be running
+TODO: figure out why jobs are moved from running directory to error even if theyre running
+TODO: queued list isn't being updated properly, figure out the issue
+Kinit loop iteration number: 1
+Running kinit for ampere GPU servers
+ampere GPU initialized: True
+Running kinit for pascal GPU servers
+pascal GPU initialized: True
+Running kinit for ada GPU servers
+ada GPU initialized: True
+QUEUED LIST: [('hrnet18-fcn-auto_flip10.batch', 'HRNET18_flip10'), ('hrnet18-fcn-auto_flip30.batch', 'HRNET18_flip30'), ('hrnet18-fcn-auto_flip70.batch', 'HRNET18_flip70'), ('hrnet18-fcn-auto_flip90.batch', 'HRNET18_flip90')]
+SELECTED JOB: hrnet18-fcn-auto_flip10.batch
+sbatch: error: Unable to open file tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip10.batch
+
+You may have to manually run kinit again. Please do this ASAP!
+- Updating JSON file: batch_files.json -
+Queued Files: ['hrnet18-fcn-auto_flip30.batch', 'hrnet18-fcn-auto_flip70.batch', 'hrnet18-fcn-auto_flip90.batch']
+Error files: ['hrnet18-fcn-auto_flip10.batch', 'hrnet18-fcn-auto_resize_1024.batch', 'hrnet18-fcn-auto_resize_256.batch', 'hrnet18-fcn-auto_resize_512.batch', 'hrnet18-fcn-auto_resize_768.batch']
+Completed Files: ['hrnet18-fcn-auto_mosaic_10.batch', 'hrnet18-fcn-auto_mosaic_30.batch', 'hrnet18-fcn-auto_mosaic_90.batch']
+Error finding completed.txt in mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_10
+Error finding completed.txt in mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_30
+Error finding completed.txt in mmseg-personal/work_dirs/fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_90
+{'FINISHED': 6, 'RUNNING': 1, 'QUEUED': 3, 'ERROR': 4}
+Moved mmseg-personal/tools/batch_files/_COMPLETED/hrnet18-fcn-auto_mosaic_10.batch to mmseg-personal/tools/batch_files/_FINISHED
+Moved mmseg-personal/tools/batch_files/_COMPLETED/hrnet18-fcn-auto_mosaic_30.batch to mmseg-personal/tools/batch_files/_FINISHED
+Moved mmseg-personal/tools/batch_files/_COMPLETED/hrnet18-fcn-auto_mosaic_90.batch to mmseg-personal/tools/batch_files/_FINISHED
+Moved mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_flip10.batch to mmseg-personal/tools/batch_files/_RUNNING
+Error moving batch file mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_1024.batch: mv: 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_1024.batch' and 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_1024.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_256.batch: mv: 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_256.batch' and 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_256.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_512.batch: mv: 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_512.batch' and 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_512.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_768.batch: mv: 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_768.batch' and 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_768.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_FINISHED/deeplabv3plus_r50_orig.batch: mv: 'mmseg-personal/tools/batch_files/_FINISHED/deeplabv3plus_r50_orig.batch' and 'mmseg-personal/tools/batch_files/_FINISHED/deeplabv3plus_r50_orig.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_10.batch: mv: 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_10.batch' and 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_10.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_30.batch: mv: 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_30.batch' and 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_30.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_50.batch: mv: 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_50.batch' and 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_50.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_70.batch: mv: 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_70.batch' and 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_70.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_90.batch: mv: 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_90.batch' and 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_90.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip30.batch: mv: 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip30.batch' and 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip30.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip70.batch: mv: 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip70.batch' and 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip70.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip90.batch: mv: 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip90.batch' and 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip90.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_RUNNING/hrnet18-fcn-auto_flip10.batch: mv: 'mmseg-personal/tools/batch_files/_RUNNING/hrnet18-fcn-auto_flip10.batch' and 'mmseg-personal/tools/batch_files/_RUNNING/hrnet18-fcn-auto_flip10.batch' are the same file
+completed.txt not found in directory mmseg-personal/work_dirs
+- Updating JSON file: batch_files.json -
+Queued Files: ['hrnet18-fcn-auto_flip30.batch', 'hrnet18-fcn-auto_flip70.batch', 'hrnet18-fcn-auto_flip90.batch']
+Error files: ['hrnet18-fcn-auto_flip10.batch', 'hrnet18-fcn-auto_resize_1024.batch', 'hrnet18-fcn-auto_resize_256.batch', 'hrnet18-fcn-auto_resize_512.batch', 'hrnet18-fcn-auto_resize_768.batch']
+Completed Files: []
+{'FINISHED': 6, 'RUNNING': 1, 'QUEUED': 3, 'ERROR': 4}
+STATUS DICTIONARY:
+Finished = 6 
+Completed = 0 
+Error = 4 
+Running = 1 
+Queued = 3
+21 Seconds passed...
+21 Seconds passed...
+21 Seconds passed...
+Testing scheduling!
+Usage Percentage: 54.96%
+Storage usage is at 54.96%.
+No directories found to move
+- Updating JSON file: batch_files.json -
+Queued Files: ['hrnet18-fcn-auto_flip30.batch', 'hrnet18-fcn-auto_flip70.batch', 'hrnet18-fcn-auto_flip90.batch']
+Error files: ['hrnet18-fcn-auto_flip10.batch', 'hrnet18-fcn-auto_resize_1024.batch', 'hrnet18-fcn-auto_resize_256.batch', 'hrnet18-fcn-auto_resize_512.batch', 'hrnet18-fcn-auto_resize_768.batch']
+Completed Files: []
+{'FINISHED': 6, 'RUNNING': 1, 'QUEUED': 3, 'ERROR': 4}
+STATUS DICTIONARY:
+Finished = 6 
+Completed = 0 
+Error = 4 
+Running = 1 
+Queued = 3
+Moved mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_flip10.batch to mmseg-personal/tools/batch_files/_RUNNING
+Handling cancelled job: mmseg-personal/tools/batch_files/_RUNNING/hrnet18-fcn-auto_flip10.batch
+- Updating JSON file: batch_files.json -
+Queued Files: ['hrnet18-fcn-auto_flip30.batch', 'hrnet18-fcn-auto_flip70.batch', 'hrnet18-fcn-auto_flip90.batch']
+Error files: ['hrnet18-fcn-auto_flip10.batch', 'hrnet18-fcn-auto_resize_1024.batch', 'hrnet18-fcn-auto_resize_256.batch', 'hrnet18-fcn-auto_resize_512.batch', 'hrnet18-fcn-auto_resize_768.batch']
+Completed Files: []
+{'FINISHED': 6, 'RUNNING': 1, 'QUEUED': 3, 'ERROR': 4}
+TODO: ADD MOVING BATCH FILES FROM OTHER DIRECTORIES TO FINISHED
+TODO: Figure out why jobs are queued up again after they are found to be running
+TODO: figure out why jobs are moved from running directory to error even if theyre running
+TODO: queued list isn't being updated properly, figure out the issue
+Kinit loop iteration number: 1
+Running kinit for ampere GPU servers
+ampere GPU initialized: True
+Running kinit for pascal GPU servers
+pascal GPU initialized: True
+Running kinit for ada GPU servers
+ada GPU initialized: True
+QUEUED LIST: [('hrnet18-fcn-auto_flip10.batch', 'HRNET18_flip10'), ('hrnet18-fcn-auto_flip30.batch', 'HRNET18_flip30'), ('hrnet18-fcn-auto_flip70.batch', 'HRNET18_flip70'), ('hrnet18-fcn-auto_flip90.batch', 'HRNET18_flip90')]
+SELECTED JOB: hrnet18-fcn-auto_flip10.batch
+sbatch: error: Unable to open file tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip10.batch
+
+You may have to manually run kinit again. Please do this ASAP!
+- Updating JSON file: batch_files.json -
+Queued Files: ['hrnet18-fcn-auto_flip30.batch', 'hrnet18-fcn-auto_flip70.batch', 'hrnet18-fcn-auto_flip90.batch']
+Error files: ['hrnet18-fcn-auto_flip10.batch', 'hrnet18-fcn-auto_resize_1024.batch', 'hrnet18-fcn-auto_resize_256.batch', 'hrnet18-fcn-auto_resize_512.batch', 'hrnet18-fcn-auto_resize_768.batch']
+Completed Files: []
+{'FINISHED': 6, 'RUNNING': 1, 'QUEUED': 3, 'ERROR': 4}
+Moved mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_flip10.batch to mmseg-personal/tools/batch_files/_RUNNING
+Error moving batch file mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_1024.batch: mv: 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_1024.batch' and 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_1024.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_256.batch: mv: 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_256.batch' and 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_256.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_512.batch: mv: 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_512.batch' and 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_512.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_768.batch: mv: 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_768.batch' and 'mmseg-personal/tools/batch_files/_ERROR/hrnet18-fcn-auto_resize_768.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_FINISHED/deeplabv3plus_r50_orig.batch: mv: 'mmseg-personal/tools/batch_files/_FINISHED/deeplabv3plus_r50_orig.batch' and 'mmseg-personal/tools/batch_files/_FINISHED/deeplabv3plus_r50_orig.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_10.batch: mv: 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_10.batch' and 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_10.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_30.batch: mv: 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_30.batch' and 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_30.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_50.batch: mv: 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_50.batch' and 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_50.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_70.batch: mv: 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_70.batch' and 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_70.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_90.batch: mv: 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_90.batch' and 'mmseg-personal/tools/batch_files/_FINISHED/hrnet18-fcn-auto_mosaic_90.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip30.batch: mv: 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip30.batch' and 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip30.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip70.batch: mv: 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip70.batch' and 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip70.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip90.batch: mv: 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip90.batch' and 'mmseg-personal/tools/batch_files/_QUEUED/hrnet18-fcn-auto_flip90.batch' are the same file
+Error moving batch file mmseg-personal/tools/batch_files/_RUNNING/hrnet18-fcn-auto_flip10.batch: mv: 'mmseg-personal/tools/batch_files/_RUNNING/hrnet18-fcn-auto_flip10.batch' and 'mmseg-personal/tools/batch_files/_RUNNING/hrnet18-fcn-auto_flip10.batch' are the same file
+completed.txt not found in directory mmseg-personal/work_dirs
+- Updating JSON file: batch_files.json -
+Queued Files: ['hrnet18-fcn-auto_flip30.batch', 'hrnet18-fcn-auto_flip70.batch', 'hrnet18-fcn-auto_flip90.batch']
+Error files: ['hrnet18-fcn-auto_flip10.batch', 'hrnet18-fcn-auto_resize_1024.batch', 'hrnet18-fcn-auto_resize_256.batch', 'hrnet18-fcn-auto_resize_512.batch', 'hrnet18-fcn-auto_resize_768.batch']
+Completed Files: []
+{'FINISHED': 6, 'RUNNING': 1, 'QUEUED': 3, 'ERROR': 4}
+STATUS DICTIONARY:
+Finished = 6 
+Completed = 0 
+Error = 4 
+Running = 1 
+Queued = 3
+21 Seconds passed...
+^CTraceback (most recent call last):
+  File "quota_check_file_transfer.py", line 597, in <module>
+    main()
+  File "quota_check_file_transfer.py", line 583, in main
+    time.sleep(21)
+KeyboardInterrupt
+
+(openmmlab) bn155@ilab1:~/mmseg-script$ python quota_check_file_transfer.py 
