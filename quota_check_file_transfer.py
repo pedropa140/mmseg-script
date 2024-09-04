@@ -551,7 +551,7 @@ def run_every_hour(ssh):
     jobs=rops.get_squeue_jobs(ssh)
     check_batch_files(ssh, jobs)
     last_status_counts = json_utils.update_json_new(ssh)
-    if last_status_counts[3] < cfg.THRESHOLD:
+    if last_status_counts[3] < cfg.JOB_THRESHOLD:
         run_sbatch(ssh)
         move_batch_files_based_on_status(ssh)
     # Look and extract logs for jobs that are completed. 

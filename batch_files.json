@@ -63,7 +63,7 @@
         "filename": "hrnet18-fcn-auto_resize_1024.batch",
         "job_name": "HRNET18_resize1024",
         "working_directory": "resize_fcn_hr18_2x2_1024x1024_160k_corrosion_auto",
-        "status": "ERROR"
+        "status": "QUEUED"
     },
     {
         "filename": "hrnet18-fcn-auto_resize_256.batch",
@@ -81,6 +81,6 @@
         "filename": "hrnet18-fcn-auto_resize_768.batch",
         "job_name": "HRNET18_resize768",
         "working_directory": "resize_fcn_hr18_2x2_768x768_160k_corrosion_auto",
-        "status": "ERROR"
+        "status": "QUEUED"
     }
 ]

@@ -30,7 +30,8 @@ Make sure you have your .env file with the variables mentioned above
 
 global THRESHOLD
 THRESHOLD = 45  # Set your threshold percentage
-
+global JOB_THRESHOLD
+JOB_THRESHOLD = 5
 global REMOTE_BASE_PATH 
 global REMOTE_WORKING_PROJECT 
 global REMOTE_WORK_DIR  
