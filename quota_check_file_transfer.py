@@ -117,7 +117,7 @@ def find_directories_to_move(ssh):
         print_red(stderr_output.split('\n'))
     
     output = stdout.read().decode().strip().split('\n')
-    
+    logging.info(f"Directories to move: {output}")
     for line in output:
         if line:  # Make sure it's not an empty line
             directory = os.path.dirname(line)
@@ -186,10 +186,10 @@ def move_directories(ssh, directories):
             # Remove the directory on the remote machine after successful transfer
             logging.info(f"Executing: rm -rf {directory}")
             print_red(f"Executing (but not really): rm -rf {directory}")
-            # stdin, stdout, stderr = ssh.exec_command(f'rm -rf {directory}')
-            # error = stderr.read().decode().strip()
-            # if error:
-            #     raise Exception(f"Failed to remove directory {directory} on remote machine: {error}")
+            stdin, stdout, stderr = ssh.exec_command(f'rm -rf {directory}')
+            error = stderr.read().decode().strip()
+            if error:
+                raise Exception(f"Failed to remove directory {directory} on remote machine: {error}")
 
             print_green(f"Removed directory {directory} from remote machine.")
             logging.info(f"Removed directory {directory} from remote machine.")
@@ -209,7 +209,7 @@ def check_batch_files(ssh, jobs):
         for filename in rops.list_remote_files(ssh, full_dir_path):
             batch_file_path = os.path.join(full_dir_path, filename).replace("\\", "/")
             job_name = rops.get_job_name_from_batch_file(ssh, batch_file_path)
-            print(job_name)
+            # print(job_name)
             matching_job = next((job for job in jobs if job["name"] == job_name), None)
             # Determine if any running job from the batch file directory that isn't already in _RUNNING is moved to _RUNNING 
             if matching_job:
@@ -236,6 +236,7 @@ def check_and_handle_non_running_job(ssh, job_name, batch_file_path, base_dir):
             print(f"Batch File {os.path.basename(batch_file_path)} is not in _ERROR directory. Moving to _ERROR/")
             logging.info(f"Batch File {os.path.basename(batch_file_path)} is not in _ERROR directory. Moving to _ERROR/")
             rops.move_batch_file(ssh, batch_file_path, os.path.join(base_dir, "_ERROR").replace("\\", "/"))
+            json_utils.set_status_of_batch_file("ERROR", os.path.basename(batch_file_path))
 # COMPLETED
 def handle_cancelled_jobs(ssh, jobs, base_dir):
     logging.info(f"Handle cancelled jobs: Jobs: {jobs}, in directory: {base_dir}) ---")
@@ -279,8 +280,11 @@ def run_sbatch(ssh):
         with open(json_file_path, 'r') as json_file:
             dictionary_list = json.load(json_file)
     running_item = ""
-    print_blue("TODO: ADD AUTOMATION FOR KINIT BEFORE RUNNING JOBS")
+    #print_blue("TODO: ADD KINIT INITIALIZATION BEFORE/AFTER SBATCH FAILS?")
     print_blue("TODO: ADD MOVING BATCH FILES FROM OTHER DIRECTORIES TO FINISHED")
+    print_blue("TODO: Figure out why jobs are queued up again after they are found to be running")
+    print_blue("TODO: figure out why jobs are moved from running directory to error even if theyre running")
+    print_blue("TODO: queued list isn't being updated properly, figure out the issue")
     for item in dictionary_list:
         if item['status'] == 'QUEUED' :
             filename = item['filename']
@@ -294,101 +298,92 @@ def run_sbatch(ssh):
                 seen_batch_files.add(filename)
 
     if len(queued_jobs) > 0:
-        running_item = queued_jobs[0][0]
-        print(f'QUEUED LIST: {queued_jobs}')
-        logging.info(f'QUEUED LIST: {queued_jobs}')
-        print(f'SELECTED JOB: {running_item}')
-        logging.info(f'SELECTED JOB: {running_item}')
-        logging.info(f"Executing command: cd {cfg.REMOTE_WORKING_PROJECT} ; sbatch {cfg.REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}")
-        stdin, stdout, stderr = ssh.exec_command(f'cd {cfg.REMOTE_WORKING_PROJECT} ; sbatch {cfg.REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}')
-        for counter, line in enumerate(stderr):
-            print_red(f"{line.strip()}")
-        if stderr.read().decode() == '':
-            print_red("You may have to manually run kinit again. Please do this ASAP!")
-            logging.error("You may have to manually run 'kinit' again. Please do this ASAP!")
-        for counter, line in enumerate(stdout):
-            print_green(f"{line.strip()}")
-            logging.info(f"SBATCH successful: {line.strip()}")
-        time.sleep(5)
-        jobs = rops.get_squeue_jobs(ssh)
-        matching_job = next((job for job in jobs if job['name']==queued_jobs[0][1]), None)
-
-        print(f"from run_sbatch() - Matching Job: {matching_job}")
-        if matching_job:
-            if matching_job['status'] == "RUNNING":
-                json_utils.set_status_of_batch_file("RUNNING", batch_file=queued_jobs[0][0])
-                logging.info(f"{queued_jobs[0][0]} is running!")
-                remove_job(queued_jobs[0][0])
-                #queued_jobs.remove((running_item, queued_jobs[0][1]))
-        else: 
-            logging.info(f"Rerunning command: cd {cfg.REMOTE_WORKING_PROJECT} ; sbatch {cfg.REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}")
+        gpu_initialized = rops.ssh_kinit_loop(1)
+        if gpu_initialized:
+            running_item = queued_jobs[0][0]
+            print(f'QUEUED LIST: {queued_jobs}')
+            logging.info(f'QUEUED LIST: {queued_jobs}')
+            print(f'SELECTED JOB: {running_item}')
+            logging.info(f'SELECTED JOB: {running_item}')
+            
+            logging.info(f"Executing command: cd {cfg.REMOTE_WORKING_PROJECT} ; sbatch {cfg.REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}")
             stdin, stdout, stderr = ssh.exec_command(f'cd {cfg.REMOTE_WORKING_PROJECT} ; sbatch {cfg.REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}')
             for counter, line in enumerate(stderr):
                 print_red(f"{line.strip()}")
-            if stderr == '':
+            if stderr.read().decode() == '':
+                print_red(f"{stderr.read().decode()}")
                 print_red("You may have to manually run kinit again. Please do this ASAP!")
                 logging.error("You may have to manually run 'kinit' again. Please do this ASAP!")
             for counter, line in enumerate(stdout):
                 print_green(f"{line.strip()}")
+                logging.info(f"SBATCH successful: {line.strip()}")
             time.sleep(5)
             jobs = rops.get_squeue_jobs(ssh)
             matching_job = next((job for job in jobs if job['name']==queued_jobs[0][1]), None)
+
+            #print(f"from run_sbatch() - Matching Job: {matching_job}")
             if matching_job:
-                if matching_job['status'] == "RUNNING":
+                if matching_job['state'] == "RUNNING":
                     json_utils.set_status_of_batch_file("RUNNING", batch_file=queued_jobs[0][0])
+                    logging.info(f"{queued_jobs[0][0]} is running!")
                     remove_job(queued_jobs[0][0])
                     #queued_jobs.remove((running_item, queued_jobs[0][1]))
-                    logging.info(f"{queued_jobs[0][0]} is running!")
             else:
-                json_utils.set_status_of_batch_file("ERROR", batch_file=queued_jobs[0][0])
-                '''
-                cfg.REMOTE_WORKING_PROJET
-                cfg.REMOTE_BATCH_FILE_LOCATION
-                {queued_jobs[0][0]}
-
-                working_directory = get_python_file_name_from_batch_file({queued_jobs[0][0]})
-                
-                project_directory = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, working_directory).replace('\\','/')
-                text_file = find {project_directory} *.txt
-                if text_file: 
-                    mv command 
+                logging.info(f"Rerunning command: cd {cfg.REMOTE_WORKING_PROJECT} ; sbatch {cfg.REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}")
+                stdin, stdout, stderr = ssh.exec_command(f'cd {cfg.REMOTE_WORKING_PROJECT} ; sbatch {cfg.REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}')
+                for counter, line in enumerate(stderr):
+                    print_red(f"{line.strip()}")
+                if stderr == '':
+                    print_red("You may have to manually run kinit again. Please do this ASAP!")
+                    logging.error("You may have to manually run 'kinit' again. Please do this ASAP!")
+                for counter, line in enumerate(stdout):
+                    print_green(f"{line.strip()}")
+                time.sleep(5)
+                jobs = rops.get_squeue_jobs(ssh)
+                matching_job = next((job for job in jobs if job['name']==queued_jobs[0][1]), None)
+                if matching_job:
+                    if matching_job['status'] == "RUNNING":
+                        json_utils.set_status_of_batch_file("RUNNING", batch_file=queued_jobs[0][0])
+                        remove_job(queued_jobs[0][0])
+                        #queued_jobs.remove((running_item, queued_jobs[0][1]))
+                        logging.info(f"{queued_jobs[0][0]} is running!")
                 else:
-                    touch os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, working_directory, "error_occurred.txt")
-
-                if find 
-                '''
-                working_directory = rops.get_python_file_name_from_batch_file(ssh, os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_BATCH_FILE_LOCATION, queued_jobs[0][0]).replace('\\','/'))
-                # ssh.exec_command(f"touch {os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, working_directory, "error_occurred.txt").replace("\\", "/")}")
-                
-                project_directory = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, working_directory).replace('\\','/')
-                stdin, stdout, stderr = ssh.exec_command(f"find {project_directory} -name *.txt")
-                
-                if stdout:
-                    # Rename a textfile if there is one already in the working directory 
-                    source_directory = stdout.read().decode().strip()
-                    dest_directory = os.path.join(project_directory, "error_occurred.txt").replace('\\','/')
-                    logging.info(f"Executing command: mv {source_directory} {dest_directory}")
-                    rops.rename_remote_file(ssh, source_directory, dest_directory)
-                else:
-                    # Add a new error_occurred text file in the working directory if there isn't a textfile found. 
-                    error_textfile_path = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, working_directory, 'error_occurred.txt').replace("\\", '/')
-                    logging.info(f"Executing command: touch {error_textfile_path}")
-                    stdin, stdout, stderr = ssh.exec_command(f"touch {error_textfile_path}")
-                    if stderr:
-                        logging.info(stderr.read().decode())
-                # Add logic to move batch file VVV
-                batch_file_source = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_BATCH_FILE_LOCATION, queued_jobs[0][0]).replace('\\', '/')
-                batch_file_dest = os.path.join(cfg.REMOTE_WORKING_PROJECT, *cfg.REMOTE_BATCH_FILE_LOCATION.split('/')[:-1],"_ERROR").replace('\\', '/')
-                print_green(f"Moving {batch_file_source} to {batch_file_dest}") 
-                rops.move_batch_file(ssh, batch_file_source, batch_file_dest)
-                if rops.check_remote_file_exists(ssh, os.path.join(batch_file_dest, queued_jobs[0][0]).replace('\\','/')):
-                    print_green(f"File {queued_jobs[0][0]} successfully moved to {batch_file_dest}.")
-                else:
-                    print_red(f"File {queued_jobs[0][0]} was not moved successfully to {batch_file_dest}.")
-                remove_job(queued_jobs[0][0])
-                #queued_jobs.remove((running_item, queued_jobs[0][1]))
-                logging.error(f"{queued_jobs[0][0]} is not running. Double check issue with model.")
-        json_utils.update_json_new(ssh)
+                    json_utils.set_status_of_batch_file("ERROR", batch_file=queued_jobs[0][0])
+                    working_directory = rops.get_python_file_name_from_batch_file(ssh, os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_BATCH_FILE_LOCATION, queued_jobs[0][0]).replace('\\','/'))
+                    # ssh.exec_command(f"touch {os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, working_directory, "error_occurred.txt").replace("\\", "/")}")
+                    
+                    project_directory = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, working_directory).replace('\\','/')
+                    stdin, stdout, stderr = ssh.exec_command(f"find {project_directory} -name *.txt")
+                    
+                    if stdout:
+                        # Rename a textfile if there is one already in the working directory 
+                        source_directory = stdout.read().decode().strip()
+                        dest_directory = os.path.join(project_directory, "error_occurred.txt").replace('\\','/')
+                        logging.info(f"Executing command: mv {source_directory} {dest_directory}")
+                        rops.rename_remote_file(ssh, source_directory, dest_directory)
+                    else:
+                        # Add a new error_occurred text file in the working directory if there isn't a textfile found. 
+                        error_textfile_path = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, working_directory, 'error_occurred.txt').replace("\\", '/')
+                        logging.info(f"Executing command: touch {error_textfile_path}")
+                        stdin, stdout, stderr = ssh.exec_command(f"touch {error_textfile_path}")
+                        if stderr:
+                            logging.info(stderr.read().decode())
+                    # Add logic to move batch file VVV
+                    batch_file_source = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_BATCH_FILE_LOCATION, queued_jobs[0][0]).replace('\\', '/')
+                    batch_file_dest = os.path.join(cfg.REMOTE_WORKING_PROJECT, *cfg.REMOTE_BATCH_FILE_LOCATION.split('/')[:-1],"_ERROR").replace('\\', '/')
+                    print_green(f"Moving {batch_file_source} to {batch_file_dest}") 
+                    rops.move_batch_file(ssh, batch_file_source, batch_file_dest)
+                    if rops.check_remote_file_exists(ssh, os.path.join(batch_file_dest, queued_jobs[0][0]).replace('\\','/')):
+                        print_green(f"File {queued_jobs[0][0]} successfully moved to {batch_file_dest}.")
+                    else:
+                        print_red(f"File {queued_jobs[0][0]} was not moved successfully to {batch_file_dest}.")
+                    remove_job(queued_jobs[0][0])
+                    #queued_jobs.remove((running_item, queued_jobs[0][1]))
+                    logging.error(f"{queued_jobs[0][0]} is not running. Double check issue with model.")
+            json_utils.update_json_new(ssh)
+        else:
+            print_red("May need to run kinit again to start running jobs")
+            logging.error("May need to run kinit again to start running jobs") 
     else:
         print("No jobs with status QUEUED")
         logging.info("No jobs with status QUEUED")
@@ -399,12 +394,29 @@ def move_batch_files_based_on_status(ssh):
     with open(cfg.json_file_path, 'r') as f:
         batch_files_data = json.load(f)
 
-    for batch_file in batch_files_data:
-        filename = batch_file['filename']
-        status = batch_file['status']
-        base_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_BATCH_FILE_LOCATION).replace("\\", "/")
-        base_dir = '/'.join(base_dir.split('/')[:-1])
-        
+    base_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_BATCH_FILE_LOCATION).replace("\\", "/")
+    base_dir = '/'.join(base_dir.split('/')[:-1])
+    
+    dirs_to_check = [d for d in rops.list_remote_directories(ssh, base_dir) if d.startswith('_')] # in [_QUEUED, _ERROR, _RUNNING, _COMPLETED, _FINISHED]
+    # in [_QUEUED] or [_ERROR] or whatever
+    for dir_name in dirs_to_check:          
+        full_dir_path = os.path.join(base_dir, dir_name).replace("\\", "/") 
+        # Find all files within directory
+        for filename in rops.list_remote_files(ssh, full_dir_path): 
+            # Get the name/path of the batch file
+            batch_file_source_path = os.path.join(full_dir_path, filename).replace("\\", "/") 
+            # Look through batch_files json_data
+            for batch_file in batch_files_data:            
+                 # Find json data entry that matches the name of the batch file we are looking at
+                if batch_file['filename'] == filename:    
+                    # get the status of the file from json data
+                    status = batch_file['status']          
+                    # If the directory doesn't match the status 
+                    if dirs_to_check != '_'+status:        
+                        # Move the batch file
+                        rops.move_batch_file(ssh, batch_file_source_path, os.path.join(base_dir, f"_{status}").replace('\\','/'))
+
+    '''
         # Define source and destination directories
         source_dir = f"{base_dir}/_QUEUED/{filename}"
         if status == "RUNNING":
@@ -439,6 +451,7 @@ def move_batch_files_based_on_status(ssh):
                 else:
                     print(f"Successfully moved {filename} to {dest_dir}")
                     logging.info(f"Successfully moved {filename} to {dest_dir}")
+        '''
 
 def log_extraction(ssh):
     logging.info("Extracting logs for models that have completed training")
@@ -521,7 +534,7 @@ def run_every_hour(ssh):
     if usage_percentage > cfg.THRESHOLD:
         directories = find_directories_to_move(ssh)
         if directories:
-            #move_directories(ssh, directories)
+            move_directories(ssh, directories)
             print(f"Would move these directories {directories}")
         else:
             print_red("No directories found to move")
@@ -543,34 +556,30 @@ def run_every_hour(ssh):
     print(f'STATUS DICTIONARY:\nFinished = {last_status_counts[0]} \nCompleted = {last_status_counts[1]} '\
           f'\nError = {last_status_counts[2]} \nRunning = {last_status_counts[3]} \nQueued = {last_status_counts[4]}')
 
+def run_every_six_hours():
+    rops.ssh_kinit_loop(3)
 
 def test_model(ssh):
     # TODO Implement python tools/test.py custom_config.py work_dirs/[job-name]/best_*.pth --eval mIoU --show-dir work_dir/[job-name]/best_*_iter_output function call on completed models
     return NotImplementedError
 
+
 def main():
     # TODO FIX STATUS UPDATES FOR RUNNING MODELS... We might not be clearing lists to queue and sbatch models properly
     run_counter = 0
-    gpu_list = ['ampere', 'pascal', 'ada']
     ssh = rops.connect_ssh(remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=cfg.PASSWORD)
-    #json_utils.create_json(ssh)
-    # schedule.every().minute.do(run_every_hour, ssh)
-    # run_every_hour(ssh)
-    for i in range(1,4):
-        print(f"Iteration number: {i}")
-        for card in gpu_list:
-            gpus_initialized = False
-            while not gpus_initialized:
-                print(card)
-                gpus_initialized = rops.ssh_kinit(card)
-                print(gpus_initialized)
+    json_utils.create_json(ssh)
+    schedule.every().minute.do(run_every_hour, ssh)
+    schedule.every(6).hours.do(run_every_six_hours)
+    run_every_hour(ssh)
+    run_every_six_hours()
 
     try:
-        # while True:
-        #     # Run all pending scheduled tasks
-        #     schedule.run_pending()
-        #     time.sleep(21)
-        #     print("21 Seconds passed...")
+        while True:
+            # Run all pending scheduled tasks
+            schedule.run_pending()
+            time.sleep(21)
+            print("21 Seconds passed...")
         # if last_status_counts[3] < cfg.THRESHOLD:
         #         run_sbatch(ssh)
         #         move_batch_files_based_on_status(ssh)

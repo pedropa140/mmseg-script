@@ -17,6 +17,22 @@ def print_red(text):
 def print_blue(text):
     print(f"\033[38;2;50;128;128m{text}\033[0m")
 
+def ssh_kinit_loop(num_of_loop_iterations):
+    gpu_list = ['ampere', 'pascal', 'ada']
+    for i in range(0,num_of_loop_iterations):
+        logging.info(f"Kinit Loop iteration number: {i+1}")
+        print(f"Kinit loop iteration number: {i+1}")
+    for card in gpu_list:
+        gpus_initialized = False
+        while not gpus_initialized:
+            print(f"Running kinit for {card} GPU servers")
+            logging.info(f"Running kinit for {card} GPU servers")
+            gpus_initialized = ssh_kinit(card)
+            print(f"{card} GPU initialized: {gpus_initialized}")
+            logging.info(f"{card} GPU initialized: {gpus_initialized}")
+    else:
+        return True
+
 def ssh_kinit(gpu, remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=cfg.PASSWORD):
     try:
         # Create an SSH client instance
@@ -27,22 +43,23 @@ def ssh_kinit(gpu, remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=
         ssh.connect(remote_host, username=username, password=password)
 
         # Open an SSH session
+        logging.info("Started a shell to check GPU availability")
         session = ssh.invoke_shell()
         time.sleep(5)
-
+        logging.info(f'Sending Command: srun -G 1 -C {gpu} --pty bash')
         session.send(f'srun -G 1 -C {gpu} --pty bash\n')
         time.sleep(3)
         output = session.recv(4096).decode('utf-8')
-        print(output)
+        logging.info(f"Shell output: {output}")
 
         # Check for any errors in the output
         if 'Permission denied' in output or 'error' in output.lower():
             print("Error running srun command. Running kinit")
-            
+            logging.info("Error running srun command. Running kinit")
             # Run the kinit command
             session.send('kinit\n')
             output = session.recv(4096).decode('utf-8')
-            print(output)
+            logging.info(output)
             # Wait for the prompt to enter the password
             time.sleep(2)
             # Provide the kinit password
@@ -50,13 +67,12 @@ def ssh_kinit(gpu, remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=
             session.send(password + '\n')
             # Read the output
             output = session.recv(4096).decode('utf-8')
-            print(output)
 
             time.sleep(2)  # Wait for the command to execute
 
             session.send('cd')
             output = session.recv(4096).decode('utf-8')
-            print(output)
+            logging.info(f"Shell output for cd command: {output}")
             time.sleep(1)
             if 'Permission denied' in output or 'error' in output.lower():
                 session.close()
@@ -70,6 +86,7 @@ def ssh_kinit(gpu, remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=
 
     except Exception as e:
         print(f"An error occurred: {e}")
+        logging.error(f"An error occurred: {e}")
 
 def connect_ssh(remote_host, username, password):
     ssh = paramiko.SSHClient()
