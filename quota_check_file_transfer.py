@@ -19,6 +19,7 @@ netid=[username]
 remote_host=ilab4.cs.rutgers.edu
 password=[password_to_remote_host]
 local_path=[/path/to/place/folders/on_local_pc]
+    i.e. local_path=/home/diez-lab/Corrosion_Detection/model_outputs
 completed_marker_file=completed.txt
 finished_marker_file=finished.txt
 remote_base_path=/common/home/bn155
@@ -139,7 +140,7 @@ def move_directories(ssh, directories):
                 print_red(f"Executing: rsync -avz '{cfg.USERNAME}@{cfg.REMOTE_HOST}:{directory}', {cfg.LOCAL_PATH}")
                 # UNCOMMENT SSHPASS LINE IF RUNNING ON LAB PC                
                 command = [
-                #    'sshpass', '-p', PASSWORD,
+                    'sshpass', '-p', cfg.PASSWORD,
                     'rsync', '-avz',
                     f'{cfg.USERNAME}@{cfg.REMOTE_HOST}:{directory}', cfg.LOCAL_PATH
                 ]
@@ -592,17 +593,16 @@ def log_extraction(ssh):
                     logging.info(f'Executing: mv {completed_job} {extracted_job}')
                     rename_command = f'mv {completed_job} {extracted_job}'
                     # Execute the rename command on the remote server
-                    #stdin, stdout, stderr = ssh.exec_command(rename_command)
+                    stdin, stdout, stderr = ssh.exec_command(rename_command)
                     
                     # Check for errors
-                    #error = stderr.read().decode().strip()
-                    # if error:
-                    #     logging.error(f"Error renaming {completed_job}: {error}")
-                    #     print_red(f"Error renaming {completed_job}: {error}")
-                    # else:
-                    #     logging.info(f"Successfully renamed {completed_job} to {extracted_job}")
-                    #     print_green(f"Successfully renamed {completed_job} to {extracted_job}")
-
+                    error = stderr.read().decode().strip()
+                    if error:
+                        logging.error(f"Error renaming {completed_job}: {error}")
+                        print_red(f"Error renaming {completed_job}: {error}")
+                    else:
+                        logging.info(f"Successfully renamed {completed_job} to {extracted_job}")
+                        print_green(f"Successfully renamed {completed_job} to {extracted_job}")
                 else:
                     logging.error(f'No JSON files were found in this directory: {directory}')
                     print_red(f'No JSON files were found in this directory: {directory}')
@@ -612,7 +612,6 @@ def log_extraction(ssh):
     except Exception as e:
         logging.error(f"An error occured: {str(e)}")
         print(f"An error occured: {str(e)}")
-
 
 def run_every_hour(ssh):
     print("Testing scheduling!")
@@ -661,21 +660,19 @@ def main():
     # TODO FIX STATUS UPDATES FOR RUNNING MODELS... We might not be clearing lists to queue and sbatch models properly
     run_counter = 0
     ssh = rops.connect_ssh(remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=cfg.PASSWORD)
-    # json_utils.create_json(ssh)
-    # schedule.every().minute.do(run_every_hour, ssh)
-    # schedule.every(6).hours.do(run_every_six_hours)
-    # run_every_hour(ssh)
+    json_utils.create_json(ssh)
+    schedule.every().minute.do(run_every_hour, ssh)
+    # schedule.every(2).minute.do(run_every_six_hours)
+    run_every_hour(ssh)
     # run_every_six_hours()
 
     try:
-        # while True:
-        #     # Run all pending scheduled tasks
-        #     schedule.run_pending()
-        #     time.sleep(21)
-        #     print("21 Seconds passed...")
-        
-        # jobs = rops.get_squeue_jobs(ssh)
-        log_extraction(ssh)
+        while True:
+            # Run all pending scheduled tasks
+            schedule.run_pending()
+            time.sleep(60)
+            run_counter+=1
+            print(f"Run counter: {run_counter}. 60 Seconds passed.")
     except Exception as e:
         print(e)
         logging.error(f"An error occurred: {str(e)}")

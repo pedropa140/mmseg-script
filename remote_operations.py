@@ -87,6 +87,9 @@ def ssh_kinit(gpu, remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=
     except Exception as e:
         print(f"An error occurred: {e}")
         logging.error(f"An error occurred: {e}")
+    finally: 
+        session.close()
+        ssh.close()
 
 def connect_ssh(remote_host, username, password):
     ssh = paramiko.SSHClient()

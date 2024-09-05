@@ -1,74 +1,8 @@
 [
     {
-        "filename": "hrnet18-fcn-auto_mosaic_50.batch",
-        "job_name": "1_HRNET18_mos50_fail_error2",
-        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_50",
-        "status": "FINISHED"
-    },
-    {
-        "filename": "hrnet18-fcn-auto_mosaic_90.batch",
-        "job_name": "1_HRNET18_mos90_complete",
-        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_90",
-        "status": "FINISHED"
-    },
-    {
-        "filename": "deeplabv3plus_r50_orig.batch",
-        "job_name": "DLv3plus_orig_fail_kill",
-        "working_directory": "deeplabv3plus_r50-d8_512x512_160k_coco_corrosion_original",
-        "status": "FINISHED"
-    },
-    {
-        "filename": "hrnet18-fcn-auto_mosaic_30.batch",
-        "job_name": "1_HRNET18_mos30_fail_error",
-        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_30",
-        "status": "FINISHED"
-    },
-    {
-        "filename": "hrnet18-fcn-auto_mosaic_70.batch",
-        "job_name": "1_HRNET18_mos70",
-        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_70",
-        "status": "FINISHED"
-    },
-    {
-        "filename": "hrnet18-fcn-auto_mosaic_10.batch",
-        "job_name": "1_HRNET18_mos10",
-        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_10",
-        "status": "FINISHED"
-    },
-    {
-        "filename": "hrnet18-fcn-auto_flip10.batch",
-        "job_name": "HRNET18_flip10",
-        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_flip_10",
-        "status": "RUNNING"
-    },
-    {
-        "filename": "hrnet18-fcn-auto_flip30.batch",
-        "job_name": "HRNET18_flip30",
-        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_flip_30",
-        "status": "RUNNING"
-    },
-    {
-        "filename": "hrnet18-fcn-auto_flip70.batch",
-        "job_name": "HRNET18_flip70",
-        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_flip_70",
-        "status": "RUNNING"
-    },
-    {
-        "filename": "hrnet18-fcn-auto_flip90.batch",
-        "job_name": "HRNET18_flip90",
-        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_flip_90",
-        "status": "RUNNING"
-    },
-    {
         "filename": "hrnet18-fcn-auto_resize_1024.batch",
         "job_name": "HRNET18_resize1024",
         "working_directory": "resize_fcn_hr18_2x2_1024x1024_160k_corrosion_auto",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "hrnet18-fcn-auto_resize_256.batch",
-        "job_name": "HRNET18_resize256",
-        "working_directory": "resize_fcn_hr18_2x2_256x256_160k_corrosion_auto",
         "status": "RUNNING"
     },
     {
@@ -78,9 +12,81 @@
         "status": "RUNNING"
     },
     {
+        "filename": "hrnet18-fcn-auto_resize_256.batch",
+        "job_name": "HRNET18_resize256",
+        "working_directory": "resize_fcn_hr18_2x2_256x256_160k_corrosion_auto",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hrnet18-fcn-auto_flip10.batch",
+        "job_name": "HRNET18_flip10",
+        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_flip_10",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hrnet18-fcn-auto_flip30.batch",
+        "job_name": "HRNET18_flip30",
+        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_flip_30",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hrnet18-fcn-auto_flip70.batch",
+        "job_name": "HRNET18_flip70",
+        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_flip_70",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hrnet18-fcn-auto_flip90.batch",
+        "job_name": "HRNET18_flip90",
+        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_flip_90",
+        "status": "FINISHED"
+    },
+    {
         "filename": "hrnet18-fcn-auto_resize_768.batch",
         "job_name": "HRNET18_resize768",
         "working_directory": "resize_fcn_hr18_2x2_768x768_160k_corrosion_auto",
-        "status": "QUEUED"
+        "status": "FINISHED"
+    },
+    {
+        "filename": "deeplabv3plus_r50_orig.batch",
+        "job_name": "DLv3plus_orig_fail_kill",
+        "working_directory": "deeplabv3plus_r50-d8_512x512_160k_coco_corrosion_original",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hrnet18-fcn-auto_mosaic_10.batch",
+        "job_name": "1_HRNET18_mos10",
+        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_10",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hrnet18-fcn-auto_mosaic_30.batch",
+        "job_name": "1_HRNET18_mos30_fail_error",
+        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_30",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hrnet18-fcn-auto_mosaic_50.batch",
+        "job_name": "1_HRNET18_mos50_fail_error2",
+        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_50",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hrnet18-fcn-auto_mosaic_70.batch",
+        "job_name": "1_HRNET18_mos70",
+        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_70",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hrnet18-fcn-auto_mosaic_90.batch",
+        "job_name": "1_HRNET18_mos90_complete",
+        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_mosaic_90",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "ConvNext.batch",
+        "job_name": "ConvNext_original#jobname",
+        "working_directory": "upernet_convnext_tiny_fp16_512x512_160k_corrosion",
+        "status": "ERROR"
     }
 ]
