@@ -419,42 +419,130 @@ def move_batch_files_based_on_status(ssh):
                         # Move the batch file
                         rops.move_batch_file(ssh, batch_file_source_path, os.path.join(base_dir, f"_{status}").replace('\\','/'))
 
-    '''
-        # Define source and destination directories
-        source_dir = f"{base_dir}/_QUEUED/{filename}"
-        if status == "RUNNING":
-            dest_dir = f"{base_dir}/_RUNNING/{filename}"
-            need_to_move = True
-        elif status == "ERROR":
-            dest_dir = f"{base_dir}/_ERROR/{filename}"
-            need_to_move = True
-        elif status == "COMPLETED":
-            dest_dir = f"{base_dir}/_COMPLETED/{filename}"
-            need_to_move = True
-        elif status == "FINISHED":
-            dest_dir = f"{base_dir}/_FINISHED/{filename}"
-            need_to_move = True
-        elif status == "QUEUED":
-            need_to_move = False
-        else:
-            print(f"Unknown status '{status}' for file {filename}. Skipping.")
-            logging.info(f"Unknown status '{status}' for file {filename}. Skipping.")
-            continue
-        if need_to_move:
-            # Move the file using SSH
-            if os.path.exists(source_dir):
-                move_command = f"mv {source_dir} {dest_dir}"
-                stdin, stdout, stderr = ssh.exec_command(move_command)
+def evaluate_complete_directory(ssh, complete_directory):
+    """
+    Main method to evaluate a directory containing 'completed.txt' by running the SSH commands.
+    """
+    try:
+        # Find the best_mIoU file and extract iteration number
+        logging.info(f"Evaluating the best mIoU model placed in {complete_directory.split('/')[-1]}.")
+        print(f"Evaluating the best mIoU model placed in {complete_directory.split('/')[-1]}.")
+        best_mIoU_file, iteration_number = find_best_mIoU_file(ssh, complete_directory)
+        if not best_mIoU_file:
+            print_red(f"No best mIoU model found. Please double check in {complete_directory}")
+            return
 
-                # Check for errors
-                error = stderr.read().decode().strip()
-                if error:
-                    print(f"Error moving {filename}: {error}")
-                    logging.info(f"Error moving {filename}: {error}")
-                else:
-                    print(f"Successfully moved {filename} to {dest_dir}")
-                    logging.info(f"Successfully moved {filename} to {dest_dir}")
-        '''
+        # Run the evaluation
+        model_evaluated = run_evaluation(ssh, complete_directory, best_mIoU_file)
+        if model_evaluated:
+            complete_directory.split('/')[-1]
+            print_green(f"{complete_directory.split('/')[-1]} evaluated with {best_mIoU_file} successfully!")
+            logging.info(f"{complete_directory.split('/')[-1]} evaluated with {best_mIoU_file} successfully!")
+        else:
+            print_red(f"{complete_directory.split('/')[-1]} was not evaluated. Double check issue with model.")
+            logging.error(f"{complete_directory.split('/')[-1]} was not evaluated. Double check issue with model.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+                
+def find_best_mIoU_file(ssh, complete_directory):
+    """
+    Finds the .pth file with 'best_mIoU_iter' in the filename and extracts the iteration number.
+    """
+    # # Check if 'completed.txt' exists in the directory
+    # check_command = f"ls {complete_directory}/completed.txt"
+    # stdin, stdout, stderr = ssh.exec_command(check_command)
+    # output = stdout.read().decode('utf-8')
+    # error = stderr.read().decode('utf-8')
+    # if 'No such file' in error:
+    #     print(f"'completed.txt' not found in {complete_directory}. Exiting.")
+    #     return None, None
+
+    # Find the .pth file with 'best_mIoU_iter' in the name
+    logging.info(f"ls {complete_directory} | grep 'best_mIoU_iter_.*\\.pth'")
+    search_command = f"ls {complete_directory} | grep 'best_mIoU_iter_.*\\.pth'"
+    stdin, stdout, stderr = ssh.exec_command(search_command)
+    output = stdout.read().decode('utf-8')
+    error = stderr.read().decode('utf-8')
+    if error:
+        print(f"Error finding .pth file: {error}")
+        return None, None
+
+    # Extract the filename and iteration number
+    match = re.search(r"best_mIoU_iter_(\d+)\.pth", output)
+    if not match:
+        print("No file matching 'best_mIoU_iter_#####.pth' found.")
+        return None, None
+
+    best_mIoU_file = match.group(0)
+    iteration_number = match.group(1)
+    print_green(f"Best mIoU File Found: {best_mIoU_file}")
+    return best_mIoU_file, iteration_number
+
+def run_evaluation(ssh, complete_directory, best_mIoU_file):
+    """
+    Runs the evaluation command using the found .pth file and checks if it is successful.
+    If not, retries once. If it fails again, creates 'not_evaluated.txt' in the directory.
+    """
+    # Construct the evaluation command
+    job_work_dir_path = os.path.join(*complete_directory.split('/')[1:]).replace('\\','/')
+    eval_command = (
+        f"srun -G 1 --pty python tools/test.py {job_work_dir_path}/{complete_directory.split('/')[-1]}.py "
+        f"{job_work_dir_path}/{best_mIoU_file} --show-dir work_dirs/{complete_directory.split('/')[-1]}/{best_mIoU_file[:-4]}_output/ --eval mIoU"
+    )
+    print(f"Command to run: cd {cfg.REMOTE_WORKING_PROJECT} ; {eval_command}")
+    # Run the command and check if it's successful
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+    # Connect to the remote host
+    ssh.connect(cfg.REMOTE_HOST, username=cfg.USERNAME, password=cfg.PASSWORD)
+    # Open an SSH session
+    logging.info("Started a shell to evaluate a model")
+    session = ssh.invoke_shell()
+    time.sleep(5)
+    session.send(f"cd {cfg.REMOTE_WORKING_PROJECT}\n")
+    time.sleep(1)
+    session.send(eval_command+'\n')
+    time.sleep(120)
+    output = session.recv(4096).decode('utf-8')
+    print(output)
+    if 'Permission denied' in output or 'error' in output.lower():
+            print_red("Error running srun command.")
+            logging.info("Error running srun command.")
+            return False
+    else:
+        return True
+
+    # logging.info(f"Executing command: cd {cfg.REMOTE_WORKING_PROJECT} ; {eval_command}")
+    # stdin, stdout, stderr = ssh.exec_command(f'cd {cfg.REMOTE_WORKING_PROJECT} ; {eval_command}')
+    # output = stdout.read().decode('utf-8')
+    # error = stderr.read().decode('utf-8')
+    # print(f"Evaluation output: {output}")
+    # print(f"Error output: {error}")
+    # if "Error" not in error:  # Adjust this condition based on actual success criteria
+    #     print(f"Evaluation successful: {output}")
+    #     return True
+
+    # # Retry the command
+    # print(f"First attempt failed: {error}. Retrying...")
+    # stdin, stdout, stderr = ssh.exec_command(eval_command)
+    # output = stdout.read().decode('utf-8')
+    # error = stderr.read().decode('utf-8')
+    # if error:
+    #     print(error)
+    # if output: 
+    #     print(output)
+    # if "Error" not in error:
+    #     print(f"Evaluation successful on second attempt: {output}")
+    #     return True
+
+    # # If it fails again, create 'not_evaluated.txt'
+    # print(f"Second attempt failed: {error}. Creating 'not_evaluated.txt'...")
+    # create_file_command = f"echo 'Evaluation failed' > {complete_directory}/not_evaluated.txt"
+    # stdin, stdout, stderr = ssh.exec_command(create_file_command)
+    # output = stdout.read().decode('utf-8')
+    # error = stderr.read().decode('utf-8')
+    # return False
 
 def log_extraction(ssh):
     logging.info("Extracting logs for models that have completed training")
@@ -479,6 +567,7 @@ def log_extraction(ssh):
                 stdin, stdout, stderr = ssh.exec_command(find_largest_json_file)
                 largest_json = stdout.read().decode().strip()
                 
+
                 if largest_json:
                     #largest_json_files.append(largest_json)
                     largest_json_trunc = '/'.join(largest_json.split('/')[1:])
@@ -494,21 +583,25 @@ def log_extraction(ssh):
                     logging.error(stderr.read().decode())
                     print(stderr.read().decode())
                     extracted_job = completed_job.replace("completed.txt", "extracted.txt")
-                    
+# -----------------------------------------------                    
+                    # Example usage (assuming cfg is correctly set up)
+                    evaluate_complete_directory(ssh, directory)
+
+# -----------------------------------------------
                     # Command to rename the file
                     logging.info(f'Executing: mv {completed_job} {extracted_job}')
                     rename_command = f'mv {completed_job} {extracted_job}'
                     # Execute the rename command on the remote server
-                    stdin, stdout, stderr = ssh.exec_command(rename_command)
+                    #stdin, stdout, stderr = ssh.exec_command(rename_command)
                     
                     # Check for errors
-                    error = stderr.read().decode().strip()
-                    if error:
-                        logging.error(f"Error renaming {completed_job}: {error}")
-                        print_red(f"Error renaming {completed_job}: {error}")
-                    else:
-                        logging.info(f"Successfully renamed {completed_job} to {extracted_job}")
-                        print_green(f"Successfully renamed {completed_job} to {extracted_job}")
+                    #error = stderr.read().decode().strip()
+                    # if error:
+                    #     logging.error(f"Error renaming {completed_job}: {error}")
+                    #     print_red(f"Error renaming {completed_job}: {error}")
+                    # else:
+                    #     logging.info(f"Successfully renamed {completed_job} to {extracted_job}")
+                    #     print_green(f"Successfully renamed {completed_job} to {extracted_job}")
 
                 else:
                     logging.error(f'No JSON files were found in this directory: {directory}')
@@ -519,6 +612,7 @@ def log_extraction(ssh):
     except Exception as e:
         logging.error(f"An error occured: {str(e)}")
         print(f"An error occured: {str(e)}")
+
 
 def run_every_hour(ssh):
     print("Testing scheduling!")
@@ -572,21 +666,21 @@ def main():
     # TODO FIX STATUS UPDATES FOR RUNNING MODELS... We might not be clearing lists to queue and sbatch models properly
     run_counter = 0
     ssh = rops.connect_ssh(remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=cfg.PASSWORD)
-    json_utils.create_json(ssh)
-    schedule.every().minute.do(run_every_hour, ssh)
-    schedule.every(6).hours.do(run_every_six_hours)
-    run_every_hour(ssh)
-    run_every_six_hours()
+    # json_utils.create_json(ssh)
+    # schedule.every().minute.do(run_every_hour, ssh)
+    # schedule.every(6).hours.do(run_every_six_hours)
+    # run_every_hour(ssh)
+    # run_every_six_hours()
 
     try:
-        while True:
-            # Run all pending scheduled tasks
-            schedule.run_pending()
-            time.sleep(21)
-            print("21 Seconds passed...")
+        # while True:
+        #     # Run all pending scheduled tasks
+        #     schedule.run_pending()
+        #     time.sleep(21)
+        #     print("21 Seconds passed...")
         
         # jobs = rops.get_squeue_jobs(ssh)
-
+        log_extraction(ssh)
     except Exception as e:
         print(e)
         logging.error(f"An error occurred: {str(e)}")
