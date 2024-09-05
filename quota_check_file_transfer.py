@@ -381,9 +381,9 @@ def run_sbatch(ssh):
                         print_green(f"File {queued_jobs[0][0]} successfully moved to {batch_file_dest}.")
                     else:
                         print_red(f"File {queued_jobs[0][0]} was not moved successfully to {batch_file_dest}.")
-                    remove_job(queued_jobs[0][0])
                     #queued_jobs.remove((running_item, queued_jobs[0][1]))
                     logging.error(f"{queued_jobs[0][0]} is not running. Double check issue with model.")
+                    remove_job(queued_jobs[0][0])
             json_utils.update_json_new(ssh)
         else:
             print_red("May need to run kinit again to start running jobs")
@@ -661,7 +661,7 @@ def main():
     run_counter = 0
     ssh = rops.connect_ssh(remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=cfg.PASSWORD)
     json_utils.create_json(ssh)
-    schedule.every().minute.do(run_every_hour, ssh)
+    schedule.every(15).minutes.do(run_every_hour, ssh)
     # schedule.every(2).minute.do(run_every_six_hours)
     run_every_hour(ssh)
     # run_every_six_hours()
@@ -670,7 +670,7 @@ def main():
         while True:
             # Run all pending scheduled tasks
             schedule.run_pending()
-            time.sleep(60)
+            time.sleep(900)
             run_counter+=1
             print(f"Run counter: {run_counter}. 60 Seconds passed.")
     except Exception as e:
