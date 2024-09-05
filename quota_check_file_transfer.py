@@ -657,11 +657,6 @@ def run_every_hour(ssh):
 def run_every_six_hours():
     rops.ssh_kinit_loop(3)
 
-def test_model(ssh):
-    # TODO Implement python tools/test.py custom_config.py work_dirs/[job-name]/best_*.pth --eval mIoU --show-dir work_dir/[job-name]/best_*_iter_output function call on completed models
-    return NotImplementedError
-
-
 def main():
     # TODO FIX STATUS UPDATES FOR RUNNING MODELS... We might not be clearing lists to queue and sbatch models properly
     run_counter = 0
