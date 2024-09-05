@@ -227,15 +227,16 @@ def get_squeue_jobs(ssh):
 def move_batch_file(ssh, src, dest_dir):
     
     logging.info(f"Executing: mv {src}, {dest_dir})")
-    command = f"mv {src} {dest_dir}/"
-    stdin, stdout, stderr = ssh.exec_command(command)
-    error = stderr.read().decode().strip()
-    if error:
-        logging.error(f"Error moving batch file {src}: {error}")
-        print_red(f"Error moving batch file {src}: {error}")
-    else:
-        logging.info(f"Moved {src} to {dest_dir}")
-        print(f"Moved {src} to {dest_dir}")
+    if os.path.join(*src.split('/')[:-1]) != dest_dir:
+        command = f"mv {src} {dest_dir}/"
+        stdin, stdout, stderr = ssh.exec_command(command)
+        error = stderr.read().decode().strip()
+        if error:
+            logging.error(f"Error moving batch file {src}: {error}")
+            print_red(f"Error moving batch file {src}: {error}")
+        else:
+            logging.info(f"Moved {src} to {dest_dir}")
+            print(f"Moved {src} to {dest_dir}")
 
 
 def rename_remote_file(ssh, src, dest):

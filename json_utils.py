@@ -163,13 +163,11 @@ def update_json_new(ssh):
         if jobs: 
             for job in jobs: 
                 if job['name'] == job_name:
-                    print(f"This second bit ran, and here are the jobs: {job_name}")
                     for json_job in dictionary_list:
                         if json_job['filename'] == batch_file:
                             job['status'] = 'RUNNING'
-                            print("This third bit ran")
                             break
-        else:  # THIS IS CAUSING ISSUES HERE
+        else:
             for job in dictionary_list:
                 if job['filename'] == batch_file:
                     # Check for inprogress.txt 

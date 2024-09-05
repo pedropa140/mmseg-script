@@ -284,11 +284,6 @@ def run_sbatch(ssh):
         with open(json_file_path, 'r') as json_file:
             dictionary_list = json.load(json_file)
     running_item = ""
-    #print_blue("TODO: ADD KINIT INITIALIZATION BEFORE/AFTER SBATCH FAILS?")
-    print_blue("TODO: ADD MOVING BATCH FILES FROM OTHER DIRECTORIES TO FINISHED")
-    print_blue("TODO: Figure out why jobs are queued up again after they are found to be running")
-    print_blue("TODO: figure out why jobs are moved from running directory to error even if theyre running")
-    print_blue("TODO: queued list isn't being updated properly, figure out the issue")
     for item in dictionary_list:
         if item['status'] == 'QUEUED' :
             filename = item['filename']
