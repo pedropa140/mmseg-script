@@ -156,34 +156,40 @@ def update_json_new(ssh):
     # Handle _RUNNING directory
     running_directrory = os.path.join(folder_directory, '_RUNNING').replace("\\", "/")
     running_files = rops.list_remote_files(ssh, running_directrory)
+    jobs = rops.get_squeue_jobs(ssh)
     for batch_file in running_files:
-        # job_name = rops.get_python_file_name_from_batch_file(ssh, os.path.join(running_directrory, batch_file).replace("\\", "/"))
+        job_found = False
+        # python_file_name = rops.get_python_file_name_from_batch_file(ssh, os.path.join(running_directrory, batch_file).replace("\\", "/"))
         job_name = rops.get_job_name_from_batch_file(ssh, os.path.join(running_directrory, batch_file).replace("\\", "/"))
-        jobs = rops.get_squeue_jobs(ssh)
-        if jobs: 
-            for job in jobs: 
-                if job['name'] == job_name:
-                    for json_job in dictionary_list:
-                        if json_job['filename'] == batch_file:
-                            job['status'] = 'RUNNING'
-                            break
-                else:
-                    for job in dictionary_list:
-                        if job['filename'] == batch_file:
-                            # Check for inprogress.txt 
-                            job = rops.check_and_update_status(ssh, job, 'in_progress.txt', 'ERROR',
-                                                        os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
-                                                        os.path.join(folder_directory, '_ERROR').replace("\\", "/"))
-                            # Check for completed.txt 
-                            job = rops.check_and_update_status(ssh, job, 'completed.txt', 'COMPLETED',
-                                                        os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
-                                                        os.path.join(folder_directory, '_COMPLETED').replace("\\", "/"))
-                            # Check for extracted.txt 
-                            job = rops.check_and_update_status(ssh, job, 'extracted.txt', 'FINISHED',
-                                                        os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
-                                                        os.path.join(folder_directory, '_FINISHED').replace("\\", "/"))
-                            
-                            break
+        # If there are jobs running 
+        # if jobs: 
+            # pick a job within the running jobs
+        for job in jobs: 
+            if job['name'] == job_name:
+                for json_job in dictionary_list:
+                    if json_job['filename'] == batch_file:
+                        job['status'] = 'RUNNING'
+                        job_found = True
+                        break
+        # else:
+        if not job_found:
+            for job in dictionary_list:
+                if job['filename'] == batch_file:
+                    # Check for inprogress.txt 
+                    job = rops.check_and_update_status(ssh, job, 'in_progress.txt', 'ERROR',
+                                                os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
+                                                os.path.join(folder_directory, '_ERROR').replace("\\", "/"))
+                    # Check for completed.txt 
+                    job = rops.check_and_update_status(ssh, job, 'completed.txt', 'COMPLETED',
+                                                os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
+                                                os.path.join(folder_directory, '_COMPLETED').replace("\\", "/"))
+                    # Check for extracted.txt 
+                    job = rops.check_and_update_status(ssh, job, 'extracted.txt', 'FINISHED',
+                                                os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
+                                                os.path.join(folder_directory, '_FINISHED').replace("\\", "/"))
+                    
+                    break
+    
 
     # Handle _ERROR directory
     error_directory = os.path.join(folder_directory, '_ERROR').replace("\\", "/")
