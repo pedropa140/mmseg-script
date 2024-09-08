@@ -669,7 +669,7 @@ def main():
     sleep_counter_seconds = 600
     ssh = rops.connect_ssh(remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=cfg.PASSWORD)
     json_utils.create_json(ssh)
-    schedule.every(15).minutes.do(run_every_hour, ssh)
+    schedule.every(1).minutes.do(run_every_hour, ssh)
     # schedule.every(2).minute.do(run_every_six_hours)
     run_every_hour(ssh)
     # run_every_six_hours()
