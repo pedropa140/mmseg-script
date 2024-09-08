@@ -262,6 +262,7 @@ def handle_cancelled_jobs(ssh, jobs, base_dir):
                     # Job is no longer running, so mark as error and move batch file to _ERROR
                     rops.rename_remote_file(ssh, in_progress_file, error_file)
                     rops.move_batch_file(ssh, batch_file_name, os.path.join(base_dir, "_ERROR").replace("\\", "/"))
+                    json_utils.set_status_of_batch_file("ERROR", os.path.basename(batch_file_name))
 
 def remove_job(filename):
     # Use list comprehension to remove the job from queued_jobs if it matches the filename
@@ -308,12 +309,13 @@ def run_sbatch(ssh):
             
             logging.info(f"Executing command: cd {cfg.REMOTE_WORKING_PROJECT} ; sbatch {cfg.REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}")
             stdin, stdout, stderr = ssh.exec_command(f'cd {cfg.REMOTE_WORKING_PROJECT} ; sbatch {cfg.REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}')
-            for counter, line in enumerate(stderr):
-                print_red(f"{line.strip()}")
-            if stderr.read().decode() == '':
-                print_red(f"{stderr.read().decode()}")
-                print_red("You may have to manually run kinit again. Please do this ASAP!")
-                logging.error("You may have to manually run 'kinit' again. Please do this ASAP!")
+            # Location of batch file within the QUEUED directory
+            source_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_BATCH_FILE_LOCATION, queued_jobs[0][0]).replace('\\','/')
+            dest_dir_running = os.path.join(cfg.REMOTE_WORKING_PROJECT, *cfg.REMOTE_BATCH_FILE_LOCATION.split('/')[:-1],"_RUNNING").replace('\\', '/')
+            # if stderr.read().decode() == '':
+            #     print_red(f"{stderr.read().decode()}")
+            #     print_red("You may have to manually run kinit again. Please do this ASAP!")
+            #     logging.error("You may have to manually run 'kinit' again. Please do this ASAP!")
             for counter, line in enumerate(stdout):
                 print_green(f"{line.strip()}")
                 logging.info(f"SBATCH successful: {line.strip()}")
@@ -322,31 +324,31 @@ def run_sbatch(ssh):
             matching_job = next((job for job in jobs if job['name']==queued_jobs[0][1]), None)
 
             #print(f"from run_sbatch() - Matching Job: {matching_job}")
-            if matching_job:
+            if matching_job != None:
                 if matching_job['state'] == "RUNNING":
                     json_utils.set_status_of_batch_file("RUNNING", batch_file=queued_jobs[0][0])
+                    rops.move_batch_file(ssh, source_dir, dest_dir_running)
                     logging.info(f"{queued_jobs[0][0]} is running!")
-                    remove_job(queued_jobs[0][0])
-                    #queued_jobs.remove((running_item, queued_jobs[0][1]))
+                    remove_job(queued_jobs[0][0]) 
             else:
                 logging.info(f"Rerunning command: cd {cfg.REMOTE_WORKING_PROJECT} ; sbatch {cfg.REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}")
                 stdin, stdout, stderr = ssh.exec_command(f'cd {cfg.REMOTE_WORKING_PROJECT} ; sbatch {cfg.REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}')
-                for counter, line in enumerate(stderr):
-                    print_red(f"{line.strip()}")
-                if stderr == '':
-                    print_red("You may have to manually run kinit again. Please do this ASAP!")
-                    logging.error("You may have to manually run 'kinit' again. Please do this ASAP!")
+                # for counter, line in enumerate(stderr):
+                #     print_red(f"{line.strip()}")
+                # if stderr == '':
+                #     print_red("You may have to manually run kinit again. Please do this ASAP!")
+                #     logging.error("You may have to manually run 'kinit' again. Please do this ASAP!")
                 for counter, line in enumerate(stdout):
                     print_green(f"{line.strip()}")
                 time.sleep(5)
                 jobs = rops.get_squeue_jobs(ssh)
                 matching_job = next((job for job in jobs if job['name']==queued_jobs[0][1]), None)
-                if matching_job:
+                if matching_job != None:
                     if matching_job['status'] == "RUNNING":
                         json_utils.set_status_of_batch_file("RUNNING", batch_file=queued_jobs[0][0])
-                        remove_job(queued_jobs[0][0])
-                        #queued_jobs.remove((running_item, queued_jobs[0][1]))
+                        rops.move_batch_file(ssh, source_dir, dest_dir_running)
                         logging.info(f"{queued_jobs[0][0]} is running!")
+                        remove_job(queued_jobs[0][0])
                 else:
                     json_utils.set_status_of_batch_file("ERROR", batch_file=queued_jobs[0][0])
                     working_directory = rops.get_python_file_name_from_batch_file(ssh, os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_BATCH_FILE_LOCATION, queued_jobs[0][0]).replace('\\','/'))
@@ -367,7 +369,7 @@ def run_sbatch(ssh):
                         logging.info(f"Executing command: touch {error_textfile_path}")
                         stdin, stdout, stderr = ssh.exec_command(f"touch {error_textfile_path}")
                         if stderr:
-                            logging.info(stderr.read().decode())
+                            logging.error(stderr.read().decode())
                     # Add logic to move batch file VVV
                     batch_file_source = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_BATCH_FILE_LOCATION, queued_jobs[0][0]).replace('\\', '/')
                     batch_file_dest = os.path.join(cfg.REMOTE_WORKING_PROJECT, *cfg.REMOTE_BATCH_FILE_LOCATION.split('/')[:-1],"_ERROR").replace('\\', '/')
@@ -601,6 +603,8 @@ def log_extraction(ssh):
                     else:
                         logging.info(f"Successfully renamed {completed_job} to {extracted_job}")
                         print_green(f"Successfully renamed {completed_job} to {extracted_job}")
+                        print_green(f"Setting status of job in {directory.split('/')[-1]} to FINISHED")
+                        json_utils.set_status_of_batch_file("FINISHED", working_directory=directory.split('/')[-1])
                 else:
                     logging.error(f'No JSON files were found in this directory: {directory}')
                     print_red(f'No JSON files were found in this directory: {directory}')
@@ -611,8 +615,7 @@ def log_extraction(ssh):
         logging.error(f"An error occured: {str(e)}")
         print(f"An error occured: {str(e)}")
 
-def run_every_hour(ssh):
-    print("Testing scheduling!")
+def check_and_move_files(ssh):
     logging.info("Running storage check and moving files if they're finished")
     # Check how much storage is being used
     # login to remote pc, run quote -vs, and extract the used storage and storage limit    
@@ -636,21 +639,27 @@ def run_every_hour(ssh):
     else:
         print_green("Storage usage is within limits.")
         logging.info("Storage usage is within limits.")
-    last_status_counts = json_utils.update_json_new(ssh)
-    print(f'STATUS DICTIONARY:\nFinished = {last_status_counts[0]} \nCompleted = {last_status_counts[1]} '\
-          f'\nError = {last_status_counts[2]} \nRunning = {last_status_counts[3]} \nQueued = {last_status_counts[4]}')
+
+def run_every_hour(ssh):
+
+    json_utils.update_json_new(ssh)
+      
     jobs=rops.get_squeue_jobs(ssh)
     check_batch_files(ssh, jobs)
-    last_status_counts = json_utils.update_json_new(ssh)
-    if last_status_counts[3] < cfg.JOB_THRESHOLD:
-        run_sbatch(ssh)
-        move_batch_files_based_on_status(ssh)
-    # Look and extract logs for jobs that are completed. 
-    log_extraction(ssh)
-    last_status_counts = json_utils.update_json_new(ssh)
-    print(f'STATUS DICTIONARY:\nFinished = {last_status_counts[0]} \nCompleted = {last_status_counts[1]} '\
-          f'\nError = {last_status_counts[2]} \nRunning = {last_status_counts[3]} \nQueued = {last_status_counts[4]}')
 
+    json_utils.update_json_new(ssh)
+    print(f"Number of jobs running on Remote Server: {len(jobs)}")
+    if len(jobs) < cfg.JOB_THRESHOLD:
+        run_sbatch(ssh)
+        # move_batch_files_based_on_status(ssh)    
+    # Look and extract logs for jobs that are completed. 
+    json_utils.update_json_new(ssh)
+
+    log_extraction(ssh)
+    move_batch_files_based_on_status(ssh)
+    check_and_move_files(ssh)
+    
+    
 def run_every_six_hours():
     rops.ssh_kinit_loop(3)
 

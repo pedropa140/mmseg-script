@@ -289,7 +289,9 @@ def update_json_new(ssh):
             status_counter[status] += 1
         else:
             status_counter[status] = 1
-    print(status_counter)
+    # print(status_counter)
+    print(f"STATUS DICTIONARY:\nFinished = {status_counter.get('FINISHED', 0)} \nCompleted = {status_counter.get('COMPLETED', 0)} "\
+          f"\nError = {status_counter.get('ERROR', 0)} \nRunning = {status_counter.get('RUNNING', 0)} \nQueued = {status_counter.get('QUEUED', 0)}")
     return status_counter.get('FINISHED', 0), status_counter.get('COMPLETED', 0), status_counter.get('ERROR', 0), status_counter.get('RUNNING', 0), status_counter.get('QUEUED', 0)
 
 
