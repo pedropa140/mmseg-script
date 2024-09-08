@@ -504,7 +504,7 @@ def run_evaluation(ssh, complete_directory, best_mIoU_file):
     session.send(eval_command+'\n')
     time.sleep(120)
     output = session.recv(4096).decode('utf-8')
-    print(output)
+    # print(output)
     if 'Permission denied' in output or 'error' in output.lower():
             print_red("Error running srun command.")
             logging.info("Error running srun command.")
@@ -666,6 +666,7 @@ def run_every_six_hours():
 def main():
     # TODO FIX STATUS UPDATES FOR RUNNING MODELS... We might not be clearing lists to queue and sbatch models properly
     run_counter = 0
+    sleep_counter_seconds = 600
     ssh = rops.connect_ssh(remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=cfg.PASSWORD)
     json_utils.create_json(ssh)
     schedule.every(15).minutes.do(run_every_hour, ssh)
@@ -675,11 +676,13 @@ def main():
 
     try:
         while True:
+            run_counter+=1
             # Run all pending scheduled tasks
             schedule.run_pending()
-            time.sleep(900)
-            run_counter+=1
-            print(f"Run counter: {run_counter}. 60 Seconds passed.")
+            print(f"Run counter: {run_counter}. Sleeping for {sleep_counter_seconds} seconds.")
+            time.sleep(sleep_counter_seconds)
+            
+            
     except Exception as e:
         print(e)
         logging.error(f"An error occurred: {str(e)}")
