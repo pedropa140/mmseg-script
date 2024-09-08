@@ -168,7 +168,8 @@ def update_json_new(ssh):
             if job['name'] == job_name:
                 for json_job in dictionary_list:
                     if json_job['filename'] == batch_file:
-                        job['status'] = 'RUNNING'
+                        # Change status of the job in the json file to Running (job --> json_job)
+                        json_job['status'] = 'RUNNING'
                         job_found = True
                         break
         # else:

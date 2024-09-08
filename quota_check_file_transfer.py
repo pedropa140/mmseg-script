@@ -108,6 +108,7 @@ def find_directories_to_move(ssh):
     # Find directories to move by checking for text file that says "extracted.txt"
     directories_to_move = []
     project_work_dir = os.path.join(cfg.REMOTE_BASE_PATH, cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR).replace("\\", "/")
+    # FINDING FILES OF EXTRACTED.TXT WITHHOUT CHECKING THE STATUS. MIGHT CAUSE CONFLICTS
     logging.info(f"Executing: find {project_work_dir} -name {cfg.FINISHED_MARKER_FILE}")
     
     stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name {cfg.FINISHED_MARKER_FILE}')
@@ -248,8 +249,8 @@ def handle_cancelled_jobs(ssh, jobs, base_dir):
         work_dir_path = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, work_dir).replace("\\", "/")
         in_progress_file = os.path.join(work_dir_path, "in_progress.txt").replace("\\", "/")
         error_file = os.path.join(work_dir_path, "error_occurred.txt").replace("\\", "/")
-
-        if rops.check_remote_file_exists(ssh, in_progress_file):
+# DOUBLE CHECK THIS METHOD and COMPARE WITH LINE 341 FOR STORAGE_MONITOR.LOG
+        if rops.check_remote_file_exists(ssh, in_progress_file) == 'exists':
             # Extract the job name from the batch file associated with this work_dir
             batch_file_name = rops.find_associated_batch_file(ssh, base_dir, work_dir)
             logging.info(f"Handling cancelled job: {batch_file_name}")
@@ -257,7 +258,7 @@ def handle_cancelled_jobs(ssh, jobs, base_dir):
             if batch_file_name:
                 job_name = rops.get_job_name_from_batch_file(ssh, batch_file_name)
                 matching_job = next((job for job in jobs if job["name"] == job_name), None)
-                if not matching_job:
+                if matching_job == None:
                     # Job is no longer running, so mark as error and move batch file to _ERROR
                     rops.rename_remote_file(ssh, in_progress_file, error_file)
                     rops.move_batch_file(ssh, batch_file_name, os.path.join(base_dir, "_ERROR").replace("\\", "/"))
@@ -546,6 +547,9 @@ def log_extraction(ssh):
         # Find directories that have the completed.txt file indicating that training is done
         project_work_dir = f'{cfg.REMOTE_WORKING_PROJECT}/{cfg.REMOTE_WORK_DIR}'
         # print(f'Project_Work_dir:\t{project_work_dir}')
+
+# LOOKING FOR COMPLETED.TXT FILE, NOT CHECKING STATUS MAY NEED TO CHECK STATUS TO MAKE 
+# SURE IT IS MARKED AS COMPLETED BEFORE STARTING PROCESSING
         logging.info(f'find {project_work_dir} -name {cfg.COMPLETED_MARKER_FILE}')
         stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name {cfg.COMPLETED_MARKER_FILE}')
         output_complete = stdout.read().decode().strip().split('\n')
@@ -582,7 +586,6 @@ def log_extraction(ssh):
 # -----------------------------------------------                    
                     # Example usage (assuming cfg is correctly set up)
                     evaluate_complete_directory(ssh, directory)
-
 # -----------------------------------------------
                     # Command to rename the file
                     logging.info(f'Executing: mv {completed_job} {extracted_job}')
