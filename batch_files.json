@@ -3,19 +3,19 @@
         "filename": "hrnet18-fcn-auto_resize_1024.batch",
         "job_name": "HRNET18_resize1024",
         "working_directory": "resize_fcn_hr18_2x2_1024x1024_160k_corrosion_auto",
-        "status": "RUNNING"
+        "status": "FINISHED"
     },
     {
         "filename": "hrnet18-fcn-auto_resize_512.batch",
         "job_name": "HRNET18_resize512",
         "working_directory": "resize_fcn_hr18_2x2_512x512_160k_corrosion_auto",
-        "status": "RUNNING"
+        "status": "FINISHED"
     },
     {
         "filename": "hrnet18-fcn-auto_resize_256.batch",
         "job_name": "HRNET18_resize256",
         "working_directory": "resize_fcn_hr18_2x2_256x256_160k_corrosion_auto",
-        "status": "RUNNING"
+        "status": "FINISHED"
     },
     {
         "filename": "hrnet18-fcn-auto_flip10.batch",
@@ -39,7 +39,7 @@
         "filename": "hrnet18-fcn-auto_flip90.batch",
         "job_name": "HRNET18_flip90",
         "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_flip_90",
-        "status": "FINISHED"
+        "status": "QUEUED"
     },
     {
         "filename": "hrnet18-fcn-auto_resize_768.batch",
@@ -87,6 +87,18 @@
         "filename": "ConvNext.batch",
         "job_name": "ConvNext_original#jobname",
         "working_directory": "upernet_convnext_tiny_fp16_512x512_160k_corrosion",
-        "status": "ERROR"
+        "status": "FINISHED"
+    },
+    {
+        "filename": "ocrnet_hr18_corr.batch",
+        "job_name": "ocr_hr18",
+        "working_directory": "ocrnet_hr18_512x512_40k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "segformer_mit-b0_corrosion.batch",
+        "job_name": "segformer",
+        "working_directory": "segformer_mit-b0_512x512_160k_coco_corrosion_cosine_lowerLR",
+        "status": "FINISHED"
     }
 ]

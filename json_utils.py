@@ -122,7 +122,7 @@ def update_json_new(ssh):
     # Handle _QUEUED directory
     queued_directory = os.path.join(folder_directory, '_QUEUED').replace("\\", "/")
     queued_files = rops.list_remote_files(ssh, queued_directory)
-    print(f"Queued Files: {queued_files}")
+    print_green(f"Queued Files: {queued_files}")
     for batch_file in queued_files:
 
         for job in dictionary_list:
@@ -195,7 +195,7 @@ def update_json_new(ssh):
     # Handle _ERROR directory
     error_directory = os.path.join(folder_directory, '_ERROR').replace("\\", "/")
     error_files = rops.list_remote_files(ssh, error_directory)
-    print(f"Error files: {error_files}")
+    print_red(f"Error files: {error_files}")
     for batch_file in error_files:
         job_name = rops.get_python_file_name_from_batch_file(ssh, os.path.join(error_directory, batch_file).replace("\\", "/"))
         work_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, job_name).replace("\\", "/")
@@ -240,7 +240,7 @@ def update_json_new(ssh):
     # Handle _COMPLETED directory
     completed_directory = os.path.join(folder_directory, '_COMPLETED').replace("\\", "/")
     completed_files = rops.list_remote_files(ssh, completed_directory)
-    print(f"Completed Files: {completed_files}")
+    print_green(f"Completed Files: {completed_files}")
     for batch_file in completed_files:
         job_name = rops.get_python_file_name_from_batch_file(ssh, os.path.join(completed_directory, batch_file).replace("\\", "/"))
         work_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, job_name)

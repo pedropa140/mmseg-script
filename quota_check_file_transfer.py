@@ -281,11 +281,12 @@ def run_sbatch(ssh):
     global seen_batch_files
     dictionary_list = []
     json_file_path = 'batch_files.json'
-
+    print()
     if os.path.exists(json_file_path):
         with open(json_file_path, 'r') as json_file:
             dictionary_list = json.load(json_file)
-    running_item = ""
+
+    
     for item in dictionary_list:
         if item['status'] == 'QUEUED' :
             filename = item['filename']
@@ -297,7 +298,7 @@ def run_sbatch(ssh):
                 job_tuple = (filename, job_name)
                 queued_jobs.append(job_tuple)
                 seen_batch_files.add(filename)
-
+    running_item = ""
     if len(queued_jobs) > 0:
         gpu_initialized = rops.ssh_kinit_loop(1)
         if gpu_initialized:
@@ -649,7 +650,8 @@ def run_every_hour(ssh):
 
     last_status_counts = json_utils.update_json_new(ssh)
     print(f"Number of jobs running on Remote Server: {len(jobs)}")
-    if len(jobs) < cfg.JOB_THRESHOLD | last_status_counts[3] < cfg.JOB_THRESHOLD:
+    if len(jobs) < cfg.JOB_THRESHOLD or last_status_counts[3] < cfg.JOB_THRESHOLD:
+        print_blue("Fewer jobs than threshold detected. Run this line 3")
         run_sbatch(ssh)
         # move_batch_files_based_on_status(ssh)    
     # Look and extract logs for jobs that are completed. 
@@ -666,7 +668,7 @@ def run_every_six_hours():
 def main():
     # TODO FIX STATUS UPDATES FOR RUNNING MODELS... We might not be clearing lists to queue and sbatch models properly
     run_counter = 0
-    sleep_counter_seconds = 600
+    sleep_counter_seconds = 30
     ssh = rops.connect_ssh(remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=cfg.PASSWORD)
     json_utils.create_json(ssh)
     schedule.every(1).minutes.do(run_every_hour, ssh)
