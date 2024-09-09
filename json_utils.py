@@ -184,8 +184,8 @@ def update_json_new(ssh):
                     
                     find_text_file_command = f"find {work_dir_path} -type f -name '*.txt'"
                     stdin, stdout, stderr = ssh.exec_command(find_text_file_command)
-                    print(f"From json_utils, printing stdout of find command: {stdout}")
-                    print(f"From json_utils, printing stderr of find command: {stderr}")
+                    print(f"From json_utils, printing stdout of find command: {stdout.read().decode()")
+                    print(f"From json_utils, printing stderr of find command: {stderr.read().decode()}")
                     # If there is an error output from the find command, print and log it. 
                     if stderr.read().decode() != '':
                         print_red(stderr.read().decode().strip().splitlines())
@@ -199,7 +199,7 @@ def update_json_new(ssh):
                         break
                     else:
                         # if there is a text file, find the name of the text file and do certain tasks accordingly. 
-                        text_file_name = stdout.read().decode().strip().splitlines()[0].split('/')[-1]
+                        text_file_name = stdout.read().decode().strip()
                         print(f"Found text file within {work_dir_path} labelled {text_file_name}")
                         # if a job is not found, but it still says in progress, the job terminated unexpectedly. Move to error and resolve
                         if text_file_name == 'in_progress.txt':
