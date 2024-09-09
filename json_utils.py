@@ -190,6 +190,7 @@ def update_json_new(ssh):
                     if stderr.read().decode() != '':
                         print_red(stderr.read().decode().strip().splitlines())
                         logging.error(stderr.read().decode().strip().splitlines())
+                        break
                     # If there is no output from the find command, there is no text file and there is an issue with the batch file. 
                     if stdout.read().decode() == '':
                         job['status'] = 'ERROR'
@@ -198,8 +199,9 @@ def update_json_new(ssh):
                         break
                     else:
                         # if there is a text file, find the name of the text file and do certain tasks accordingly. 
-                        text_file_name = stdout.read().decode().strip().splitlines().split('/')[-1]
+                        text_file_name = stdout.read().decode().strip().splitlines()[0].split('/')[-1]
                         print(f"Found text file within {work_dir_path} labelled {text_file_name}")
+                        # if a job is not found, but it still says in progress, the job terminated unexpectedly. Move to error and resolve
                         if text_file_name == 'in_progress.txt':
                             job['status'] = "ERROR"
                             rops.move_batch_file(ssh, os.path.join(running_directory, batch_file).replace("\\", "/"), 
