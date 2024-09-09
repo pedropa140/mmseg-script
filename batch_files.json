@@ -39,7 +39,7 @@
         "filename": "hrnet18-fcn-auto_flip90.batch",
         "job_name": "HRNET18_flip90",
         "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion_auto_flip_90",
-        "status": "QUEUED"
+        "status": "FINISHED"
     },
     {
         "filename": "hrnet18-fcn-auto_resize_768.batch",
@@ -100,5 +100,65 @@
         "job_name": "segformer",
         "working_directory": "segformer_mit-b0_512x512_160k_coco_corrosion_cosine_lowerLR",
         "status": "FINISHED"
+    },
+    {
+        "filename": "ANN_r50_160k.batch",
+        "job_name": "r50_ANN_160k",
+        "working_directory": "ann_r50-d8_512x512_160k_corrosion",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "BiSeNetv2_160k_corrosion.batch",
+        "job_name": "BiSeNet_BG_comb",
+        "working_directory": "bisenetv2_fcn_4x4_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "danet_corrosion.batch",
+        "job_name": "danet_R50_4x4_bg_160k",
+        "working_directory": "danet_r50-d8_4x4_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "dmnet_corr.batch",
+        "job_name": "dml_r50",
+        "working_directory": "dmnet_r50-d8_512x512_160k_coco_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "dnlnet_corr.batch",
+        "job_name": "dnl_r50",
+        "working_directory": "dnl_r50-d8_512x512_160k_coco_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "vit_DPT_corr.batch",
+        "job_name": "dpt_vit",
+        "working_directory": "DPT_2x2_512x512_160k_corrosion",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "deit_b_ln_mln_corr.batch",
+        "job_name": "deitb_ln_mln_seg",
+        "working_directory": "upernet_deit-b16_ln_mln_512x512_160k_corrosion",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "deit_s_ln_mln_corr.batch",
+        "job_name": "deit_s_ln_mln_4x4",
+        "working_directory": "upernet_deit-s16_ln_mln_4x4_512x512_160k_corrosion",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "deit_s_ln_mln_corr_pretrained.batch",
+        "job_name": "deit_s_ln_mln_4x4_pretrained",
+        "working_directory": "upernet_deit-s16_ln_mln_4x4_512x512_160k_corrosion_pretrained",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "erfnet_corr.batch",
+        "job_name": "ErfNet_r50",
+        "working_directory": "erfnet_fcn_4x4_512x1024_80k_coco_corrosion",
+        "status": "RUNNING"
     }
 ]
