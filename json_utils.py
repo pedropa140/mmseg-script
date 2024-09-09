@@ -154,42 +154,83 @@ def update_json_new(ssh):
             dictionary_list.append(new_job)
 
     # Handle _RUNNING directory
-    running_directrory = os.path.join(folder_directory, '_RUNNING').replace("\\", "/")
-    running_files = rops.list_remote_files(ssh, running_directrory)
-    jobs = rops.get_squeue_jobs(ssh)
+    running_directory = os.path.join(folder_directory, '_RUNNING').replace("\\", "/")
+    running_files = rops.list_remote_files(ssh, running_directory)
+    squeue_jobs = rops.get_squeue_jobs(ssh)
     for batch_file in running_files:
         job_found = False
-        # python_file_name = rops.get_python_file_name_from_batch_file(ssh, os.path.join(running_directrory, batch_file).replace("\\", "/"))
-        job_name = rops.get_job_name_from_batch_file(ssh, os.path.join(running_directrory, batch_file).replace("\\", "/"))
+        python_file_name = rops.get_python_file_name_from_batch_file(ssh, os.path.join(running_directory, batch_file).replace("\\", "/"))
+        job_name = rops.get_job_name_from_batch_file(ssh, os.path.join(running_directory, batch_file).replace("\\", "/"))
         # If there are jobs running 
         # if jobs: 
             # pick a job within the running jobs
-        for job in jobs: 
-            if job['name'] == job_name:
+        for squeue_job in squeue_jobs: 
+            # if squeue job name is the same as the job name found within the batch file
+            if squeue_job['name'] == job_name:
+                # find the job within the dictionary list associated with the batch file
                 for json_job in dictionary_list:
                     if json_job['filename'] == batch_file:
                         # Change status of the job in the json file to Running (job --> json_job)
                         json_job['status'] = 'RUNNING'
                         job_found = True
                         break
-        # else:
+        # else if the job name from the batchfile does not match does not match squeue job names  
         if not job_found:
+            # find the job within the json file that matches the batch files name
             for job in dictionary_list:
                 if job['filename'] == batch_file:
-                    # Check for inprogress.txt 
-                    job = rops.check_and_update_status(ssh, job, 'in_progress.txt', 'ERROR',
-                                                os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
-                                                os.path.join(folder_directory, '_ERROR').replace("\\", "/"))
-                    # Check for completed.txt 
-                    job = rops.check_and_update_status(ssh, job, 'completed.txt', 'COMPLETED',
-                                                os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
-                                                os.path.join(folder_directory, '_COMPLETED').replace("\\", "/"))
-                    # Check for extracted.txt 
-                    job = rops.check_and_update_status(ssh, job, 'extracted.txt', 'FINISHED',
-                                                os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
-                                                os.path.join(folder_directory, '_FINISHED').replace("\\", "/"))
+                    # Look for text files within the working directory of the batch file job
+                    work_dir_path = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, job['working_directory']).replace("\\", "/")
                     
-                    break
+                    find_text_file_command = f"find {work_dir_path} -type f -name '*.txt'"
+                    stdin, stdout, stderr = ssh.exec_command(find_text_file_command)
+                    print(f"From json_utils, printing stdout of find command: {stdout}")
+                    print(f"From json_utils, printing stderr of find command: {stderr}")
+                    # If there is an error output from the find command, print and log it. 
+                    if stderr.read().decode() != '':
+                        print_red(stderr.read().decode().strip().splitlines())
+                        logging.error(stderr.read().decode().strip().splitlines())
+                    # If there is no output from the find command, there is no text file and there is an issue with the batch file. 
+                    if stdout.read().decode() == '':
+                        job['status'] = 'ERROR'
+                        rops.move_batch_file(ssh, os.path.join(running_directory, batch_file).replace("\\", "/"), 
+                                                  os.path.join(folder_directory, '_ERROR').replace("\\", "/"))
+                        break
+                    else:
+                        # if there is a text file, find the name of the text file and do certain tasks accordingly. 
+                        text_file_name = stdout.read().decode().strip().splitlines().split('/')[-1]
+                        print(f"Found text file within {work_dir_path} labelled {text_file_name}")
+                        if text_file_name == 'in_progress.txt':
+                            job['status'] = "ERROR"
+                            rops.move_batch_file(ssh, os.path.join(running_directory, batch_file).replace("\\", "/"), 
+                                                      os.path.join(folder_directory, '_ERROR').replace("\\", "/"))
+                            break
+                        if text_file_name == cfg.COMPLETED_MARKER_FILE:
+                            job['status'] = "COMPLETED"
+                            rops.move_batch_file(ssh, os.path.join(running_directory, batch_file).replace("\\", "/"), 
+                                                      os.path.join(folder_directory, '_COMPLETED').replace("\\", "/"))
+                            break
+                        if text_file_name == cfg.FINISHED_MARKER_FILE:
+                            job['status'] = "FINISHED"
+                            rops.move_batch_file(ssh, os.path.join(running_directory, batch_file).replace("\\", "/"), 
+                                                      os.path.join(folder_directory, '_FINISHED').replace("\\", "/"))
+                            break
+
+
+                    # # Check for inprogress.txt 
+                    # job = rops.check_and_update_status(ssh, job, 'in_progress.txt', 'ERROR',
+                    #                             os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
+                    #                             os.path.join(folder_directory, '_ERROR').replace("\\", "/"))
+                    # # Check for completed.txt 
+                    # job = rops.check_and_update_status(ssh, job, 'completed.txt', 'COMPLETED',
+                    #                             os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
+                    #                             os.path.join(folder_directory, '_COMPLETED').replace("\\", "/"))
+                    # # Check for extracted.txt 
+                    # job = rops.check_and_update_status(ssh, job, 'extracted.txt', 'FINISHED',
+                    #                             os.path.join(folder_directory, '_RUNNING').replace("\\", "/"),
+                    #                             os.path.join(folder_directory, '_FINISHED').replace("\\", "/"))
+                    
+                    # break
     
 
     # Handle _ERROR directory
@@ -197,8 +238,8 @@ def update_json_new(ssh):
     error_files = rops.list_remote_files(ssh, error_directory)
     print_red(f"Error files: {error_files}")
     for batch_file in error_files:
-        job_name = rops.get_python_file_name_from_batch_file(ssh, os.path.join(error_directory, batch_file).replace("\\", "/"))
-        work_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, job_name).replace("\\", "/")
+        work_dir_name = rops.get_python_file_name_from_batch_file(ssh, os.path.join(error_directory, batch_file).replace("\\", "/"))
+        work_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, work_dir_name).replace("\\", "/")
         command = f"find {work_dir} -maxdepth 1 -name error_occurred.txt"
         stdin, stdout, stderr = ssh.exec_command(command)
         if stdout.read().strip():
@@ -242,8 +283,8 @@ def update_json_new(ssh):
     completed_files = rops.list_remote_files(ssh, completed_directory)
     print_green(f"Completed Files: {completed_files}")
     for batch_file in completed_files:
-        job_name = rops.get_python_file_name_from_batch_file(ssh, os.path.join(completed_directory, batch_file).replace("\\", "/"))
-        work_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, job_name)
+        work_dir_name = rops.get_python_file_name_from_batch_file(ssh, os.path.join(completed_directory, batch_file).replace("\\", "/"))
+        work_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, work_dir_name)
         command = f"find {work_dir} -maxdepth 1 -name completed.txt"
         stdin, stdout, stderr = ssh.exec_command(command)
         if stdout.read().strip():
@@ -266,8 +307,8 @@ def update_json_new(ssh):
     finished_directory = os.path.join(folder_directory, '_FINISHED').replace("\\", "/")
     finished_files = rops.list_remote_files(ssh, finished_directory)
     for batch_file in finished_files:
-        job_name = rops.get_python_file_name_from_batch_file(ssh, os.path.join(finished_directory,batch_file).replace("\\", "/"))
-        work_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, job_name).replace("\\", "/")
+        work_dir_name = rops.get_python_file_name_from_batch_file(ssh, os.path.join(finished_directory,batch_file).replace("\\", "/"))
+        work_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, work_dir_name).replace("\\", "/")
         command = f"find {work_dir} -maxdepth 1 -name extracted.txt"
         stdin, stdout, stderr = ssh.exec_command(command)
         if stdout.read().strip():
