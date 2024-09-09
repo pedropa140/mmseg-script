@@ -105,7 +105,7 @@
         "filename": "ANN_r50_160k.batch",
         "job_name": "r50_ANN_160k",
         "working_directory": "ann_r50-d8_512x512_160k_corrosion",
-        "status": "RUNNING"
+        "status": "FINISHED"
     },
     {
         "filename": "BiSeNetv2_160k_corrosion.batch",
@@ -141,24 +141,24 @@
         "filename": "deit_b_ln_mln_corr.batch",
         "job_name": "deitb_ln_mln_seg",
         "working_directory": "upernet_deit-b16_ln_mln_512x512_160k_corrosion",
-        "status": "RUNNING"
+        "status": "ERROR"
     },
     {
         "filename": "deit_s_ln_mln_corr.batch",
         "job_name": "deit_s_ln_mln_4x4",
         "working_directory": "upernet_deit-s16_ln_mln_4x4_512x512_160k_corrosion",
-        "status": "RUNNING"
+        "status": "ERROR"
     },
     {
         "filename": "deit_s_ln_mln_corr_pretrained.batch",
         "job_name": "deit_s_ln_mln_4x4_pretrained",
         "working_directory": "upernet_deit-s16_ln_mln_4x4_512x512_160k_corrosion_pretrained",
-        "status": "RUNNING"
+        "status": "ERROR"
     },
     {
         "filename": "erfnet_corr.batch",
         "job_name": "ErfNet_r50",
         "working_directory": "erfnet_fcn_4x4_512x1024_80k_coco_corrosion",
-        "status": "RUNNING"
+        "status": "FINISHED"
     }
 ]
