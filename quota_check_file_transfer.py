@@ -668,10 +668,10 @@ def run_every_six_hours():
 def main():
     # TODO FIX STATUS UPDATES FOR RUNNING MODELS... We might not be clearing lists to queue and sbatch models properly
     run_counter = 0
-    sleep_counter_seconds = 30
+    sleep_counter_seconds = 300
     ssh = rops.connect_ssh(remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=cfg.PASSWORD)
     json_utils.create_json(ssh)
-    schedule.every(1).minutes.do(run_every_hour, ssh)
+    schedule.every(5).minutes.do(run_every_hour, ssh)
     # schedule.every(2).minute.do(run_every_six_hours)
     run_every_hour(ssh)
     # run_every_six_hours()
