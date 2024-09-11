@@ -135,19 +135,19 @@
         "filename": "vit_DPT_corr.batch",
         "job_name": "dpt_vit",
         "working_directory": "DPT_2x2_512x512_160k_corrosion",
-        "status": "RUNNING"
+        "status": "FINISHED"
     },
     {
         "filename": "deit_b_ln_mln_corr.batch",
         "job_name": "deitb_ln_mln_seg",
         "working_directory": "upernet_deit-b16_ln_mln_512x512_160k_corrosion",
-        "status": "ERROR"
+        "status": "FINISHED"
     },
     {
         "filename": "deit_s_ln_mln_corr.batch",
         "job_name": "deit_s_ln_mln_4x4",
         "working_directory": "upernet_deit-s16_ln_mln_4x4_512x512_160k_corrosion",
-        "status": "ERROR"
+        "status": "FINISHED"
     },
     {
         "filename": "deit_s_ln_mln_corr_pretrained.batch",
@@ -160,5 +160,197 @@
         "job_name": "ErfNet_r50",
         "working_directory": "erfnet_fcn_4x4_512x1024_80k_coco_corrosion",
         "status": "FINISHED"
+    },
+    {
+        "filename": "fcn_r101_corr.batch",
+        "job_name": "fcn_r101_corrosion",
+        "working_directory": "fcn_r101-d8_512x512_160k_coco_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "fcn_r18_corr.batch",
+        "job_name": "fcn_r18_corrosion",
+        "working_directory": "fcn_r18-d8_512x512_160k_coco_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "fcn_r50_corr.batch",
+        "job_name": "fcn_r50_corrosion",
+        "working_directory": "fcn_r50-d8_512x512_160k_coco_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "pspnet_r101_512x512_corrosion.batch",
+        "job_name": "pspnet_r101_corrosion",
+        "working_directory": "pspnet_r101-d8_4x4_512x512_80k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "pspnet_r50_512x512_corrosion.batch",
+        "job_name": "pspnet_r50_corrosion",
+        "working_directory": "pspnet_r50-d8_4x4_512x512_80k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "pspnet_r50_512x512_corrosion_pretrained_rsb.batch",
+        "job_name": "pspnet_r50_corr_pre",
+        "working_directory": "pspnet_r50-d8_rsb-pretrain_512x512_adamw_80k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "pspnet_r18_512x512_corrosion.batch",
+        "job_name": "pspnet_r18_corrosion",
+        "working_directory": "pspnet_r18-d8_4x4_512x512_80k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "pspnet_r18_512x512_corrosion_pretrained.batch",
+        "job_name": "pspnet_r18_corr_pre",
+        "working_directory": "pspnet_r18-d8_4x4_512x512_80k_corrosion_pretrained",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "psanet_r101_512x512_corrosion.batch",
+        "job_name": "psanet_r101_corrosion",
+        "working_directory": "psanet_r101-d8_512x512_80k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "psanet_r101_512x512_corrosion_pretrained.batch",
+        "job_name": "psanet_r101_corr_pre",
+        "working_directory": "psanet_r101-d8_512x512_80k_corrosion_pretrained",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "psanet_r50_512x512_corrosion.batch",
+        "job_name": "psanet_r50_corrosion",
+        "working_directory": "psanet_r50-d8_512x512_80k_corrosion",
+        "status": "COMPLETED"
+    },
+    {
+        "filename": "psanet_r50_512x512_corrosion_pretrained.batch",
+        "job_name": "psanet_r50_corr_pre",
+        "working_directory": "psanet_r50-d8_512x512_80k_corrosion_pretrained",
+        "status": "COMPLETED"
+    },
+    {
+        "filename": "upernet_r101_corrosion.batch",
+        "job_name": "upernet_r101_corrosion",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "upernet_r101_corr_pretrained.batch",
+        "job_name": "upernet_r101_corr_pre",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "upernet_r18_corrosion.batch",
+        "job_name": "upernet_r18_corrosion",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "upernet_r18_corr_pretrained.batch",
+        "job_name": "upernet_r18_corr_pre",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "upernet_r50_corrosion.batch",
+        "job_name": "upernet_r50_corrosion",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "upernet_r50_corr_pretrained.batch",
+        "job_name": "upernet_r50_corr_pre",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "encnet_r101_corrosion.batch",
+        "job_name": "encnet_r101_corrosion",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "encnet_r101_corr_pre.batch",
+        "job_name": "encnet_r101_corr_pre",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "encnet_r50_corrosion.batch",
+        "job_name": "encnet_r50_corrosion",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "encnet_r50_corr_pre.batch",
+        "job_name": "encnet_r50_corr_pre",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "icnet_r101_corrosion.batch",
+        "job_name": "icnet_r101_corrosion",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "icnet_r101_corr_pretrained.batch",
+        "job_name": "icnet_r101_corr_pre",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "icnet_r18_corrosion.batch",
+        "job_name": "icnet_r18_corrosion",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "icnet_r18_corr_pretrained.batch",
+        "job_name": "icnet_r18_corr_pre",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "icnet_r50_corrosion.batch",
+        "job_name": "icnet_r50_corrosion",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "icnet_r50_corr_pretrained.batch",
+        "job_name": "icnet_r50_corr_pre",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "nonlocal_net_r101_corrosion.batch",
+        "job_name": "nonlocal_r101_corr",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "nonlocal_net_r101_corr_pre.batch",
+        "job_name": "nonlocal_r101_corr_pre",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "nonlocal_net_r50_corrosion.batch",
+        "job_name": "nonlocal_r50_corr",
+        "working_directory": "",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "nonlocal_net_r50_corr_pre.batch",
+        "job_name": "nonlocal_r50_corr_pre",
+        "working_directory": "",
+        "status": "QUEUED"
     }
 ]
