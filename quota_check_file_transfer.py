@@ -545,7 +545,7 @@ def run_evaluation(ssh, complete_directory, best_mIoU_file):
     # return False
 
 def log_extraction(ssh):
-    logging.info("Extracting logs for models that have completed training")
+    logging.debug("Extracting logs for models that have completed training")
     try:
         # Find directories that have the completed.txt file indicating that training is done
         project_work_dir = f'{cfg.REMOTE_WORKING_PROJECT}/{cfg.REMOTE_WORK_DIR}'
@@ -553,10 +553,10 @@ def log_extraction(ssh):
 
 # LOOKING FOR COMPLETED.TXT FILE, NOT CHECKING STATUS MAY NEED TO CHECK STATUS TO MAKE 
 # SURE IT IS MARKED AS COMPLETED BEFORE STARTING PROCESSING
-        logging.info(f'find {project_work_dir} -name {cfg.COMPLETED_MARKER_FILE}')
+        logging.debug(f'find {project_work_dir} -name {cfg.COMPLETED_MARKER_FILE}')
         stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name {cfg.COMPLETED_MARKER_FILE}')
         output_complete = stdout.read().decode().strip().split('\n')
-        logging.info(output_complete)
+        logging.debug(f"Directories with completed.txt: {output_complete}")
 
         # If there are directories found that have completed training, execute this block
         #largest_json_files = []
@@ -565,7 +565,7 @@ def log_extraction(ssh):
                 # Remove the last entry in the path (i.e. DIRECTORY_MARKER_FILE)
                 directory = '/'.join(completed_job.split('/')[:-1])
                 # Find the largest json file, usually means that it has the most entries indicating it is the json file of the training session
-                logging.info(f"Finding largest json log file for: {directory}")
+                logging.debug(f"Finding largest json log file for: {directory}")
                 find_largest_json_file = f'find {directory} -type f -name "*.json" -exec ls -s {{}} + | sort -n | tail -n 1 | awk \'{{print $2}}\''
                 stdin, stdout, stderr = ssh.exec_command(find_largest_json_file)
                 largest_json = stdout.read().decode().strip()
@@ -575,23 +575,27 @@ def log_extraction(ssh):
                     #largest_json_files.append(largest_json)
                     largest_json_trunc = '/'.join(largest_json.split('/')[1:])
                     # print(f'The largest JSON file located in this directory is: {largest_json_trunc}')
-                    logging.info(f"Extracting logs from largest json file in {directory}: {largest_json_trunc}")
-                    logging.info(f'cd {cfg.REMOTE_WORKING_PROJECT} ; python3 research/log_extraction.py --input {largest_json_trunc}')
+                    logging.debug(f"Extracting logs from largest json file in {directory}: {largest_json_trunc}")
+                    logging.debug(f'    cd {cfg.REMOTE_WORKING_PROJECT} ; python3 research/log_extraction.py --input {largest_json_trunc}')
                     log_extraction_python = f'cd {cfg.REMOTE_WORKING_PROJECT} ; python3 research/log_extraction.py --input {largest_json_trunc}'
                     stdin, stdout, stderr = ssh.exec_command(log_extraction_python)
                     # Output the result of the command
-                    print(f"Executed command in directory {directory}:")
-                    logging.info(stdout.read().decode())
-                    print(stdout.read().decode())
-                    logging.error(stderr.read().decode())
-                    print(stderr.read().decode())
+                    # print(f"Executed command in directory {directory}:")
+                    std_output = stdout.read().decode()
+                    std_error = stderr.read().decode()
+                    logging.debug(std_output)
+                    print(std_output)
+                    if std_error:
+                        logging.error(std_error)
+                        print_red(std_error)
                     extracted_job = completed_job.replace("completed.txt", "extracted.txt")
+# THERE IS AN ISSUE WITH FILES BEING OFFLOADED BEFORE THE JSON FILE HAS A CHANGE TO UPDATE STATUS AND MOVE THE BATCH FILE
 # -----------------------------------------------                    
                     # Example usage (assuming cfg is correctly set up)
                     evaluate_complete_directory(ssh, directory)
 # -----------------------------------------------
                     # Command to rename the file
-                    logging.info(f'Executing: mv {completed_job} {extracted_job}')
+                    logging.debug(f'Executing: mv {completed_job} {extracted_job}')
                     rename_command = f'mv {completed_job} {extracted_job}'
                     # Execute the rename command on the remote server
                     stdin, stdout, stderr = ssh.exec_command(rename_command)
@@ -602,10 +606,16 @@ def log_extraction(ssh):
                         logging.error(f"Error renaming {completed_job}: {error}")
                         print_red(f"Error renaming {completed_job}: {error}")
                     else:
-                        logging.info(f"Successfully renamed {completed_job} to {extracted_job}")
+                        logging.debug(f"Successfully renamed {completed_job} to {extracted_job}")
                         print_green(f"Successfully renamed {completed_job} to {extracted_job}")
                         print_green(f"Setting status of job in {directory.split('/')[-1]} to FINISHED")
-                        json_utils.set_status_of_batch_file("FINISHED", working_directory=directory.split('/')[-1])
+                        base_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, *cfg.REMOTE_BATCH_FILE_LOCATION.split('/')[:-1]).replace("\\", "/")
+                        # for batch_file_directory in [d for d in rops.list_remote_directories(ssh, base_dir) if d.startswith('_')]:
+                        found_batch_file = rops.find_associated_batch_file(ssh, base_dir=base_dir, work_dir=directory)
+                        if found_batch_file != None:
+                            json_utils.set_status_of_batch_file("FINISHED", batch_file=found_batch_file)
+                            rops.move_batch_file(ssh,found_batch_file, os.path.join(*found_batch_file.split('/')[:-2],'_FINISHED').replace('\\','/'))
+                        
                 else:
                     logging.error(f'No JSON files were found in this directory: {directory}')
                     print_red(f'No JSON files were found in this directory: {directory}')

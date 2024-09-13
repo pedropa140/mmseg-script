@@ -113,6 +113,20 @@ def check_remote_file_exists(ssh, path):
     logging.info(f"{path}: {result}")
     return result == "exists" # Returns Boolean of True or False if file exists
 
+def check_remote_directory_exists(ssh, path):
+    """
+    Check if a directory exists on a remote pc
+    :param ssh: ssh object used to connect to the remote pc
+    :param path: path of the directory from the home location to check if the folder exists
+    """
+    logging.info(f"Check if remote directory exists in: {path})")
+    logging.info(f"Executing: 'if [ -d {path} ]; then echo 'exists'; fi'")
+    stdin, stdout, stderr = ssh.exec_command(f'if [ -d {path} ]; then echo "exists"; fi')
+    result = stdout.read().decode().strip()
+    # print(f"{path}: {result}")
+    logging.info(f"{path}: {result}")
+    return result == "exists" # Returns Boolean of True or False if file exists
+
 def check_and_update_status(ssh, job, status_file, new_status, source_directory, target_directory):
     work_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, job['working_directory']).replace('\\', '/')
     command = f"find {work_dir} -maxdepth 1 -name {status_file}"
@@ -133,7 +147,7 @@ def check_and_update_status(ssh, job, status_file, new_status, source_directory,
 def find_associated_batch_file(ssh, base_dir, work_dir):
     logging.info(f"Find associated batch file: {base_dir}, {work_dir})")
     # Find the batch file associated with the work_dir
-    for dir_name in list_remote_directories(ssh, base_dir):
+    for dir_name in [d for d in list_remote_directories(ssh, base_dir) if d.startswith('_')]:
         full_dir_path = os.path.join(base_dir, dir_name).replace("\\", "/")
         for filename in list_remote_files(ssh, full_dir_path):
             batch_file_path = os.path.join(full_dir_path, filename).replace("\\", "/")

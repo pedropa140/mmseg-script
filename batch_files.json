@@ -150,12 +150,6 @@
         "status": "FINISHED"
     },
     {
-        "filename": "deit_s_ln_mln_corr_pretrained.batch",
-        "job_name": "deit_s_ln_mln_4x4_pretrained",
-        "working_directory": "upernet_deit-s16_ln_mln_4x4_512x512_160k_corrosion_pretrained",
-        "status": "ERROR"
-    },
-    {
         "filename": "erfnet_corr.batch",
         "job_name": "ErfNet_r50",
         "working_directory": "erfnet_fcn_4x4_512x1024_80k_coco_corrosion",
