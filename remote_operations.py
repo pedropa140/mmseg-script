@@ -26,10 +26,10 @@ def ssh_kinit_loop(num_of_loop_iterations):
             gpus_initialized = False
             while not gpus_initialized:
                 print(f"Running kinit for {card} GPU servers")
-                logging.info(f"Running kinit for {card} GPU servers")
+                logging.info(f" -- Running kinit for {card} GPU servers")
                 gpus_initialized = ssh_kinit(card)
                 print(f"{card} GPU initialized: {gpus_initialized}")
-                logging.info(f"{card} GPU initialized: {gpus_initialized}")
+                logging.info(f" -- {card} GPU initialized: {gpus_initialized}")
     else:
         return True
 
@@ -43,14 +43,14 @@ def ssh_kinit(gpu, remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=
         ssh.connect(remote_host, username=username, password=password)
 
         # Open an SSH session
-        logging.info("Started a shell to check GPU availability")
+        # logging.info("Started a shell to check GPU availability")
         session = ssh.invoke_shell()
         time.sleep(5)
-        logging.info(f'Sending Command: srun -G 1 -C {gpu} --pty bash')
+        logging.info(f'    Executing Command: srun -G 1 -C {gpu} --pty bash')
         session.send(f'srun -G 1 -C {gpu} --pty bash\n')
         time.sleep(3)
         output = session.recv(4096).decode('utf-8')
-        logging.info(f"Shell output: {output}")
+        # logging.info(f"Shell output: {output}")
 
         # Check for any errors in the output
         if 'Permission denied' in output or 'error' in output.lower():
@@ -72,7 +72,7 @@ def ssh_kinit(gpu, remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=
 
             session.send('cd')
             output = session.recv(4096).decode('utf-8')
-            logging.info(f"Shell output for cd command: {output}")
+            # logging.info(f"Shell output for cd command: {output}")
             time.sleep(1)
             if 'Permission denied' in output or 'error' in output.lower():
                 session.close()
@@ -105,12 +105,12 @@ def connect_ssh(remote_host, username, password):
         return None
     
 def check_remote_file_exists(ssh, path):
-    logging.info(f"Check if remote file exists in: {path})")
-    logging.info(f"Executing: 'if [ -f {path} ]; then echo 'exists'; fi'")
+    # logging.info(f"Check if remote file exists in: {path})")
+    # logging.info(f"Executing: 'if [ -f {path} ]; then echo 'exists'; fi'")
     stdin, stdout, stderr = ssh.exec_command(f'if [ -f {path} ]; then echo "exists"; fi')
     result = stdout.read().decode().strip()
     # print(f"{path}: {result}")
-    logging.info(f"{path}: {result}")
+    # logging.info(f"{path}: {result}")
     return result == "exists" # Returns Boolean of True or False if file exists
 
 def check_remote_directory_exists(ssh, path):
@@ -119,12 +119,12 @@ def check_remote_directory_exists(ssh, path):
     :param ssh: ssh object used to connect to the remote pc
     :param path: path of the directory from the home location to check if the folder exists
     """
-    logging.info(f"Check if remote directory exists in: {path})")
-    logging.info(f"Executing: 'if [ -d {path} ]; then echo 'exists'; fi'")
+    # logging.info(f"Check if remote directory exists in: {path})")
+    # logging.info(f"Executing: 'if [ -d {path} ]; then echo 'exists'; fi'")
     stdin, stdout, stderr = ssh.exec_command(f'if [ -d {path} ]; then echo "exists"; fi')
     result = stdout.read().decode().strip()
     # print(f"{path}: {result}")
-    logging.info(f"{path}: {result}")
+    # logging.info(f"{path}: {result}")
     return result == "exists" # Returns Boolean of True or False if file exists
 
 def check_and_update_status(ssh, job, status_file, new_status, source_directory, target_directory):
@@ -137,7 +137,7 @@ def check_and_update_status(ssh, job, status_file, new_status, source_directory,
         source_location = os.path.join(source_directory, job['filename']).replace('\\', '/')
         dest_location = os.path.join(target_directory, job['filename']).replace('\\', '/')
         move_command = f'mv {source_location} {dest_location}'
-        logging.info(f"Executing move command: {move_command}")
+        logging.info(f"    Executing move command: {move_command}")
         stdin, stdout, stderr = ssh.exec_command(move_command)
         stderr_output = stderr.read().decode()
         if stderr_output:
@@ -158,9 +158,9 @@ def find_associated_batch_file(ssh, base_dir, work_dir):
     return None
 
 def find_sbatch_files_from_directory(ssh):
-    logging.info("Finding sbatch files from directories")
+    # logging.info("Finding sbatch files from directories")
     # Find all the batch files within the specified directory from home directory
-    logging.info(f"Executing: 'find {cfg.REMOTE_BATCH_FILE_PATH} -name '*.batch''")
+    logging.info(f"    Executing: 'find {cfg.REMOTE_BATCH_FILE_PATH} -name '*.batch''")
     stdin, stdout, stderr = ssh.exec_command(f'find {cfg.REMOTE_BATCH_FILE_PATH} -name "*.batch"')
     output = stdout.read().decode()
     sbatch_files = output.splitlines()
@@ -176,33 +176,33 @@ def find_sbatch_files_from_directory(ssh):
     return sbatch_files
 
 def list_remote_files(ssh, path):
-    logging.info(f"list remote files in: {path})")
-    logging.info(f"Executing command: 'ls {path}'")
+    # logging.info(f"list remote files in: {path})")
+    # logging.info(f"Executing command: 'ls {path}'")
     stdin, stdout, stderr = ssh.exec_command(f'ls {path}')
     files = stdout.read().decode().strip().splitlines()
-    logging.info(f"Files found: {files}")
+    # logging.info(f"Files found: {files}")
 
     return files # 
 
 def list_remote_directories(ssh, path):
-    logging.info(f"list remote directories in: {path})")
-    logging.info(f"Executing: 'ls -d {path}/*/'")
+    # logging.info(f"list remote directories in: {path})")
+    # logging.info(f"Executing: 'ls -d {path}/*/'")
     stdin, stdout, stderr = ssh.exec_command(f'ls -d {path}/*/')  # returns /path/[All_directories]
     dirs = stdout.read().decode().strip().splitlines() # becomes a list of directories  
     return [os.path.basename(d.rstrip('/')) for d in dirs] # returns object of directories to check 
     # [d for d in rops.list_remote_directories(ssh, base_dir) if d.startswith('_')] returns directories names only starting with '_'
 
 def get_job_name_from_batch_file(ssh, batch_file_path):
-    logging.info(f"Executing: cat {batch_file_path}")
+    # logging.info(f"Executing: cat {batch_file_path}")
     stdin, stdout, stderr = ssh.exec_command(f'cat {batch_file_path}')
     for line in stdout:
         if line.startswith("#SBATCH --job-name="):
-            logging.info(f"Found job-name: ({line.split('=')[-1].strip()}) from {batch_file_path}")
+            # logging.info(f"Found job-name: ({line.split('=')[-1].strip()}) from {batch_file_path}")
             return line.split("=")[-1].strip() # Return the job name that will be found when running get_squeue_job
     return None
 
 def get_python_file_name_from_batch_file(ssh, batch_file_path, working_project=cfg.REMOTE_WORKING_PROJECT):
-    logging.info(f"Get folder name from batch file: {batch_file_path})")
+    # logging.info(f"Get folder name from batch file: {batch_file_path})")
     stdin, stdout, stderr = ssh.exec_command(f'cat {batch_file_path}')
     
     for line in stdout:
@@ -211,7 +211,7 @@ def get_python_file_name_from_batch_file(ssh, batch_file_path, working_project=c
             working_line = line.replace(f'python3 ~/{working_project}/tools/train.py ~', '').replace('.py', '').split("/")
             working_length = len(working_line)
             working_directory = working_line[working_length - 1]
-            logging.info(f"Found name of folder in batch file: {working_directory}")
+            # logging.info(f"Found name of folder in batch file: {working_directory}")
             return working_directory # Returns string of the name of the python file of the job
 
     return None
@@ -239,9 +239,8 @@ def get_squeue_jobs(ssh):
     return jobs # Returns a list of dict items of jobs with {['job_id'], ['name'], ['status']} else []
 
 def move_batch_file(ssh, src, dest_dir):
-    
-    logging.info(f"Executing: mv {src}, {dest_dir})")
     if os.path.join(*src.split('/')[:-1]) != dest_dir:
+        logging.info(f"    Executing: mv {src}, {dest_dir})")
         command = f"mv {src} {dest_dir}/"
         stdin, stdout, stderr = ssh.exec_command(command)
         error = stderr.read().decode().strip()
@@ -254,8 +253,8 @@ def move_batch_file(ssh, src, dest_dir):
 
 
 def rename_remote_file(ssh, src, dest):
-    logging.info(f"Rename remote file from:{src} to:{dest})")
-    logging.info(f"mv {src} {dest}")
+    # logging.info(f"Rename remote file from:{src} to:{dest})")
+    # logging.info(f"mv {src} {dest}")
     print(f"Moving file from {src} to {dest}")
     command = f"mv {src} {dest}"
     stdin, stdout, stderr = ssh.exec_command(command)
