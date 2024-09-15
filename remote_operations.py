@@ -22,14 +22,14 @@ def ssh_kinit_loop(num_of_loop_iterations):
     for i in range(0,num_of_loop_iterations):
         logging.info(f"Kinit Loop iteration number: {i+1}")
         print(f"Kinit loop iteration number: {i+1}")
-    for card in gpu_list:
-        gpus_initialized = False
-        while not gpus_initialized:
-            print(f"Running kinit for {card} GPU servers")
-            logging.info(f"Running kinit for {card} GPU servers")
-            gpus_initialized = ssh_kinit(card)
-            print(f"{card} GPU initialized: {gpus_initialized}")
-            logging.info(f"{card} GPU initialized: {gpus_initialized}")
+        for card in gpu_list:
+            gpus_initialized = False
+            while not gpus_initialized:
+                print(f"Running kinit for {card} GPU servers")
+                logging.info(f"Running kinit for {card} GPU servers")
+                gpus_initialized = ssh_kinit(card)
+                print(f"{card} GPU initialized: {gpus_initialized}")
+                logging.info(f"{card} GPU initialized: {gpus_initialized}")
     else:
         return True
 
