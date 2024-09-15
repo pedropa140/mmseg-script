@@ -551,7 +551,7 @@ def run_evaluation(ssh, complete_directory, best_mIoU_file):
     # return False
 
 def log_extraction(ssh):
-    logging.INFO("Extracting logs for models that have completed training")
+    logging.info("Extracting logs for models that have completed training")
     try:
         # Find directories that have the completed.txt file indicating that training is done
         project_work_dir = f'{cfg.REMOTE_WORKING_PROJECT}/{cfg.REMOTE_WORK_DIR}'
