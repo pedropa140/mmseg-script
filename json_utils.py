@@ -26,9 +26,9 @@ def load_or_create_json():
         logging.info(f"Updating Json file found at: {cfg.json_file_path}")
         with open(cfg.json_file_path, 'r') as json_file:
             dictionary_list = json.load(json_file)
-            logging.info(f"Found json file entries: ")
-            for json_job in dictionary_list:
-                logging.info(f"{json_job}")
+            logging.info(f"Found {len(dictionary_list)} json file entries")
+            # for json_job in dictionary_list:
+            #    logging.info(f"{json_job}")
     else:
         logging.info("Creating new JSON file.")
         dictionary_list = []
