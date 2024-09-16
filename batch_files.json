@@ -3,67 +3,67 @@
         "filename": "apcnet_r101_corrosion.batch",
         "job_name": "apcnet_r101",
         "working_directory": "apcnet_r101-d8_512x512_160k_corrosion",
-        "status": "RUNNING"
+        "status": "FINISHED"
     },
     {
         "filename": "apcnet_r50_corrosion.batch",
         "job_name": "apcnet_r50",
         "working_directory": "apcnet_r50-d8_512x512_160k_corrosion",
-        "status": "RUNNING"
+        "status": "FINISHED"
     },
     {
         "filename": "ccnet_r101_corrosion.batch",
         "job_name": "ccnet_r101_corrosion",
         "working_directory": "ccnet_r101-d8_512x512_160k_corrosion",
-        "status": "RUNNING"
+        "status": "FINISHED"
     },
     {
         "filename": "ccnet_r50_corrosion.batch",
         "job_name": "ccnet_r50_corrosion",
         "working_directory": "ccnet_r50-d8_512x512_160k_corrosion",
-        "status": "RUNNING"
+        "status": "FINISHED"
     },
     {
         "filename": "emanet_r101_corrosion.batch",
         "job_name": "emanet_r101",
         "working_directory": "emanet_r101-d8_512x512_160k_corrosion",
-        "status": "RUNNING"
+        "status": "FINISHED"
     },
     {
         "filename": "emanet_r50_corrosion.batch",
         "job_name": "emanet_r50",
         "working_directory": "emanet_r50-d8_512x512_160k_corrosion",
-        "status": "QUEUED"
+        "status": "FINISHED"
     },
     {
         "filename": "fastscn_aspp_corrosion.batch",
         "job_name": "fastscn_aspp",
         "working_directory": "fastfcn_r50-d32_jpu_aspp_512x512_160k_corrosion",
-        "status": "QUEUED"
+        "status": "RUNNING"
     },
     {
         "filename": "fastscn_enc_corrosion.batch",
         "job_name": "fastscn_enc",
         "working_directory": "fastfcn_r50-d32_jpu_enc_512x512_160k_corrosion",
-        "status": "QUEUED"
+        "status": "RUNNING"
     },
     {
         "filename": "fastscn_psp_corrosion.batch",
         "job_name": "fastscn_psp",
         "working_directory": "fastfcn_r50-d32_jpu_psp_512x512_160k_corrosion",
-        "status": "QUEUED"
+        "status": "RUNNING"
     },
     {
         "filename": "gcnet_r101_corrosion.batch",
         "job_name": "gcnet_r101_corrosion",
         "working_directory": "gcnet_r101-d8_512x512_160k_corrosion",
-        "status": "QUEUED"
+        "status": "RUNNING"
     },
     {
         "filename": "gcnet_r50_corrosion.batch",
         "job_name": "gcnet_r50_corrosion",
         "working_directory": "gcnet_r50-d8_512x512_160k_corrosion",
-        "status": "QUEUED"
+        "status": "RUNNING"
     },
     {
         "filename": "hr18_corrosion.batch",

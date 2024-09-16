@@ -431,9 +431,14 @@ def evaluate_complete_directory(ssh, complete_directory):
         if not best_mIoU_file:
             print_red(f"No best mIoU model found. Please double check in {complete_directory}")
             return
-
+        
+        model_evaluated = False
+        eval_counter = 0
         # Run the evaluation
-        model_evaluated = run_evaluation(ssh, complete_directory, best_mIoU_file)
+        while not model_evaluated and eval_counter < 3:
+            model_evaluated = run_evaluation(ssh, complete_directory, best_mIoU_file)
+            eval_counter+=1
+        
         if model_evaluated:
             complete_directory.split('/')[-1]
             print_green(f"{complete_directory.split('/')[-1]} evaluated with {best_mIoU_file} successfully!")
@@ -484,10 +489,10 @@ def run_evaluation(ssh, complete_directory, best_mIoU_file):
     If not, retries once. If it fails again, creates 'not_evaluated.txt' in the directory.
     """
     # Construct the evaluation command
-    if rops.ssh_kinit_loop(1):
+    if rops.ssh_kinit_loop(2):
         job_work_dir_path = os.path.join(*complete_directory.split('/')[1:]).replace('\\','/')
         eval_command = (
-            f"srun -G 1 --pty python tools/test.py {job_work_dir_path}/{complete_directory.split('/')[-1]}.py "
+            f"srun -G 1 -C 'ada|a4500|a4000' --pty python tools/test.py {job_work_dir_path}/{complete_directory.split('/')[-1]}.py "
             f"{job_work_dir_path}/{best_mIoU_file} --show-dir work_dirs/{complete_directory.split('/')[-1]}/{best_mIoU_file[:-4]}_output/ --eval mIoU"
         )
         print(f"Command to run: cd {cfg.REMOTE_WORKING_PROJECT} ; {eval_command}")
@@ -509,7 +514,10 @@ def run_evaluation(ssh, complete_directory, best_mIoU_file):
         session.send(eval_command+'\n')
         time.sleep(5)
         output = session.recv(4096).decode('utf-8')
-        # print(output)
+
+        logging.info(f"srun evaluation output: \n{output}")
+        print(output)
+
         if 'Permission denied' in output or 'error' in output.lower():
             print_red("Error running srun command.")
             logging.info("Error running srun command.")
@@ -681,10 +689,10 @@ def run_every_hour(ssh):
 def main():
     # TODO FIX STATUS UPDATES FOR RUNNING MODELS... We might not be clearing lists to queue and sbatch models properly
     run_counter = 0
-    sleep_counter_seconds = 300
+    sleep_counter_seconds = 600
     ssh = rops.connect_ssh(remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=cfg.PASSWORD)
     json_utils.create_json(ssh)
-    schedule.every(5).minutes.do(run_every_hour, ssh)
+    schedule.every(10).minutes.do(run_every_hour, ssh)
     # schedule.every(2).minute.do(run_every_six_hours)
     run_every_hour(ssh)
     # run_every_six_hours()
