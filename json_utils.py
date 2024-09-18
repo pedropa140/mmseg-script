@@ -26,9 +26,9 @@ def load_or_create_json():
         logging.info(f"Updating Json file found at: {cfg.json_file_path}")
         with open(cfg.json_file_path, 'r') as json_file:
             dictionary_list = json.load(json_file)
-            logging.info(f"Found json file entries: ")
-            for json_job in dictionary_list:
-                logging.info(f"{json_job}")
+            logging.info(f"Found {len(dictionary_list)} json file entries")
+            # for json_job in dictionary_list:
+            #    logging.info(f"{json_job}")
     else:
         logging.info("Creating new JSON file.")
         dictionary_list = []
@@ -212,7 +212,7 @@ def create_json(ssh):
     # Open json file to check which files are already accounted for. 
     dictionary_list = []
     #cfg.json_file_path = 'batch_files.json'
-    logging.info(f"- create_json(): Comparing batch files found in {base_dir} and {cfg.json_file_path}")
+    # logging.info(f"- create_json(): Comparing batch files found in {base_dir} and {cfg.json_file_path}")
     if os.path.exists(cfg.json_file_path):
         logging.info(f"Found a premade JSON file for batch_files at {cfg.json_file_path}")
         with open(cfg.json_file_path, 'r') as json_file:
@@ -227,9 +227,9 @@ def create_json(ssh):
         remote_dir = f"{base_dir}/{sub_dir}" 
     # Find the batch files stored in the remote batch file location
         print(f"Checking Directory: {remote_dir}")
-        logging.info(f"Checking Directory: {remote_dir}")
+        # logging.info(f"Checking Directory: {remote_dir}")
         # Execute command to list files in the directory
-        logging.info(f"Executing: cd {remote_dir}; ls -l")
+        logging.info(f"    Executing: cd {remote_dir}; ls -l")
         stdin, stdout, stderr = ssh.exec_command(f'cd {remote_dir}; ls -l')
         
         for counter, line in enumerate(stdout):
@@ -250,7 +250,7 @@ def create_json(ssh):
                     continue
                 
                 # Extract the job names from the batch files to add into the json file if the fileis not already found in the JSON file
-                logging.info(f"Executing: cat {remote_dir}/{filename}")
+                logging.info(f"    Executing: cat {remote_dir}/{filename}")
                 print(f'Running Command: cat {remote_dir}/{filename}')
                 stdin, stdout, stderr = ssh.exec_command(f'cat {remote_dir}/{filename}')
                 job_name = ""
@@ -288,10 +288,10 @@ def update_json_new_v1(ssh):
     
     # Load the existing JSON file
     if os.path.exists(cfg.json_file_path):
-        logging.info(f"Updating Json file found at: {cfg.json_file_path}")
+        # logging.info(f"Updating Json file found at: {cfg.json_file_path}")
         with open(cfg.json_file_path, 'r') as json_file:
             dictionary_list = json.load(json_file)
-            logging.info(f"Found json file entries: {dictionary_list}")
+            # logging.info(f"Found json file entries: {dictionary_list}")
     else:
         logging.info("Creating new JSON file.")
         dictionary_list = []

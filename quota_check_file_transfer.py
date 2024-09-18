@@ -69,7 +69,7 @@ def print_blue(text):
 
 # COMPLETED
 def check_storage_usage(ssh):
-    logging.info("check_storage_usage(ssh) ")
+    # logging.info("check_storage_usage(ssh) ")
     # Command run to get the storage used by the user
     stdin, stdout, stderr = ssh.exec_command('quota -vs')
     output = stdout.read().decode()
@@ -104,12 +104,12 @@ def check_storage_usage(ssh):
     return None  # If the line wasn't found
 # COMPLETED
 def find_directories_to_move(ssh):
-    logging.info("find_directories_to_move()")
+    # logging.info("find_directories_to_move()")
     # Find directories to move by checking for text file that says "extracted.txt"
     directories_to_move = []
     project_work_dir = os.path.join(cfg.REMOTE_BASE_PATH, cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR).replace("\\", "/")
     # FINDING FILES OF EXTRACTED.TXT WITHHOUT CHECKING THE STATUS. MIGHT CAUSE CONFLICTS
-    logging.info(f"Executing: find {project_work_dir} -name {cfg.FINISHED_MARKER_FILE}")
+    logging.info(f"    Executing: find {project_work_dir} -name {cfg.FINISHED_MARKER_FILE}")
     
     stdin, stdout, stderr = ssh.exec_command(f'find {project_work_dir} -name {cfg.FINISHED_MARKER_FILE}')
     
@@ -119,7 +119,7 @@ def find_directories_to_move(ssh):
         print_red(stderr_output.split('\n'))
     
     output = stdout.read().decode().strip().split('\n')
-    logging.info(f"Directories to move: {output}")
+    # logging.info(f"Directories to move: {output}")
     for line in output:
         if line:  # Make sure it's not an empty line
             directory = os.path.dirname(line)
@@ -130,14 +130,14 @@ def find_directories_to_move(ssh):
     return directories_to_move
 # COMPLETED
 def move_directories(ssh, directories):
-    logging.info(f" move_directories({directories})")
+    # logging.info(f" move_directories({directories})")
     # This method is used to sync file contents from remote to local pc. It then removes after files have been synced
     for directory in directories:
         try:
             # Use subprocess to run rsync and capture output
             # COMMAND FOR LINUX PC
             if cfg.linux:
-                logging.info(f"Executing: rsync -avz '{cfg.USERNAME}@{cfg.REMOTE_HOST}:{directory}', {cfg.LOCAL_PATH}")
+                logging.info(f"    Executing: rsync -avz '{cfg.USERNAME}@{cfg.REMOTE_HOST}:{directory}', {cfg.LOCAL_PATH}")
                 print_red(f"Executing: rsync -avz '{cfg.USERNAME}@{cfg.REMOTE_HOST}:{directory}', {cfg.LOCAL_PATH}")
                 # UNCOMMENT SSHPASS LINE IF RUNNING ON LAB PC                
                 command = [
@@ -186,8 +186,8 @@ def move_directories(ssh, directories):
             logging.info(f"Moved directory {directory} to local machine: {cfg.LOCAL_PATH}")
             
             # Remove the directory on the remote machine after successful transfer
-            logging.info(f"Executing: rm -rf {directory}")
-            print_red(f"Executing (but not really): rm -rf {directory}")
+            logging.info(f"    Executing: rm -rf {directory}")
+            print_red(f"Executing: rm -rf {directory}")
             stdin, stdout, stderr = ssh.exec_command(f'rm -rf {directory}')
             error = stderr.read().decode().strip()
             if error:
@@ -205,7 +205,7 @@ def check_batch_files(ssh, jobs):
     base_dir = '/'.join(base_dir.split('/')[:-1])  # Remove the last part (_QUEUED) to get the main directory
     
     dirs_to_check = [d for d in rops.list_remote_directories(ssh, base_dir) if d.startswith('_')]
-    logging.info(f"Checking batch_files in {base_dir} in these directories: {dirs_to_check}")
+    # logging.info(f"Checking batch_files in {base_dir} in these directories: {dirs_to_check}")
     for dir_name in dirs_to_check:
         full_dir_path = os.path.join(base_dir, dir_name).replace("\\", "/")
         for filename in rops.list_remote_files(ssh, full_dir_path):
@@ -242,7 +242,7 @@ def check_and_handle_non_running_job(ssh, job_name, batch_file_path, base_dir):
             json_utils.set_status_of_batch_file("ERROR", os.path.basename(batch_file_path))
 # COMPLETED
 def handle_cancelled_jobs(ssh, jobs, base_dir):
-    logging.info(f"Handle cancelled jobs: Jobs: {jobs}, in directory: {base_dir}) ---")
+    # logging.info(f"Handle cancelled jobs: Jobs: {jobs}, in directory: {base_dir}) ---")
     # Check all work_dirs for in_progress.txt files and handle those that are no longer running
     work_dirs = rops.list_remote_directories(ssh, os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR).replace("\\", "/"))
     for work_dir in work_dirs:
@@ -308,7 +308,7 @@ def run_sbatch(ssh):
             print(f'SELECTED JOB: {running_item}')
             logging.info(f'SELECTED JOB: {running_item}')
             
-            logging.info(f"Executing command: cd {cfg.REMOTE_WORKING_PROJECT} ; sbatch {cfg.REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}")
+            logging.info(f"    Executing command: cd {cfg.REMOTE_WORKING_PROJECT} ; sbatch {cfg.REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}")
             stdin, stdout, stderr = ssh.exec_command(f'cd {cfg.REMOTE_WORKING_PROJECT} ; sbatch {cfg.REMOTE_BATCH_FILE_LOCATION}/{queued_jobs[0][0]}')
             # Location of batch file within the QUEUED directory
             source_dir = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_BATCH_FILE_LOCATION, queued_jobs[0][0]).replace('\\','/')
@@ -362,12 +362,12 @@ def run_sbatch(ssh):
                         # Rename a textfile if there is one already in the working directory 
                         source_directory = stdout.read().decode().strip()
                         dest_directory = os.path.join(project_directory, "error_occurred.txt").replace('\\','/')
-                        logging.info(f"Executing command: mv {source_directory} {dest_directory}")
+                        logging.info(f"    Executing command: mv {source_directory} {dest_directory}")
                         rops.rename_remote_file(ssh, source_directory, dest_directory)
                     else:
                         # Add a new error_occurred text file in the working directory if there isn't a textfile found. 
                         error_textfile_path = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, working_directory, 'error_occurred.txt').replace("\\", '/')
-                        logging.info(f"Executing command: touch {error_textfile_path}")
+                        logging.info(f"    Executing command: touch {error_textfile_path}")
                         stdin, stdout, stderr = ssh.exec_command(f"touch {error_textfile_path}")
                         if stderr:
                             logging.error(stderr.read().decode())
@@ -392,7 +392,7 @@ def run_sbatch(ssh):
         logging.info("No jobs with status QUEUED")
 # COMPLETED
 def move_batch_files_based_on_status(ssh):
-    logging.info("Move batch files to their folders based off status in json file")
+    # logging.info("Move batch files to their folders based off status in json file")
     # Load JSON data
     with open(cfg.json_file_path, 'r') as f:
         batch_files_data = json.load(f)
@@ -431,9 +431,14 @@ def evaluate_complete_directory(ssh, complete_directory):
         if not best_mIoU_file:
             print_red(f"No best mIoU model found. Please double check in {complete_directory}")
             return
-
+        
+        model_evaluated = False
+        eval_counter = 0
         # Run the evaluation
-        model_evaluated = run_evaluation(ssh, complete_directory, best_mIoU_file)
+        while not model_evaluated and eval_counter < 3:
+            model_evaluated = run_evaluation(ssh, complete_directory, best_mIoU_file)
+            eval_counter+=1
+        
         if model_evaluated:
             complete_directory.split('/')[-1]
             print_green(f"{complete_directory.split('/')[-1]} evaluated with {best_mIoU_file} successfully!")
@@ -458,7 +463,7 @@ def find_best_mIoU_file(ssh, complete_directory):
     #     return None, None
 
     # Find the .pth file with 'best_mIoU_iter' in the name
-    logging.info(f"ls {complete_directory} | grep 'best_mIoU_iter_.*\\.pth'")
+    logging.info(f"    Executing: ls {complete_directory} | grep 'best_mIoU_iter_.*\\.pth'")
     search_command = f"ls {complete_directory} | grep 'best_mIoU_iter_.*\\.pth'"
     stdin, stdout, stderr = ssh.exec_command(search_command)
     output = stdout.read().decode('utf-8')
@@ -484,10 +489,10 @@ def run_evaluation(ssh, complete_directory, best_mIoU_file):
     If not, retries once. If it fails again, creates 'not_evaluated.txt' in the directory.
     """
     # Construct the evaluation command
-    if rops.ssh_kinit_loop(1):
+    if rops.ssh_kinit_loop(2):
         job_work_dir_path = os.path.join(*complete_directory.split('/')[1:]).replace('\\','/')
         eval_command = (
-            f"srun -G 1 --pty python tools/test.py {job_work_dir_path}/{complete_directory.split('/')[-1]}.py "
+            f"srun -G 1 -C 'ada|a4500|a4000' --pty python tools/test.py {job_work_dir_path}/{complete_directory.split('/')[-1]}.py "
             f"{job_work_dir_path}/{best_mIoU_file} --show-dir work_dirs/{complete_directory.split('/')[-1]}/{best_mIoU_file[:-4]}_output/ --eval mIoU"
         )
         print(f"Command to run: cd {cfg.REMOTE_WORKING_PROJECT} ; {eval_command}")
@@ -501,7 +506,7 @@ def run_evaluation(ssh, complete_directory, best_mIoU_file):
         ssh.connect(cfg.REMOTE_HOST, username=cfg.USERNAME, password=cfg.PASSWORD)
         
         # Open an SSH session
-        logging.info("Started a shell to evaluate a model")
+        # logging.info("Started a shell to evaluate a model")
         session = ssh.invoke_shell()
         time.sleep(5)
         session.send(f"cd {cfg.REMOTE_WORKING_PROJECT}\n")
@@ -509,7 +514,10 @@ def run_evaluation(ssh, complete_directory, best_mIoU_file):
         session.send(eval_command+'\n')
         time.sleep(5)
         output = session.recv(4096).decode('utf-8')
-        # print(output)
+
+        logging.info(f"srun evaluation output: \n{output}")
+        print(output)
+
         if 'Permission denied' in output or 'error' in output.lower():
             print_red("Error running srun command.")
             logging.info("Error running srun command.")
@@ -551,7 +559,7 @@ def run_evaluation(ssh, complete_directory, best_mIoU_file):
     # return False
 
 def log_extraction(ssh):
-    logging.INFO("Extracting logs for models that have completed training")
+    logging.info("Extracting logs for models that have completed training")
     try:
         # Find directories that have the completed.txt file indicating that training is done
         project_work_dir = f'{cfg.REMOTE_WORKING_PROJECT}/{cfg.REMOTE_WORK_DIR}'
@@ -571,7 +579,7 @@ def log_extraction(ssh):
                 # Remove the last entry in the path (i.e. DIRECTORY_MARKER_FILE)
                 directory = '/'.join(completed_job.split('/')[:-1])
                 # Find the largest json file, usually means that it has the most entries indicating it is the json file of the training session
-                logging.info(f"Finding largest json log file for: {directory}")
+                # logging.info(f"Finding largest json log file for: {directory}")
                 find_largest_json_file = f'find {directory} -type f -name "*.json" -exec ls -s {{}} + | sort -n | tail -n 1 | awk \'{{print $2}}\''
                 stdin, stdout, stderr = ssh.exec_command(find_largest_json_file)
                 largest_json = stdout.read().decode().strip()
@@ -589,7 +597,7 @@ def log_extraction(ssh):
                     # print(f"Executed command in directory {directory}:")
                     std_output = stdout.read().decode()
                     std_error = stderr.read().decode()
-                    logging.info(std_output)
+                    # logging.info(std_output)
                     print(std_output)
                     if std_error:
                         logging.error(std_error)
@@ -601,7 +609,7 @@ def log_extraction(ssh):
                     evaluate_complete_directory(ssh, directory)
 # -----------------------------------------------
                     # Command to rename the file
-                    logging.info(f'Executing: mv {completed_job} {extracted_job}')
+                    logging.info(f'    Executing: mv {completed_job} {extracted_job}')
                     rename_command = f'mv {completed_job} {extracted_job}'
                     # Execute the rename command on the remote server
                     stdin, stdout, stderr = ssh.exec_command(rename_command)
@@ -634,7 +642,7 @@ def log_extraction(ssh):
         print(f"An error occured: {str(e)}")
 
 def check_and_move_files(ssh):
-    logging.info("Running storage check and moving files if they're finished")
+    # logging.info("Running storage check and moving files if they're finished")
     # Check how much storage is being used
     # login to remote pc, run quote -vs, and extract the used storage and storage limit    
     # Move files using rsync to local pc
@@ -681,10 +689,10 @@ def run_every_hour(ssh):
 def main():
     # TODO FIX STATUS UPDATES FOR RUNNING MODELS... We might not be clearing lists to queue and sbatch models properly
     run_counter = 0
-    sleep_counter_seconds = 300
+    sleep_counter_seconds = 600
     ssh = rops.connect_ssh(remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=cfg.PASSWORD)
     json_utils.create_json(ssh)
-    schedule.every(5).minutes.do(run_every_hour, ssh)
+    schedule.every(10).minutes.do(run_every_hour, ssh)
     # schedule.every(2).minute.do(run_every_six_hours)
     run_every_hour(ssh)
     # run_every_six_hours()
