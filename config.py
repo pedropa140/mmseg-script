@@ -32,7 +32,7 @@ global THRESHOLD
 THRESHOLD = 45  # Set your threshold percentage
 
 global JOB_THRESHOLD
-JOB_THRESHOLD = 5
+JOB_THRESHOLD = 7
 
 global REMOTE_BASE_PATH 
 global REMOTE_WORKING_PROJECT 

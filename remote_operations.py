@@ -55,11 +55,11 @@ def ssh_kinit(gpu, remote_host=cfg.REMOTE_HOST, username=cfg.USERNAME, password=
         # Check for any errors in the output
         if 'Permission denied' in output or 'error' in output.lower():
             print("Error running srun command. Running kinit")
-            logging.info("Error running srun command. Running kinit")
+            logging.error("Error running srun command. Running kinit")
             # Run the kinit command
             session.send('kinit\n')
             output = session.recv(4096).decode('utf-8')
-            logging.info(output)
+            logging.error(output)
             # Wait for the prompt to enter the password
             time.sleep(2)
             # Provide the kinit password

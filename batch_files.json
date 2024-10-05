@@ -1,5 +1,1661 @@
 [
     {
+        "filename": "hr18_m0_r30_f0.batch",
+        "job_name": "hr18_m0_r30_f0",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_30_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r30_f10.batch",
+        "job_name": "hr18_m0_r30_f10",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_30_flip_10",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r30_f60.batch",
+        "job_name": "hr18_m0_r30_f60",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_30_flip_60",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r40_f0.batch",
+        "job_name": "hr18_m0_r40_f0",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_40_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r40_f70.batch",
+        "job_name": "hr18_m0_r40_f70",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_40_flip_70",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r40_f80.batch",
+        "job_name": "hr18_m0_r40_f80",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_40_flip_80",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r40_f90.batch",
+        "job_name": "hr18_m0_r40_f90",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_40_flip_90",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r50_f0.batch",
+        "job_name": "hr18_m0_r50_f0",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_50_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r50_f100.batch",
+        "job_name": "hr18_m0_r50_f100",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_50_flip_100",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r50_f80.batch",
+        "job_name": "hr18_m0_r50_f80",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_50_flip_80",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r50_f90.batch",
+        "job_name": "hr18_m0_r50_f90",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_50_flip_90",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r60_f0.batch",
+        "job_name": "hr18_m0_r60_f0",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_60_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r60_f100.batch",
+        "job_name": "hr18_m0_r60_f100",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_60_flip_100",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r70_f70.batch",
+        "job_name": "hr18_m0_r70_f70",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_70_flip_70",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r70_f80.batch",
+        "job_name": "hr18_m0_r70_f80",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_70_flip_80",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r70_f90.batch",
+        "job_name": "hr18_m0_r70_f90",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_70_flip_90",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r80_f0.batch",
+        "job_name": "hr18_m0_r80_f0",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_80_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r80_f100.batch",
+        "job_name": "hr18_m0_r80_f100",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_80_flip_100",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r80_f10.batch",
+        "job_name": "hr18_m0_r80_f10",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_80_flip_10",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r80_f20.batch",
+        "job_name": "hr18_m0_r80_f20",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_80_flip_20",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r80_f30.batch",
+        "job_name": "hr18_m0_r80_f30",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_80_flip_30",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r80_f40.batch",
+        "job_name": "hr18_m0_r80_f40",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_80_flip_40",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r80_f50.batch",
+        "job_name": "hr18_m0_r80_f50",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_80_flip_50",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r80_f60.batch",
+        "job_name": "hr18_m0_r80_f60",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_80_flip_60",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r80_f70.batch",
+        "job_name": "hr18_m0_r80_f70",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_80_flip_70",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r80_f80.batch",
+        "job_name": "hr18_m0_r80_f80",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_80_flip_80",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r80_f90.batch",
+        "job_name": "hr18_m0_r80_f90",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_80_flip_90",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r90_f0.batch",
+        "job_name": "hr18_m0_r90_f0",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_90_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r90_f100.batch",
+        "job_name": "hr18_m0_r90_f100",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_90_flip_100",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r90_f10.batch",
+        "job_name": "hr18_m0_r90_f10",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_90_flip_10",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r90_f20.batch",
+        "job_name": "hr18_m0_r90_f20",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_90_flip_20",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r90_f30.batch",
+        "job_name": "hr18_m0_r90_f30",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_90_flip_30",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r90_f40.batch",
+        "job_name": "hr18_m0_r90_f40",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_90_flip_40",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r90_f50.batch",
+        "job_name": "hr18_m0_r90_f50",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_90_flip_50",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r90_f60.batch",
+        "job_name": "hr18_m0_r90_f60",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_90_flip_60",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r90_f70.batch",
+        "job_name": "hr18_m0_r90_f70",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_90_flip_70",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r90_f80.batch",
+        "job_name": "hr18_m0_r90_f80",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_90_flip_80",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r90_f90.batch",
+        "job_name": "hr18_m0_r90_f90",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_90_flip_90",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r0_f0.batch",
+        "job_name": "hr18_m100_r0_f0",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_0_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r0_f100.batch",
+        "job_name": "hr18_m100_r0_f100",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_0_flip_100",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r0_f10.batch",
+        "job_name": "hr18_m100_r0_f10",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_0_flip_10",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r0_f20.batch",
+        "job_name": "hr18_m100_r0_f20",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_0_flip_20",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r0_f30.batch",
+        "job_name": "hr18_m100_r0_f30",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_0_flip_30",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r0_f40.batch",
+        "job_name": "hr18_m100_r0_f40",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_0_flip_40",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r0_f50.batch",
+        "job_name": "hr18_m100_r0_f50",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_0_flip_50",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r0_f60.batch",
+        "job_name": "hr18_m100_r0_f60",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_0_flip_60",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r0_f70.batch",
+        "job_name": "hr18_m100_r0_f70",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_0_flip_70",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r0_f80.batch",
+        "job_name": "hr18_m100_r0_f80",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_0_flip_80",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r0_f90.batch",
+        "job_name": "hr18_m100_r0_f90",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_0_flip_90",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r100_f0.batch",
+        "job_name": "hr18_m100_r100_f0",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_100_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r10_f0.batch",
+        "job_name": "hr18_m100_r10_f0",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_10_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r20_f0.batch",
+        "job_name": "hr18_m100_r20_f0",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_20_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r30_f0.batch",
+        "job_name": "hr18_m100_r30_f0",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_30_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r40_f0.batch",
+        "job_name": "hr18_m100_r40_f0",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_40_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r50_f0.batch",
+        "job_name": "hr18_m100_r50_f0",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_50_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r60_f0.batch",
+        "job_name": "hr18_m100_r60_f0",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_60_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r70_f0.batch",
+        "job_name": "hr18_m100_r70_f0",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_70_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r80_f0.batch",
+        "job_name": "hr18_m100_r80_f0",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_80_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m100_r90_f0.batch",
+        "job_name": "hr18_m100_r90_f0",
+        "working_directory": "hr18_mos_100_res_1024x1024_crop_rotate_90_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r0_f0.batch",
+        "job_name": "hr18_m10_r0_f0",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_0_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r0_f100.batch",
+        "job_name": "hr18_m10_r0_f100",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_0_flip_100",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r0_f10.batch",
+        "job_name": "hr18_m10_r0_f10",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_0_flip_10",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r0_f20.batch",
+        "job_name": "hr18_m10_r0_f20",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_0_flip_20",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r0_f30.batch",
+        "job_name": "hr18_m10_r0_f30",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_0_flip_30",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r0_f40.batch",
+        "job_name": "hr18_m10_r0_f40",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_0_flip_40",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r0_f50.batch",
+        "job_name": "hr18_m10_r0_f50",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_0_flip_50",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r0_f60.batch",
+        "job_name": "hr18_m10_r0_f60",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_0_flip_60",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r0_f70.batch",
+        "job_name": "hr18_m10_r0_f70",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_0_flip_70",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r0_f80.batch",
+        "job_name": "hr18_m10_r0_f80",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_0_flip_80",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r0_f90.batch",
+        "job_name": "hr18_m10_r0_f90",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_0_flip_90",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r100_f0.batch",
+        "job_name": "hr18_m10_r100_f0",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_100_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r10_f0.batch",
+        "job_name": "hr18_m10_r10_f0",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_10_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r20_f0.batch",
+        "job_name": "hr18_m10_r20_f0",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_20_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r30_f0.batch",
+        "job_name": "hr18_m10_r30_f0",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_30_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r40_f0.batch",
+        "job_name": "hr18_m10_r40_f0",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_40_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r50_f0.batch",
+        "job_name": "hr18_m10_r50_f0",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_50_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r60_f0.batch",
+        "job_name": "hr18_m10_r60_f0",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_60_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r70_f0.batch",
+        "job_name": "hr18_m10_r70_f0",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_70_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r80_f0.batch",
+        "job_name": "hr18_m10_r80_f0",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_80_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m10_r90_f0.batch",
+        "job_name": "hr18_m10_r90_f0",
+        "working_directory": "hr18_mos_10_res_1024x1024_crop_rotate_90_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r0_f0.batch",
+        "job_name": "hr18_m20_r0_f0",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_0_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r0_f100.batch",
+        "job_name": "hr18_m20_r0_f100",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_0_flip_100",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r0_f10.batch",
+        "job_name": "hr18_m20_r0_f10",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_0_flip_10",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r0_f20.batch",
+        "job_name": "hr18_m20_r0_f20",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_0_flip_20",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r0_f30.batch",
+        "job_name": "hr18_m20_r0_f30",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_0_flip_30",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r0_f40.batch",
+        "job_name": "hr18_m20_r0_f40",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_0_flip_40",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r0_f50.batch",
+        "job_name": "hr18_m20_r0_f50",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_0_flip_50",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r0_f60.batch",
+        "job_name": "hr18_m20_r0_f60",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_0_flip_60",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r0_f70.batch",
+        "job_name": "hr18_m20_r0_f70",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_0_flip_70",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r0_f80.batch",
+        "job_name": "hr18_m20_r0_f80",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_0_flip_80",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r0_f90.batch",
+        "job_name": "hr18_m20_r0_f90",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_0_flip_90",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r100_f0.batch",
+        "job_name": "hr18_m20_r100_f0",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_100_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r10_f0.batch",
+        "job_name": "hr18_m20_r10_f0",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_10_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r20_f0.batch",
+        "job_name": "hr18_m20_r20_f0",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_20_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r30_f0.batch",
+        "job_name": "hr18_m20_r30_f0",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_30_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r40_f0.batch",
+        "job_name": "hr18_m20_r40_f0",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_40_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r50_f0.batch",
+        "job_name": "hr18_m20_r50_f0",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_50_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r60_f0.batch",
+        "job_name": "hr18_m20_r60_f0",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_60_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r70_f0.batch",
+        "job_name": "hr18_m20_r70_f0",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_70_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r80_f0.batch",
+        "job_name": "hr18_m20_r80_f0",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_80_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m20_r90_f0.batch",
+        "job_name": "hr18_m20_r90_f0",
+        "working_directory": "hr18_mos_20_res_1024x1024_crop_rotate_90_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r0_f0.batch",
+        "job_name": "hr18_m30_r0_f0",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_0_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r0_f100.batch",
+        "job_name": "hr18_m30_r0_f100",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_0_flip_100",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r0_f10.batch",
+        "job_name": "hr18_m30_r0_f10",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_0_flip_10",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r0_f20.batch",
+        "job_name": "hr18_m30_r0_f20",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_0_flip_20",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r0_f30.batch",
+        "job_name": "hr18_m30_r0_f30",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_0_flip_30",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r0_f40.batch",
+        "job_name": "hr18_m30_r0_f40",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_0_flip_40",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r0_f50.batch",
+        "job_name": "hr18_m30_r0_f50",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_0_flip_50",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r0_f60.batch",
+        "job_name": "hr18_m30_r0_f60",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_0_flip_60",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r0_f70.batch",
+        "job_name": "hr18_m30_r0_f70",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_0_flip_70",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r0_f80.batch",
+        "job_name": "hr18_m30_r0_f80",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_0_flip_80",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r0_f90.batch",
+        "job_name": "hr18_m30_r0_f90",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_0_flip_90",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r100_f0.batch",
+        "job_name": "hr18_m30_r100_f0",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_100_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r10_f0.batch",
+        "job_name": "hr18_m30_r10_f0",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_10_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r20_f0.batch",
+        "job_name": "hr18_m30_r20_f0",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_20_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r30_f0.batch",
+        "job_name": "hr18_m30_r30_f0",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_30_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r40_f0.batch",
+        "job_name": "hr18_m30_r40_f0",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_40_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r50_f0.batch",
+        "job_name": "hr18_m30_r50_f0",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_50_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r60_f0.batch",
+        "job_name": "hr18_m30_r60_f0",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_60_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r70_f0.batch",
+        "job_name": "hr18_m30_r70_f0",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_70_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r80_f0.batch",
+        "job_name": "hr18_m30_r80_f0",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_80_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m30_r90_f0.batch",
+        "job_name": "hr18_m30_r90_f0",
+        "working_directory": "hr18_mos_30_res_1024x1024_crop_rotate_90_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r0_f0.batch",
+        "job_name": "hr18_m40_r0_f0",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_0_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r0_f100.batch",
+        "job_name": "hr18_m40_r0_f100",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_0_flip_100",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r0_f10.batch",
+        "job_name": "hr18_m40_r0_f10",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_0_flip_10",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r0_f20.batch",
+        "job_name": "hr18_m40_r0_f20",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_0_flip_20",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r0_f30.batch",
+        "job_name": "hr18_m40_r0_f30",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_0_flip_30",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r0_f40.batch",
+        "job_name": "hr18_m40_r0_f40",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_0_flip_40",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r0_f50.batch",
+        "job_name": "hr18_m40_r0_f50",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_0_flip_50",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r0_f60.batch",
+        "job_name": "hr18_m40_r0_f60",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_0_flip_60",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r0_f70.batch",
+        "job_name": "hr18_m40_r0_f70",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_0_flip_70",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r0_f80.batch",
+        "job_name": "hr18_m40_r0_f80",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_0_flip_80",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r0_f90.batch",
+        "job_name": "hr18_m40_r0_f90",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_0_flip_90",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r100_f0.batch",
+        "job_name": "hr18_m40_r100_f0",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_100_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r10_f0.batch",
+        "job_name": "hr18_m40_r10_f0",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_10_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r20_f0.batch",
+        "job_name": "hr18_m40_r20_f0",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_20_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r30_f0.batch",
+        "job_name": "hr18_m40_r30_f0",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_30_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r40_f0.batch",
+        "job_name": "hr18_m40_r40_f0",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_40_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r50_f0.batch",
+        "job_name": "hr18_m40_r50_f0",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_50_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r60_f0.batch",
+        "job_name": "hr18_m40_r60_f0",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_60_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r70_f0.batch",
+        "job_name": "hr18_m40_r70_f0",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_70_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r80_f0.batch",
+        "job_name": "hr18_m40_r80_f0",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_80_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m40_r90_f0.batch",
+        "job_name": "hr18_m40_r90_f0",
+        "working_directory": "hr18_mos_40_res_1024x1024_crop_rotate_90_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r0_f0.batch",
+        "job_name": "hr18_m50_r0_f0",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_0_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r0_f100.batch",
+        "job_name": "hr18_m50_r0_f100",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_0_flip_100",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r0_f10.batch",
+        "job_name": "hr18_m50_r0_f10",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_0_flip_10",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r0_f20.batch",
+        "job_name": "hr18_m50_r0_f20",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_0_flip_20",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r0_f30.batch",
+        "job_name": "hr18_m50_r0_f30",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_0_flip_30",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r0_f40.batch",
+        "job_name": "hr18_m50_r0_f40",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_0_flip_40",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r0_f50.batch",
+        "job_name": "hr18_m50_r0_f50",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_0_flip_50",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r0_f60.batch",
+        "job_name": "hr18_m50_r0_f60",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_0_flip_60",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r0_f70.batch",
+        "job_name": "hr18_m50_r0_f70",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_0_flip_70",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r0_f80.batch",
+        "job_name": "hr18_m50_r0_f80",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_0_flip_80",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r0_f90.batch",
+        "job_name": "hr18_m50_r0_f90",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_0_flip_90",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r100_f0.batch",
+        "job_name": "hr18_m50_r100_f0",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_100_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r10_f0.batch",
+        "job_name": "hr18_m50_r10_f0",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_10_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r20_f0.batch",
+        "job_name": "hr18_m50_r20_f0",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_20_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r30_f0.batch",
+        "job_name": "hr18_m50_r30_f0",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_30_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r40_f0.batch",
+        "job_name": "hr18_m50_r40_f0",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_40_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r50_f0.batch",
+        "job_name": "hr18_m50_r50_f0",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_50_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r60_f0.batch",
+        "job_name": "hr18_m50_r60_f0",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_60_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r70_f0.batch",
+        "job_name": "hr18_m50_r70_f0",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_70_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r80_f0.batch",
+        "job_name": "hr18_m50_r80_f0",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_80_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m50_r90_f0.batch",
+        "job_name": "hr18_m50_r90_f0",
+        "working_directory": "hr18_mos_50_res_1024x1024_crop_rotate_90_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r0_f0.batch",
+        "job_name": "hr18_m60_r0_f0",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_0_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r0_f100.batch",
+        "job_name": "hr18_m60_r0_f100",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_0_flip_100",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r0_f10.batch",
+        "job_name": "hr18_m60_r0_f10",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_0_flip_10",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r0_f20.batch",
+        "job_name": "hr18_m60_r0_f20",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_0_flip_20",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r0_f30.batch",
+        "job_name": "hr18_m60_r0_f30",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_0_flip_30",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r0_f40.batch",
+        "job_name": "hr18_m60_r0_f40",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_0_flip_40",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r0_f50.batch",
+        "job_name": "hr18_m60_r0_f50",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_0_flip_50",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r0_f60.batch",
+        "job_name": "hr18_m60_r0_f60",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_0_flip_60",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r0_f70.batch",
+        "job_name": "hr18_m60_r0_f70",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_0_flip_70",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r0_f80.batch",
+        "job_name": "hr18_m60_r0_f80",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_0_flip_80",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r0_f90.batch",
+        "job_name": "hr18_m60_r0_f90",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_0_flip_90",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r100_f0.batch",
+        "job_name": "hr18_m60_r100_f0",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_100_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r10_f0.batch",
+        "job_name": "hr18_m60_r10_f0",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_10_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r20_f0.batch",
+        "job_name": "hr18_m60_r20_f0",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_20_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r30_f0.batch",
+        "job_name": "hr18_m60_r30_f0",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_30_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r40_f0.batch",
+        "job_name": "hr18_m60_r40_f0",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_40_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r50_f0.batch",
+        "job_name": "hr18_m60_r50_f0",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_50_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r60_f0.batch",
+        "job_name": "hr18_m60_r60_f0",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_60_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r70_f0.batch",
+        "job_name": "hr18_m60_r70_f0",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_70_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r80_f0.batch",
+        "job_name": "hr18_m60_r80_f0",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_80_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m60_r90_f0.batch",
+        "job_name": "hr18_m60_r90_f0",
+        "working_directory": "hr18_mos_60_res_1024x1024_crop_rotate_90_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r0_f0.batch",
+        "job_name": "hr18_m70_r0_f0",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_0_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r0_f100.batch",
+        "job_name": "hr18_m70_r0_f100",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_0_flip_100",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r0_f10.batch",
+        "job_name": "hr18_m70_r0_f10",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_0_flip_10",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r0_f20.batch",
+        "job_name": "hr18_m70_r0_f20",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_0_flip_20",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r0_f30.batch",
+        "job_name": "hr18_m70_r0_f30",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_0_flip_30",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r0_f40.batch",
+        "job_name": "hr18_m70_r0_f40",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_0_flip_40",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r0_f50.batch",
+        "job_name": "hr18_m70_r0_f50",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_0_flip_50",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r0_f60.batch",
+        "job_name": "hr18_m70_r0_f60",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_0_flip_60",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r0_f70.batch",
+        "job_name": "hr18_m70_r0_f70",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_0_flip_70",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r0_f80.batch",
+        "job_name": "hr18_m70_r0_f80",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_0_flip_80",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r0_f90.batch",
+        "job_name": "hr18_m70_r0_f90",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_0_flip_90",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r100_f0.batch",
+        "job_name": "hr18_m70_r100_f0",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_100_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r10_f0.batch",
+        "job_name": "hr18_m70_r10_f0",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_10_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r20_f0.batch",
+        "job_name": "hr18_m70_r20_f0",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_20_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r30_f0.batch",
+        "job_name": "hr18_m70_r30_f0",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_30_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r40_f0.batch",
+        "job_name": "hr18_m70_r40_f0",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_40_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r50_f0.batch",
+        "job_name": "hr18_m70_r50_f0",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_50_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r60_f0.batch",
+        "job_name": "hr18_m70_r60_f0",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_60_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r70_f0.batch",
+        "job_name": "hr18_m70_r70_f0",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_70_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r80_f0.batch",
+        "job_name": "hr18_m70_r80_f0",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_80_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m70_r90_f0.batch",
+        "job_name": "hr18_m70_r90_f0",
+        "working_directory": "hr18_mos_70_res_1024x1024_crop_rotate_90_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r0_f0.batch",
+        "job_name": "hr18_m80_r0_f0",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_0_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r0_f100.batch",
+        "job_name": "hr18_m80_r0_f100",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_0_flip_100",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r0_f10.batch",
+        "job_name": "hr18_m80_r0_f10",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_0_flip_10",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r0_f20.batch",
+        "job_name": "hr18_m80_r0_f20",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_0_flip_20",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r0_f30.batch",
+        "job_name": "hr18_m80_r0_f30",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_0_flip_30",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r0_f40.batch",
+        "job_name": "hr18_m80_r0_f40",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_0_flip_40",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r0_f50.batch",
+        "job_name": "hr18_m80_r0_f50",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_0_flip_50",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r0_f60.batch",
+        "job_name": "hr18_m80_r0_f60",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_0_flip_60",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r0_f70.batch",
+        "job_name": "hr18_m80_r0_f70",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_0_flip_70",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r0_f80.batch",
+        "job_name": "hr18_m80_r0_f80",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_0_flip_80",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r0_f90.batch",
+        "job_name": "hr18_m80_r0_f90",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_0_flip_90",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r100_f0.batch",
+        "job_name": "hr18_m80_r100_f0",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_100_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r10_f0.batch",
+        "job_name": "hr18_m80_r10_f0",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_10_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r20_f0.batch",
+        "job_name": "hr18_m80_r20_f0",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_20_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r30_f0.batch",
+        "job_name": "hr18_m80_r30_f0",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_30_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r40_f0.batch",
+        "job_name": "hr18_m80_r40_f0",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_40_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r50_f0.batch",
+        "job_name": "hr18_m80_r50_f0",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_50_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r60_f0.batch",
+        "job_name": "hr18_m80_r60_f0",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_60_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r70_f0.batch",
+        "job_name": "hr18_m80_r70_f0",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_70_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r80_f0.batch",
+        "job_name": "hr18_m80_r80_f0",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_80_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m80_r90_f0.batch",
+        "job_name": "hr18_m80_r90_f0",
+        "working_directory": "hr18_mos_80_res_1024x1024_crop_rotate_90_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r0_f0.batch",
+        "job_name": "hr18_m90_r0_f0",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_0_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r0_f100.batch",
+        "job_name": "hr18_m90_r0_f100",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_0_flip_100",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r0_f10.batch",
+        "job_name": "hr18_m90_r0_f10",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_0_flip_10",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r0_f20.batch",
+        "job_name": "hr18_m90_r0_f20",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_0_flip_20",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r0_f30.batch",
+        "job_name": "hr18_m90_r0_f30",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_0_flip_30",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r0_f40.batch",
+        "job_name": "hr18_m90_r0_f40",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_0_flip_40",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r0_f50.batch",
+        "job_name": "hr18_m90_r0_f50",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_0_flip_50",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r0_f60.batch",
+        "job_name": "hr18_m90_r0_f60",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_0_flip_60",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r0_f70.batch",
+        "job_name": "hr18_m90_r0_f70",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_0_flip_70",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r0_f80.batch",
+        "job_name": "hr18_m90_r0_f80",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_0_flip_80",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r0_f90.batch",
+        "job_name": "hr18_m90_r0_f90",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_0_flip_90",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r100_f0.batch",
+        "job_name": "hr18_m90_r100_f0",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_100_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r10_f0.batch",
+        "job_name": "hr18_m90_r10_f0",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_10_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r20_f0.batch",
+        "job_name": "hr18_m90_r20_f0",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_20_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r30_f0.batch",
+        "job_name": "hr18_m90_r30_f0",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_30_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r40_f0.batch",
+        "job_name": "hr18_m90_r40_f0",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_40_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r50_f0.batch",
+        "job_name": "hr18_m90_r50_f0",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_50_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r60_f0.batch",
+        "job_name": "hr18_m90_r60_f0",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_60_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r70_f0.batch",
+        "job_name": "hr18_m90_r70_f0",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_70_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r80_f0.batch",
+        "job_name": "hr18_m90_r80_f0",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_80_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m90_r90_f0.batch",
+        "job_name": "hr18_m90_r90_f0",
+        "working_directory": "hr18_mos_90_res_1024x1024_crop_rotate_90_flip_0",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "stdc1_corrosion_pretrained.batch",
+        "job_name": "stdc1_corr_pre",
+        "working_directory": "stdc1_in1k-pre_512x512_160k_corrosion",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "stdc2_corrosion_pretrained.batch",
+        "job_name": "stdc2_corr_pre",
+        "working_directory": "stdc2_in1k-pre_512x512_160k_corrosion",
+        "status": "QUEUED"
+    },
+    {
+        "filename": "hr18_m0_r30_f80.batch",
+        "job_name": "hr18_m0_r30_f80",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_30_flip_80",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hr18_m0_r30_f90.batch",
+        "job_name": "hr18_m0_r30_f90",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_30_flip_90",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hr18_m0_r50_f50.batch",
+        "job_name": "hr18_m0_r50_f50",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_50_flip_50",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hr18_m0_r50_f60.batch",
+        "job_name": "hr18_m0_r50_f60",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_50_flip_60",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hr18_m0_r50_f70.batch",
+        "job_name": "hr18_m0_r50_f70",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_50_flip_70",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hr18_m0_r60_f30.batch",
+        "job_name": "hr18_m0_r60_f30",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_60_flip_30",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hr18_m0_r60_f40.batch",
+        "job_name": "hr18_m0_r60_f40",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_60_flip_40",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hr18_m0_r60_f50.batch",
+        "job_name": "hr18_m0_r60_f50",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_60_flip_50",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hr18_m0_r60_f60.batch",
+        "job_name": "hr18_m0_r60_f60",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_60_flip_60",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hr18_m0_r60_f70.batch",
+        "job_name": "hr18_m0_r60_f70",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_60_flip_70",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hr18_m0_r60_f80.batch",
+        "job_name": "hr18_m0_r60_f80",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_60_flip_80",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hr18_m0_r60_f90.batch",
+        "job_name": "hr18_m0_r60_f90",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_60_flip_90",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hr18_m0_r70_f0.batch",
+        "job_name": "hr18_m0_r70_f0",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_70_flip_0",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hr18_m0_r70_f100.batch",
+        "job_name": "hr18_m0_r70_f100",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_70_flip_100",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hr18_m0_r70_f10.batch",
+        "job_name": "hr18_m0_r70_f10",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_70_flip_10",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hr18_m0_r70_f20.batch",
+        "job_name": "hr18_m0_r70_f20",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_70_flip_20",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hr18_m0_r70_f30.batch",
+        "job_name": "hr18_m0_r70_f30",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_70_flip_30",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hr18_m0_r70_f40.batch",
+        "job_name": "hr18_m0_r70_f40",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_70_flip_40",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "hr18_m0_r70_f60.batch",
+        "job_name": "hr18_m0_r70_f60",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_70_flip_60",
+        "status": "RUNNING"
+    },
+    {
+        "filename": "fcn_r101_corr.batch",
+        "job_name": "fcn_r101_corrosion",
+        "working_directory": "fcn_r101-d8_512x512_160k_coco_corrosion",
+        "status": "ERROR"
+    },
+    {
+        "filename": "hr18_m0_r30_f70.batch",
+        "job_name": "hr18_m0_r30_f70",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_30_flip_70",
+        "status": "ERROR"
+    },
+    {
+        "filename": "hr18_m0_r60_f10.batch",
+        "job_name": "hr18_m0_r60_f10",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_60_flip_10",
+        "status": "ERROR"
+    },
+    {
+        "filename": "hr18_m0_r60_f20.batch",
+        "job_name": "hr18_m0_r60_f20",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_60_flip_20",
+        "status": "ERROR"
+    },
+    {
+        "filename": "hr18_m0_r70_f50.batch",
+        "job_name": "hr18_m0_r70_f50",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_70_flip_50",
+        "status": "ERROR"
+    },
+    {
+        "filename": "sem_fpn_r50_corrosion.batch",
+        "job_name": "sem_fpn_r50",
+        "working_directory": "fpn_r50_512x512_160k_corrosion",
+        "status": "ERROR"
+    },
+    {
+        "filename": "ANN_r50_160k.batch",
+        "job_name": "r50_ANN_160k",
+        "working_directory": "ann_r50-d8_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
         "filename": "apcnet_r101_corrosion.batch",
         "job_name": "apcnet_r101",
         "working_directory": "apcnet_r101-d8_512x512_160k_corrosion",
@@ -12,6 +1668,12 @@
         "status": "FINISHED"
     },
     {
+        "filename": "BiSeNetv2_160k_corrosion.batch",
+        "job_name": "BiSeNet_BG_comb",
+        "working_directory": "bisenetv2_fcn_4x4_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
         "filename": "ccnet_r101_corrosion.batch",
         "job_name": "ccnet_r101_corrosion",
         "working_directory": "ccnet_r101-d8_512x512_160k_corrosion",
@@ -21,192 +1683,6 @@
         "filename": "ccnet_r50_corrosion.batch",
         "job_name": "ccnet_r50_corrosion",
         "working_directory": "ccnet_r50-d8_512x512_160k_corrosion",
-        "status": "FINISHED"
-    },
-    {
-        "filename": "emanet_r101_corrosion.batch",
-        "job_name": "emanet_r101",
-        "working_directory": "emanet_r101-d8_512x512_160k_corrosion",
-        "status": "FINISHED"
-    },
-    {
-        "filename": "emanet_r50_corrosion.batch",
-        "job_name": "emanet_r50",
-        "working_directory": "emanet_r50-d8_512x512_160k_corrosion",
-        "status": "FINISHED"
-    },
-    {
-        "filename": "fastscn_aspp_corrosion.batch",
-        "job_name": "fastscn_aspp",
-        "working_directory": "fastfcn_r50-d32_jpu_aspp_512x512_160k_corrosion",
-        "status": "RUNNING"
-    },
-    {
-        "filename": "fastscn_enc_corrosion.batch",
-        "job_name": "fastscn_enc",
-        "working_directory": "fastfcn_r50-d32_jpu_enc_512x512_160k_corrosion",
-        "status": "RUNNING"
-    },
-    {
-        "filename": "fastscn_psp_corrosion.batch",
-        "job_name": "fastscn_psp",
-        "working_directory": "fastfcn_r50-d32_jpu_psp_512x512_160k_corrosion",
-        "status": "RUNNING"
-    },
-    {
-        "filename": "gcnet_r101_corrosion.batch",
-        "job_name": "gcnet_r101_corrosion",
-        "working_directory": "gcnet_r101-d8_512x512_160k_corrosion",
-        "status": "RUNNING"
-    },
-    {
-        "filename": "gcnet_r50_corrosion.batch",
-        "job_name": "gcnet_r50_corrosion",
-        "working_directory": "gcnet_r50-d8_512x512_160k_corrosion",
-        "status": "RUNNING"
-    },
-    {
-        "filename": "hr18_corrosion.batch",
-        "job_name": "hr18_corrosion",
-        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "hr48_corrosion.batch",
-        "job_name": "hr48_corrosion",
-        "working_directory": "fcn_hr48_2x2_512x512_160k_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "poolformer_m36_corr.batch",
-        "job_name": "poolformer_m36_corr",
-        "working_directory": "fpn_poolformer_m36_8x4_512x512_160k_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "poolformer_s12_corr.batch",
-        "job_name": "poolformer_s12_corr",
-        "working_directory": "fpn_poolformer_s12_8x4_512x512_160k_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "poolformer_s36_corr.batch",
-        "job_name": "poolformer_s36_corr",
-        "working_directory": "fpn_poolformer_s36_8x4_512x512_160k_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "resnest_r101_corrosion.batch",
-        "job_name": "resnest_r101_corrosion",
-        "working_directory": "deeplabv3_s101-d8_512x512_160k_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "segmenter_large_corrosion.batch",
-        "job_name": "segmenter_lar_corr",
-        "working_directory": "segmenter_vit-l_mask_8x1_640x640_160k_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "segmenter_s_corrosion.batch",
-        "job_name": "segmenter_s_corr",
-        "working_directory": "segmenter_vit-s_mask_8x1_512x512_160k_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "segmenter_t_corrosion.batch",
-        "job_name": "segmenter_t_corr",
-        "working_directory": "segmenter_vit-t_mask_8x1_512x512_160k_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "sem_fpn_r101_corrosion.batch",
-        "job_name": "sem_fpn_r101",
-        "working_directory": "fpn_r101_512x512_160k_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "sem_fpn_r50_corrosion.batch",
-        "job_name": "sem_fpn_r50",
-        "working_directory": "fpn_r50_512x512_160k_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "setr_mla_corrosion.batch",
-        "job_name": "setr_mla_corr",
-        "working_directory": "setr_mla_512x512_160k_b8_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "setr_naive_corrosion.batch",
-        "job_name": "setr_naive_corr",
-        "working_directory": "setr_naive_512x512_160k_b16_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "setr_pup_corrosion.batch",
-        "job_name": "setr_pup_corr",
-        "working_directory": "setr_pup_512x512_160k_b16_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "stdc1_corrosion.batch",
-        "job_name": "stdc1_corrosion",
-        "working_directory": "stdc1_512x512_160k_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "stdc1_corrosion_pretrained.batch",
-        "job_name": "stdc1_corr_pre",
-        "working_directory": "stdc1_in1k-pre_512x512_160k_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "stdc2_corrosion.batch",
-        "job_name": "stdc2_corrosion",
-        "working_directory": "stdc2_512x512_160k_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "stdc2_corrosion_pretrained.batch",
-        "job_name": "stdc2_corr_pre",
-        "working_directory": "stdc2_in1k-pre_512x512_160k_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "swin_small_corrosion.batch",
-        "job_name": "swin_small_corrosion",
-        "working_directory": "upernet_swin_small_patch4_window7_512x512_160k_corrosion_pretrain_224x224_1K",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "swin_tiny_corrosion.batch",
-        "job_name": "swin_tiny_corrosion",
-        "working_directory": "upernet_swin_tiny_patch4_window7_512x512_160k_corrosion_pretrain_224x224_1K",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "twins_svt_b_corrosion.batch",
-        "job_name": "twins_svt_b_uper_corr",
-        "working_directory": "twins_svt-b_uperhead_8x2_512x512_160k_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "twins_svt_s_corrosion.batch",
-        "job_name": "twins_svt_uper_corr",
-        "working_directory": "twins_svt-s_uperhead_8x2_512x512_160k_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "ANN_r50_160k.batch",
-        "job_name": "r50_ANN_160k",
-        "working_directory": "ann_r50-d8_512x512_160k_corrosion",
-        "status": "QUEUED"
-    },
-    {
-        "filename": "BiSeNetv2_160k_corrosion.batch",
-        "job_name": "BiSeNet_BG_comb",
-        "working_directory": "bisenetv2_fcn_4x4_512x512_160k_corrosion",
         "status": "FINISHED"
     },
     {
@@ -252,6 +1728,18 @@
         "status": "FINISHED"
     },
     {
+        "filename": "emanet_r101_corrosion.batch",
+        "job_name": "emanet_r101",
+        "working_directory": "emanet_r101-d8_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "emanet_r50_corrosion.batch",
+        "job_name": "emanet_r50",
+        "working_directory": "emanet_r50-d8_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
         "filename": "encnet_r101_corrosion.batch",
         "job_name": "encnet_r101_corrosion",
         "working_directory": "encnet_r101-d8_512x512_80k_corrosion",
@@ -282,22 +1770,418 @@
         "status": "FINISHED"
     },
     {
-        "filename": "fcn_r101_corr.batch",
-        "job_name": "fcn_r101_corrosion",
-        "working_directory": "fcn_r101-d8_512x512_160k_coco_corrosion",
-        "status": "QUEUED"
+        "filename": "fastscn_aspp_corrosion.batch",
+        "job_name": "fastscn_aspp",
+        "working_directory": "fastfcn_r50-d32_jpu_aspp_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "fastscn_enc_corrosion.batch",
+        "job_name": "fastscn_enc",
+        "working_directory": "fastfcn_r50-d32_jpu_enc_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "fastscn_psp_corrosion.batch",
+        "job_name": "fastscn_psp",
+        "working_directory": "fastfcn_r50-d32_jpu_psp_512x512_160k_corrosion",
+        "status": "FINISHED"
     },
     {
         "filename": "fcn_r18_corr.batch",
         "job_name": "fcn_r18_corrosion",
         "working_directory": "fcn_r18-d8_512x512_160k_coco_corrosion",
-        "status": "QUEUED"
+        "status": "FINISHED"
     },
     {
         "filename": "fcn_r50_corr.batch",
         "job_name": "fcn_r50_corrosion",
         "working_directory": "fcn_r50-d8_512x512_160k_coco_corrosion",
-        "status": "QUEUED"
+        "status": "FINISHED"
+    },
+    {
+        "filename": "gcnet_r101_corrosion.batch",
+        "job_name": "gcnet_r101_corrosion",
+        "working_directory": "gcnet_r101-d8_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "gcnet_r50_corrosion.batch",
+        "job_name": "gcnet_r50_corrosion",
+        "working_directory": "gcnet_r50-d8_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_corrosion.batch",
+        "job_name": "hr18_corrosion",
+        "working_directory": "fcn_hr18_2x2_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r0_f0.batch",
+        "job_name": "hr18_m0_r0_f0",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_0_flip_0",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r0_f100.batch",
+        "job_name": "hr18_m0_r0_f100",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_0_flip_100",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r0_f10.batch",
+        "job_name": "hr18_m0_r0_f10",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_0_flip_10",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r0_f20.batch",
+        "job_name": "hr18_m0_r0_f20",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_0_flip_20",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r0_f30.batch",
+        "job_name": "hr18_m0_r0_f30",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_0_flip_30",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r0_f40.batch",
+        "job_name": "hr18_m0_r0_f40",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_0_flip_40",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r0_f50.batch",
+        "job_name": "hr18_m0_r0_f50",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_0_flip_50",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r0_f60.batch",
+        "job_name": "hr18_m0_r0_f60",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_0_flip_60",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r0_f70.batch",
+        "job_name": "hr18_m0_r0_f70",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_0_flip_70",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r0_f80.batch",
+        "job_name": "hr18_m0_r0_f80",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_0_flip_80",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r0_f90.batch",
+        "job_name": "hr18_m0_r0_f90",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_0_flip_90",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r100_f0.batch",
+        "job_name": "hr18_m0_r100_f0",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_100_flip_0",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r100_f100.batch",
+        "job_name": "hr18_m0_r100_f100",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_100_flip_100",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r100_f10.batch",
+        "job_name": "hr18_m0_r100_f10",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_100_flip_10",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r100_f20.batch",
+        "job_name": "hr18_m0_r100_f20",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_100_flip_20",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r100_f30.batch",
+        "job_name": "hr18_m0_r100_f30",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_100_flip_30",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r100_f40.batch",
+        "job_name": "hr18_m0_r100_f40",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_100_flip_40",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r100_f50.batch",
+        "job_name": "hr18_m0_r100_f50",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_100_flip_50",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r100_f60.batch",
+        "job_name": "hr18_m0_r100_f60",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_100_flip_60",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r100_f70.batch",
+        "job_name": "hr18_m0_r100_f70",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_100_flip_70",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r100_f80.batch",
+        "job_name": "hr18_m0_r100_f80",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_100_flip_80",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r100_f90.batch",
+        "job_name": "hr18_m0_r100_f90",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_100_flip_90",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r10_f0.batch",
+        "job_name": "hr18_m0_r10_f0",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_10_flip_0",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r10_f100.batch",
+        "job_name": "hr18_m0_r10_f100",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_10_flip_100",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r10_f10.batch",
+        "job_name": "hr18_m0_r10_f10",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_10_flip_10",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r10_f20.batch",
+        "job_name": "hr18_m0_r10_f20",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_10_flip_20",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r10_f30.batch",
+        "job_name": "hr18_m0_r10_f30",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_10_flip_30",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r10_f40.batch",
+        "job_name": "hr18_m0_r10_f40",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_10_flip_40",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r10_f50.batch",
+        "job_name": "hr18_m0_r10_f50",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_10_flip_50",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r10_f60.batch",
+        "job_name": "hr18_m0_r10_f60",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_10_flip_60",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r10_f70.batch",
+        "job_name": "hr18_m0_r10_f70",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_10_flip_70",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r10_f80.batch",
+        "job_name": "hr18_m0_r10_f80",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_10_flip_80",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r10_f90.batch",
+        "job_name": "hr18_m0_r10_f90",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_10_flip_90",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r20_f0.batch",
+        "job_name": "hr18_m0_r20_f0",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_20_flip_0",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r20_f100.batch",
+        "job_name": "hr18_m0_r20_f100",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_20_flip_100",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r20_f10.batch",
+        "job_name": "hr18_m0_r20_f10",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_20_flip_10",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r20_f20.batch",
+        "job_name": "hr18_m0_r20_f20",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_20_flip_20",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r20_f30.batch",
+        "job_name": "hr18_m0_r20_f30",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_20_flip_30",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r20_f40.batch",
+        "job_name": "hr18_m0_r20_f40",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_20_flip_40",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r20_f50.batch",
+        "job_name": "hr18_m0_r20_f50",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_20_flip_50",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r20_f60.batch",
+        "job_name": "hr18_m0_r20_f60",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_20_flip_60",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r20_f70.batch",
+        "job_name": "hr18_m0_r20_f70",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_20_flip_70",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r20_f80.batch",
+        "job_name": "hr18_m0_r20_f80",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_20_flip_80",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r20_f90.batch",
+        "job_name": "hr18_m0_r20_f90",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_20_flip_90",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r30_f100.batch",
+        "job_name": "hr18_m0_r30_f100",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_30_flip_100",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r30_f20.batch",
+        "job_name": "hr18_m0_r30_f20",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_30_flip_20",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r30_f30.batch",
+        "job_name": "hr18_m0_r30_f30",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_30_flip_30",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r30_f40.batch",
+        "job_name": "hr18_m0_r30_f40",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_30_flip_40",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r30_f50.batch",
+        "job_name": "hr18_m0_r30_f50",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_30_flip_50",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r40_f100.batch",
+        "job_name": "hr18_m0_r40_f100",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_40_flip_100",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r40_f10.batch",
+        "job_name": "hr18_m0_r40_f10",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_40_flip_10",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r40_f20.batch",
+        "job_name": "hr18_m0_r40_f20",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_40_flip_20",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r40_f30.batch",
+        "job_name": "hr18_m0_r40_f30",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_40_flip_30",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r40_f40.batch",
+        "job_name": "hr18_m0_r40_f40",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_40_flip_40",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r40_f50.batch",
+        "job_name": "hr18_m0_r40_f50",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_40_flip_50",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r40_f60.batch",
+        "job_name": "hr18_m0_r40_f60",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_40_flip_60",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r50_f10.batch",
+        "job_name": "hr18_m0_r50_f10",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_50_flip_10",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r50_f20.batch",
+        "job_name": "hr18_m0_r50_f20",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_50_flip_20",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r50_f30.batch",
+        "job_name": "hr18_m0_r50_f30",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_50_flip_30",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr18_m0_r50_f40.batch",
+        "job_name": "hr18_m0_r50_f40",
+        "working_directory": "hr18_mos_0_res_1024x1024_crop_rotate_50_flip_40",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "hr48_corrosion.batch",
+        "job_name": "hr48_corrosion",
+        "working_directory": "fcn_hr48_2x2_512x512_160k_corrosion",
+        "status": "FINISHED"
     },
     {
         "filename": "hrnet18-fcn-auto_flip10.batch",
@@ -444,6 +2328,24 @@
         "status": "FINISHED"
     },
     {
+        "filename": "poolformer_m36_corr.batch",
+        "job_name": "poolformer_m36_corr",
+        "working_directory": "fpn_poolformer_m36_8x4_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "poolformer_s12_corr.batch",
+        "job_name": "poolformer_s12_corr",
+        "working_directory": "fpn_poolformer_s12_8x4_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "poolformer_s36_corr.batch",
+        "job_name": "poolformer_s36_corr",
+        "working_directory": "fpn_poolformer_s36_8x4_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
         "filename": "psanet_r101_512x512_corrosion.batch",
         "job_name": "psanet_r101_corrosion",
         "working_directory": "psanet_r101-d8_512x512_80k_corrosion",
@@ -498,9 +2400,93 @@
         "status": "FINISHED"
     },
     {
+        "filename": "resnest_r101_corrosion.batch",
+        "job_name": "resnest_r101_corrosion",
+        "working_directory": "deeplabv3_s101-d8_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
         "filename": "segformer_mit-b0_corrosion.batch",
         "job_name": "segformer",
         "working_directory": "segformer_mit-b0_512x512_160k_coco_corrosion_cosine_lowerLR",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "segmenter_large_corrosion.batch",
+        "job_name": "segmenter_lar_corr",
+        "working_directory": "segmenter_vit-l_mask_8x1_640x640_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "segmenter_s_corrosion.batch",
+        "job_name": "segmenter_s_corr",
+        "working_directory": "segmenter_vit-s_mask_8x1_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "segmenter_t_corrosion.batch",
+        "job_name": "segmenter_t_corr",
+        "working_directory": "segmenter_vit-t_mask_8x1_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "sem_fpn_r101_corrosion.batch",
+        "job_name": "sem_fpn_r101",
+        "working_directory": "fpn_r101_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "setr_mla_corrosion.batch",
+        "job_name": "setr_mla_corr",
+        "working_directory": "setr_mla_512x512_160k_b8_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "setr_naive_corrosion.batch",
+        "job_name": "setr_naive_corr",
+        "working_directory": "setr_naive_512x512_160k_b16_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "setr_pup_corrosion.batch",
+        "job_name": "setr_pup_corr",
+        "working_directory": "setr_pup_512x512_160k_b16_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "stdc1_corrosion.batch",
+        "job_name": "stdc1_corrosion",
+        "working_directory": "stdc1_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "stdc2_corrosion.batch",
+        "job_name": "stdc2_corrosion",
+        "working_directory": "stdc2_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "swin_small_corrosion.batch",
+        "job_name": "swin_small_corrosion",
+        "working_directory": "upernet_swin_small_patch4_window7_512x512_160k_corrosion_pretrain_224x224_1K",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "swin_tiny_corrosion.batch",
+        "job_name": "swin_tiny_corrosion",
+        "working_directory": "upernet_swin_tiny_patch4_window7_512x512_160k_corrosion_pretrain_224x224_1K",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "twins_svt_b_corrosion.batch",
+        "job_name": "twins_svt_b_uper_corr",
+        "working_directory": "twins_svt-b_uperhead_8x2_512x512_160k_corrosion",
+        "status": "FINISHED"
+    },
+    {
+        "filename": "twins_svt_s_corrosion.batch",
+        "job_name": "twins_svt_uper_corr",
+        "working_directory": "twins_svt-s_uperhead_8x2_512x512_160k_corrosion",
         "status": "FINISHED"
     },
     {

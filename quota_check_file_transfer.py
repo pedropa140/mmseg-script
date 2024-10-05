@@ -489,7 +489,7 @@ def run_evaluation(ssh, complete_directory, best_mIoU_file):
     If not, retries once. If it fails again, creates 'not_evaluated.txt' in the directory.
     """
     # Construct the evaluation command
-    if rops.ssh_kinit_loop(2):
+    if rops.ssh_kinit_loop(1):
         job_work_dir_path = os.path.join(*complete_directory.split('/')[1:]).replace('\\','/')
         eval_command = (
             f"srun -G 1 -C 'ada|a4500|a4000' --pty python tools/test.py {job_work_dir_path}/{complete_directory.split('/')[-1]}.py "
@@ -498,12 +498,12 @@ def run_evaluation(ssh, complete_directory, best_mIoU_file):
         print(f"Command to run: cd {cfg.REMOTE_WORKING_PROJECT} ; {eval_command}")
         # print_blue(f"TODO: Check kinit before running evaluation script")
         
-        # Run the command and check if it's successful
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        # # Run the command and check if it's successful
+        #ssh = paramiko.SSHClient()
+        #ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-        # Connect to the remote host
-        ssh.connect(cfg.REMOTE_HOST, username=cfg.USERNAME, password=cfg.PASSWORD)
+        # # Connect to the remote host
+        #ssh.connect(cfg.REMOTE_HOST, username=cfg.USERNAME, password=cfg.PASSWORD)
         
         # Open an SSH session
         # logging.info("Started a shell to evaluate a model")
@@ -521,9 +521,11 @@ def run_evaluation(ssh, complete_directory, best_mIoU_file):
         if 'Permission denied' in output or 'error' in output.lower():
             print_red("Error running srun command.")
             logging.info("Error running srun command.")
+            session.close()
             return False
         else:
             time.sleep(120)
+            session.close()
             return True
     
 

@@ -246,7 +246,8 @@ def create_json(ssh):
             # Determine which files already were found in the json file
                 if filename in existing_filenames:
                     print_red(f"File {filename} is already in the JSON file.")
-                    logging.info(f"File {filename} is already in the JSON file.")
+            # Removed logging of existing json files because its a lot of files  
+                    #logging.info(f"File {filename} is already in the JSON file.")
                     continue
                 
                 # Extract the job names from the batch files to add into the json file if the fileis not already found in the JSON file
