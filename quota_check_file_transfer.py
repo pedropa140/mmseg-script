@@ -218,6 +218,7 @@ def check_batch_files(ssh, jobs):
                 if dir_name != "_RUNNING":
                     rops.move_batch_file(ssh, batch_file_path, os.path.join(base_dir, "_RUNNING").replace("\\", "/"))
                     json_utils.set_status_of_batch_file("RUNNING", os.path.basename(batch_file_path))
+                    remove_job(os.path.basename(batch_file_path))
             else:
                 check_and_handle_non_running_job(ssh, job_name, batch_file_path, base_dir)
 
@@ -354,34 +355,34 @@ def run_sbatch(ssh):
                     json_utils.set_status_of_batch_file("ERROR", batch_file=queued_jobs[0][0])
                     working_directory = rops.get_python_file_name_from_batch_file(ssh, os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_BATCH_FILE_LOCATION, queued_jobs[0][0]).replace('\\','/'))
                     # ssh.exec_command(f"touch {os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, working_directory, "error_occurred.txt").replace("\\", "/")}")
-                    
-                    project_directory = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, working_directory).replace('\\','/')
-                    stdin, stdout, stderr = ssh.exec_command(f"find {project_directory} -name *.txt")
-                    
-                    if stdout:
-                        # Rename a textfile if there is one already in the working directory 
-                        source_directory = stdout.read().decode().strip()
-                        dest_directory = os.path.join(project_directory, "error_occurred.txt").replace('\\','/')
-                        logging.info(f"    Executing command: mv {source_directory} {dest_directory}")
-                        rops.rename_remote_file(ssh, source_directory, dest_directory)
-                    else:
-                        # Add a new error_occurred text file in the working directory if there isn't a textfile found. 
-                        error_textfile_path = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, working_directory, 'error_occurred.txt').replace("\\", '/')
-                        logging.info(f"    Executing command: touch {error_textfile_path}")
-                        stdin, stdout, stderr = ssh.exec_command(f"touch {error_textfile_path}")
-                        if stderr:
-                            logging.error(stderr.read().decode())
-                    # Add logic to move batch file VVV
-                    batch_file_source = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_BATCH_FILE_LOCATION, queued_jobs[0][0]).replace('\\', '/')
-                    batch_file_dest = os.path.join(cfg.REMOTE_WORKING_PROJECT, *cfg.REMOTE_BATCH_FILE_LOCATION.split('/')[:-1],"_ERROR").replace('\\', '/')
-                    print_green(f"Moving {batch_file_source} to {batch_file_dest}") 
-                    rops.move_batch_file(ssh, batch_file_source, batch_file_dest)
-                    if rops.check_remote_file_exists(ssh, os.path.join(batch_file_dest, queued_jobs[0][0]).replace('\\','/')):
-                        print_green(f"File {queued_jobs[0][0]} successfully moved to {batch_file_dest}.")
-                    else:
-                        print_red(f"File {queued_jobs[0][0]} was not moved successfully to {batch_file_dest}.")
-                    #queued_jobs.remove((running_item, queued_jobs[0][1]))
-                    logging.error(f"{queued_jobs[0][0]} is not running. Double check issue with model.")
+                    if working_directory != None:
+                        project_directory = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, working_directory).replace('\\','/')
+                        stdin, stdout, stderr = ssh.exec_command(f"find {project_directory} -name *.txt")
+                        
+                        if stdout:
+                            # Rename a textfile if there is one already in the working directory 
+                            source_directory = stdout.read().decode().strip()
+                            dest_directory = os.path.join(project_directory, "error_occurred.txt").replace('\\','/')
+                            logging.info(f"    Executing command: mv {source_directory} {dest_directory}")
+                            rops.rename_remote_file(ssh, source_directory, dest_directory)
+                        else:
+                            # Add a new error_occurred text file in the working directory if there isn't a textfile found. 
+                            error_textfile_path = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_WORK_DIR, working_directory, 'error_occurred.txt').replace("\\", '/')
+                            logging.info(f"    Executing command: touch {error_textfile_path}")
+                            stdin, stdout, stderr = ssh.exec_command(f"touch {error_textfile_path}")
+                            if stderr:
+                                logging.error(stderr.read().decode())
+                        # Add logic to move batch file VVV
+                        batch_file_source = os.path.join(cfg.REMOTE_WORKING_PROJECT, cfg.REMOTE_BATCH_FILE_LOCATION, queued_jobs[0][0]).replace('\\', '/')
+                        batch_file_dest = os.path.join(cfg.REMOTE_WORKING_PROJECT, *cfg.REMOTE_BATCH_FILE_LOCATION.split('/')[:-1],"_ERROR").replace('\\', '/')
+                        print_green(f"Moving {batch_file_source} to {batch_file_dest}") 
+                        rops.move_batch_file(ssh, batch_file_source, batch_file_dest)
+                        if rops.check_remote_file_exists(ssh, os.path.join(batch_file_dest, queued_jobs[0][0]).replace('\\','/')):
+                            print_green(f"File {queued_jobs[0][0]} successfully moved to {batch_file_dest}.")
+                        else:
+                            print_red(f"File {queued_jobs[0][0]} was not moved successfully to {batch_file_dest}.")
+                        #queued_jobs.remove((running_item, queued_jobs[0][1]))
+                        logging.error(f"{queued_jobs[0][0]} is not running. Double check issue with model.")
                     remove_job(queued_jobs[0][0])
             json_utils.update_json_new(ssh)
         else:
